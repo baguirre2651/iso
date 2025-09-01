@@ -1,0 +1,10 @@
+{
+  "homepage": "https://baguirre2651.github.io/iso",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  }
+}

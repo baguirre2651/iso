@@ -52,6 +52,16 @@
         .podium-1 { order: 2; transform: translateY(-20px); }
         .podium-2 { order: 1; }
         .podium-3 { order: 3; }
+        .upvote-blink {
+            animation: upvote-animation 0.5s ease;
+        }
+        @keyframes upvote-animation {
+            50% { 
+                background-color: #34d399; /* A nice green color */
+                color: white;
+                transform: scale(1.1);
+            }
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -272,7 +282,7 @@
             
             <div class="my-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-4xl mx-auto text-center">
                 <h3 class="text-2xl font-bold text-center text-gray-900 mb-2">Join the Hunt, Win Prizes 🏆</h3>
-                <p class="text-gray-600 leading-relaxed mb-5">
+                <p class="text-gray-600 leading-relaxed mb-6">
                     Earn points all month long—every hunt you post and every auction you win gets you closer. Track your progress live and rise through the ranks. Prizes awarded monthly.
                 </p>
                 <div class="text-sm text-gray-500">
@@ -778,6 +788,14 @@
                 const id = viewBtn ? viewBtn.dataset.id : cardBody.dataset.id;
                 renderDetailView(id);
             } else if (upvoteBtn) {
+                // Add the blink animation
+                upvoteBtn.classList.add('upvote-blink');
+                
+                // Remove the animation class after it finishes so it can be re-triggered
+                setTimeout(() => {
+                    upvoteBtn.classList.remove('upvote-blink');
+                }, 500);
+
                 const itemId = parseInt(upvoteBtn.dataset.id);
                 const item = isoData.find(i => i.id === itemId);
                 if (item) {
@@ -822,5 +840,7 @@
     </script>
 </body>
 </html>
+
+
 
 

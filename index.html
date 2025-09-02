@@ -355,9 +355,16 @@
     </div>
 
     <script>
+        // Initialize Lucide Icons
         lucide.createIcons();
 
-        // --- FAKE DATA STORE ---
+        // =================================================================================
+        // FAKE DATA STORE
+        // In a real application, this data would come from a database.
+        // For this prototype, we're using static JavaScript objects to simulate our data.
+        // =================================================================================
+        
+        // This array holds all the "In Search Of" posts.
         let isoData = [
           {
             id: 1,
@@ -378,7 +385,7 @@
             upvotes: 45,
             topOffer: 850,
             comments: 5,
-            imageUrl: "images/margret.jpg",
+            imageUrl: "images/kaws.png",
             user: { name: "@artcollectorjane", avatar: "https://i.pravatar.cc/40?u=user5" }
           },
           {
@@ -405,6 +412,8 @@
           }
         ];
 
+        // This object simulates the responses from the Gemini API.
+        // The keys match the item names from isoData.
         const aiInsightsData = {
             "Jordan 1 Retro High 'Chicago'": "The Air Jordan 1 'Chicago' is arguably the most iconic sneaker ever created. Originally released in 1985, its 'Chicago' colorway is a cornerstone of sneaker culture, synonymous with Michael Jordan's rookie season. The 2022 'Reimagined' version added a vintage, aged look that was met with massive commercial success. For collectors, condition and originality are key; a true 1985 pair is a museum piece, while the Reimagined version offers a more accessible entry into its legacy. The market for this shoe is consistently strong, making it a true blue-chip collectible.",
             "Margaret Keane: 'Big Eyes' Painting": "Margaret Keane's Big Eyes paintings are defined by their signature, disproportionately large, doe-like eyes that dominate the canvas. The artworks typically feature women, children, and animals in styles ranging from melancholy and dark to joyful and bright, reflecting different periods of the artist's life.",
@@ -412,8 +421,12 @@
             "Travis Scott Jordan 1 Low": "Travis Scott's collaborations with Nike are among the most influential of the modern era. His take on the Air Jordan 1, characterized by the reversed Swoosh, is his signature design element. These releases create a frenzy in the market due to Scott's cultural influence and the limited production numbers. The 'Olive' and 'Fragment' colorways are particularly coveted. Owning a pair signifies being in-the-know with current sneaker culture. The resale market is highly volatile but consistently high, reflecting its status as a modern classic.",
             "Rolex Daytona 'Panda'": "The Rolex Daytona Ref. 116500LN with a white dial, nicknamed the 'Panda,' is one of the most sought-after luxury watches in the world. Its scarcity is manufactured; authorized dealers have notoriously long waitlists, often spanning years. This drives a hyper-inflated secondary market where the watch trades for more than double its retail price. The watch's appeal comes from its perfect proportions, ceramic bezel, racing heritage, and the status associated with the Rolex brand. It's considered a benchmark 'investment' watch by many collectors due to its strong and consistent value retention."
         };
-
-        // --- DOM Elements ---
+        
+        // =================================================================================
+        // DOM ELEMENT SELECTORS
+        // We select all the important HTML elements here so we can easily reference them
+        // throughout the script. This is more efficient than searching for them repeatedly.
+        // =================================================================================
         const app = document.getElementById('app');
         const isoFeed = document.getElementById('iso-feed');
         const recentlyFoundContainer = document.getElementById('recently-found');
@@ -423,6 +436,7 @@
         const leaderboardView = document.getElementById('leaderboard-view');
         const leaderboardList = document.getElementById('leaderboard-list');
 
+        // Modal elements
         const postIsoBtn = document.getElementById('post-iso-btn');
         const isoModal = document.getElementById('iso-modal');
         const sellModal = document.getElementById('sell-modal');
@@ -430,12 +444,22 @@
         const aiModalContent = document.getElementById('ai-modal-content');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const closeIsoModalBtn = document.getElementById('close-iso-modal');
+        
+        // Form elements
         const isoForm = document.getElementById('iso-form');
         const imageUploadInput = document.getElementById('item-image-upload-input');
         const imagePreview = document.getElementById('image-preview');
         const imageUploadIcon = document.getElementById('image-upload-icon');
 
-        // --- FUNCTIONS ---
+        // =================================================================================
+        // CORE FUNCTIONS
+        // These are the main functions that control the application's logic and display.
+        // =================================================================================
+
+        /**
+         * Renders the main feed of "In Search Of" cards.
+         * It clears the existing feed, sorts the data by upvotes, and creates an HTML card for each item.
+         */
         function renderFeed() {
             isoFeed.innerHTML = '';
             isoData.sort((a, b) => b.upvotes - a.upvotes).forEach(item => {
@@ -477,6 +501,9 @@
             lucide.createIcons();
         }
 
+        /**
+         * Renders the "Recently Found" items in the sidebar.
+         */
         function renderRecentlyFound() {
             const recentlyFoundData = [
               { name: "Jordan 1 'Chicago'", price: 520, user: "@sneakerhead23", imageUrl: "images/jordan1.png" },
@@ -497,14 +524,20 @@
             });
         }
 
-
+        /**
+         * Renders the detailed view for a single item when a user clicks on it.
+         * @param {string | number} itemId - The ID of the item to display.
+         */
         function renderDetailView(itemId) {
             const item = isoData.find(i => i.id === parseInt(itemId));
-            if (!item) return;
+            if (!item) return; // Exit if the item isn't found
 
+            // Hide other views and show the detail view
             mainContent.classList.remove('active');
             howItWorksView.classList.remove('active');
             leaderboardView.classList.remove('active');
+            
+            // Populate the detail view with the item's data
             detailView.innerHTML = `
                 <button id="back-to-feed" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold mb-6"><i data-lucide="arrow-left" class="w-5 h-5"></i><span>Back to Feed</span></button>
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
@@ -566,23 +599,31 @@
                 </div>
             `;
             detailView.classList.add('active');
-            lucide.createIcons();
+            lucide.createIcons(); // Re-initialize icons for the new elements
 
+            // Add event listeners for the new buttons in the detail view
             document.getElementById('back-to-feed').addEventListener('click', () => {
                 detailView.classList.remove('active');
                 mainContent.classList.add('active');
-                renderFeed();
+                renderFeed(); // Re-render feed to ensure it's up to date
             });
             document.getElementById('get-ai-insights-btn').addEventListener('click', handleGetAiInsights);
             document.querySelector('.sell-item-btn').addEventListener('click', handleSellItemClick);
         }
         
+        /**
+         * Switches between the main views of the application (Hunts, Leaderboard, How It Works).
+         * @param {string} viewId - The ID of the view to make active.
+         */
         function switchView(viewId) {
+            // Hide all views
             document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .leaderboard-view').forEach(view => {
                 view.classList.remove('active');
             });
+            // Show the selected view
             document.getElementById(viewId).classList.add('active');
 
+            // Update the active state of the navigation links
             document.querySelectorAll('.nav-link, .nav-link-mobile').forEach(link => {
                 link.classList.remove('active', 'text-gray-800', 'text-indigo-600', 'border-indigo-600');
                 if (link.dataset.view === viewId) {
@@ -596,13 +637,22 @@
                     link.classList.add('text-gray-500');
                 }
             });
+            // Re-initialize icons if the new view needs them
              if(viewId === 'how-it-works-view' || viewId === 'leaderboard-view'){
                 lucide.createIcons();
             }
         }
-
+        
+        /**
+         * Toggles the visibility of a modal and its backdrop.
+         * @param {HTMLElement} modal - The modal element to show/hide.
+         * @param {boolean} show - True to show the modal, false to hide it.
+         */
         function toggleModal(modal, show) { if (show) { modalBackdrop.style.display = 'block'; modal.style.display = 'block'; modal.classList.add('animate-fade-in'); } else { modal.classList.remove('animate-fade-in'); modal.style.display = 'none'; modalBackdrop.style.display = 'none'; } }
         
+        /**
+         * Resets the "Post a Request" form to its default state.
+         */
         function resetIsoForm() {
             isoForm.reset();
             imagePreview.src = '';
@@ -610,9 +660,14 @@
             imageUploadIcon.style.display = 'block';
         }
 
+        /**
+         * Handles the submission of the "Post a Request" form.
+         * @param {Event} e - The form submission event.
+         */
         function handleIsoSubmit(e) { 
             e.preventDefault(); 
             const imageUrl = imagePreview.src && imagePreview.src.startsWith('data:') ? imagePreview.src : "https://placehold.co/700x500/e2e8f0/4a5568?text=New+Request";
+            // Create a new item object from the form data
             const newItem = { 
                 id: Date.now(), 
                 name: document.getElementById('item-name').value, 
@@ -624,29 +679,42 @@
                 imageUrl: imageUrl,
                 user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}` } 
             }; 
-            isoData.unshift(newItem); 
-            renderFeed(); 
+            isoData.unshift(newItem); // Add the new item to the beginning of our data array
+            renderFeed(); // Re-render the feed to show the new item
             resetIsoForm();
             toggleModal(isoModal, false); 
             switchView('main-content');
         }
 
+        /**
+         * Simulates a call to the Gemini API to get market insights.
+         * @param {string} itemName - The name of the item to get insights for.
+         * @returns {Promise<string>} A promise that resolves with the AI-generated text.
+         */
         async function getAiInsights(itemName) {
+            // This function simulates a real API call.
             console.log(`Simulating Gemini API call for: ${itemName}`);
             const systemPrompt = "You are a world-class collectibles expert. Provide a concise, single-paragraph summary of the requested item's history, cultural significance, and general market standing. Speak with authority and insight.";
             const userQuery = `Tell me about the ${itemName}.`;
-            const apiKey = ""; 
+            const apiKey = ""; // In a real app, the API key is handled securely.
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
+            // Simulate network delay
             await new Promise(resolve => setTimeout(resolve, 1500));
             
+            // For the prototype, we get the result from our mock data object.
             const insight = aiInsightsData[itemName] || "No specific insights available for this item. It is considered a rare collectible within its community.";
             return insight;
         }
         
+        /**
+         * Handles the click event for the "Get AI Insights" button.
+         * @param {Event} event - The click event.
+         */
         async function handleGetAiInsights(event) {
             const itemName = event.currentTarget.dataset.itemName;
             toggleModal(aiModal, true);
+            // Show a loading spinner while we "fetch" the data
             aiModalContent.innerHTML = `
                 <div class="flex flex-col items-center justify-center h-48">
                     <div class="loader"></div>
@@ -654,8 +722,8 @@
                 </div>
             `;
             
+            // Get the insights and display them
             const insights = await getAiInsights(itemName);
-            
             aiModalContent.innerHTML = `
                 <div class="space-y-4">
                     <p class="text-gray-700 leading-relaxed">${insights}</p>
@@ -664,11 +732,16 @@
             `;
         }
         
+        /**
+         * Handles the click event for the "I Have This - Sell" button.
+         * @param {Event} event - The click event.
+         */
         function handleSellItemClick(event) {
             const itemId = event.currentTarget.dataset.itemId;
             const item = isoData.find(i => i.id === parseInt(itemId));
             if (!item) return;
 
+            // Populate and show the "Start Auction" modal
             sellModal.innerHTML = `
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-xl font-bold">Start an Auction</h3>
@@ -699,6 +772,7 @@
             toggleModal(sellModal, true);
             lucide.createIcons();
 
+            // Add event listeners for the new modal's buttons
             document.getElementById('close-sell-modal').addEventListener('click', () => toggleModal(sellModal, false));
             document.getElementById('auction-form').addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -707,6 +781,9 @@
             });
         }
         
+        /**
+         * Starts the countdown timer for the monthly leaderboard reset.
+         */
         function startCountdown() {
             const countdownElement = document.getElementById('countdown-timer');
             if (!countdownElement) return;
@@ -734,6 +811,9 @@
             }, 1000);
         }
         
+        /**
+         * Renders the list of players for the leaderboard.
+         */
         function renderLeaderboard() {
             const leaderboardData = [
                 { rank: 4, name: 'TokyoHypeBeast', score: 35514 },
@@ -758,8 +838,12 @@
             });
         }
 
+        // =================================================================================
+        // EVENT LISTENERS
+        // This section sets up all the interactive parts of the application.
+        // =================================================================================
 
-        // --- EVENT LISTENERS ---
+        // General modal open/close listeners
         postIsoBtn.addEventListener('click', () => toggleModal(isoModal, true));
         closeIsoModalBtn.addEventListener('click', () => {
             toggleModal(isoModal, false);
@@ -772,8 +856,11 @@
             resetIsoForm();
         });
         document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
+        
+        // Form submission listener
         isoForm.addEventListener('submit', handleIsoSubmit);
 
+        // Image upload listener
         imageUploadInput.addEventListener('change', () => {
             const file = imageUploadInput.files[0];
             if (file) {
@@ -787,6 +874,7 @@
             }
         });
 
+        // Event delegation for the main feed to handle clicks on cards, upvotes, etc.
         isoFeed.addEventListener('click', (event) => {
             const viewBtn = event.target.closest('.view-details-btn');
             const cardBody = event.target.closest('.cursor-pointer');
@@ -796,7 +884,7 @@
                 const id = viewBtn ? viewBtn.dataset.id : cardBody.dataset.id;
                 renderDetailView(id);
             } else if (upvoteBtn) {
-                // Add the blink animation
+                // Add the blink animation for visual feedback
                 upvoteBtn.classList.add('upvote-blink');
                 
                 // Remove the animation class after it finishes so it can be re-triggered
@@ -804,22 +892,23 @@
                     upvoteBtn.classList.remove('upvote-blink');
                 }, 500);
 
+                // Update the upvote count in our data
                 const itemId = parseInt(upvoteBtn.dataset.id);
                 const item = isoData.find(i => i.id === itemId);
                 if (item) {
                     if (!upvoteBtn.classList.contains('upvoted')) {
                         item.upvotes++;
                         upvoteBtn.classList.add('upvoted');
-                        upvoteBtn.querySelector('.upvote-count').textContent = item.upvotes;
                     } else {
                         item.upvotes--;
                         upvoteBtn.classList.remove('upvoted');
-                        upvoteBtn.querySelector('.upvote-count').textContent = item.upvotes;
                     }
+                    upvoteBtn.querySelector('.upvote-count').textContent = item.upvotes;
                 }
             }
         });
         
+        // Event delegation for the detail view (specifically for the "Sell" button)
         detailView.addEventListener('click', (event) => {
             const sellBtn = event.target.closest('.sell-item-btn');
             if (sellBtn) {
@@ -827,6 +916,7 @@
             }
         });
 
+        // Event delegation for the main navigation (desktop and mobile)
         app.addEventListener('click', (e) => {
              const navLink = e.target.closest('.nav-link, .nav-link-mobile');
              if(navLink) {
@@ -834,13 +924,15 @@
                  switchView(navLink.dataset.view);
              }
         });
-
+        
+        // Listener for the logo to always return to the main feed
         document.getElementById('logo-link').addEventListener('click', (e) => {
             e.preventDefault();
             switchView('main-content');
         });
 
         // --- INITIAL RENDER ---
+        // This function runs once when the page loads to set everything up.
         function initializeApp() {
             renderFeed();
             renderRecentlyFound();
@@ -853,5 +945,4 @@
     </script>
 </body>
 </html>
-
 

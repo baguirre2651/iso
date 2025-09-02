@@ -187,36 +187,43 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Step 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="edit" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">1. Post Your Hunt</h3>
                     <p class="text-sm text-gray-600">Tell the community what you're "In Search Of." Add details, your top offer, and a reference photo.</p>
                 </div>
                 <!-- Step 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="users" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">2. Demand Grows</h3>
                     <p class="text-sm text-gray-600">Other users who want the same item can upvote your hunt, creating a powerful signal of collective demand.</p>
                 </div>
                 <!-- Step 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="tag" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">3. Sellers Respond</h3>
                     <p class="text-sm text-gray-600">Sellers with the item are notified. They can start an auction for all interested buyers.</p>
                 </div>
                 <!-- Step 4 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center">
-                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="gavel" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">4. A Fair Price is Set</h3>
-                    <p class="text-sm text-gray-600">Our <span class="font-semibold">Blind Dutch Auction</span> ensures fairness. All bidders submit their best, secret offer. The highest bidders win and pay the same price—the lowest winning bid. It's the truest market price.</p>
+                    <div class="text-sm text-gray-600 text-left space-y-3 mt-auto">
+                        <p>Our Blind Dutch Auction ensures fairness. Here’s how:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-500">
+                           <li><span class="font-semibold text-gray-700">All Seekers Bid:</span> Every user who upvoted the hunt is invited to submit one secret, maximum bid.</li>
+                           <li><span class="font-semibold text-gray-700">Winners are Determined:</span> For one item, the highest bidder wins. For multiple items, the top bidders win.</li>
+                           <li><span class="font-semibold text-gray-700">The "Clearing Price" Magic:</span> Instead of paying their top bid, all winners pay the same price: the lowest winning bid. This ensures no one overpays and the true market price is found.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -845,8 +852,4 @@
     </script>
 </body>
 </html>
-
-
-
-
 

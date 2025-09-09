@@ -76,6 +76,10 @@
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1.0); }
         }
+        .filter-btn.active {
+            background-color: #4f46e5;
+            color: white;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -116,8 +120,20 @@
         <!-- Main Content View (Feed) -->
         <div id="main-content" class="main-content active">
             <div class="py-6">
-                <h2 class="text-xl font-bold text-gray-900">Community Wanted Board</h2>
-                <p class="text-gray-500 mt-1">Discover what the community is hunting for. Upvote requests you're also interested in!</p>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Community Wanted Board</h2>
+                        <p class="text-gray-500 mt-1">Discover what the community is hunting for. Upvote requests you're also interested in!</p>
+                    </div>
+                </div>
+                 <!-- Filters -->
+                <div id="filter-bar" class="mt-4 flex space-x-2 overflow-x-auto pb-2">
+                    <button class="filter-btn active flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="All">All</button>
+                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Sneakers">Sneakers</button>
+                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Archival Fashion">Archival Fashion</button>
+                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Collectibles">Collectibles</button>
+                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Watches">Watches</button>
+                </div>
             </div>
     
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
@@ -129,51 +145,15 @@
                 <!-- Sidebar / Community Hub -->
                 <aside class="space-y-6">
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+                        <h3 class="font-bold text-lg mb-4 text-gray-900">Trending Hunts</h3>
+                        <div id="trending-hunts" class="space-y-4">
+                            <!-- Trending hunts will be injected here -->
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
                         <h3 class="font-bold text-lg mb-4 text-gray-900">Recently Found</h3>
                         <div id="recently-found" class="space-y-4">
                             <!-- Recently found items will be injected here -->
-                        </div>
-                    </div>
-                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-                        <h3 class="font-bold text-lg mb-4 text-gray-900">Top Seekers</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <img src="https://i.pravatar.cc/40?u=user1" class="w-10 h-10 rounded-full"/>
-                                    <div>
-                                        <p class="text-sm font-semibold text-gray-800">@grailHunter</p>
-                                        <p class="text-xs text-gray-500">23 Active Hunts</p>
-                                    </div>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-600 bg-indigo-100 px-2 py-1 rounded-full">Top 1%</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <img src="https://i.pravatar.cc/40?u=user2" class="w-10 h-10 rounded-full"/>
-                                    <div>
-                                        <p class="text-sm font-semibold text-gray-800">@vintageVixen</p>
-                                        <p class="text-xs text-gray-500">18 Active Hunts</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <img src="https://i.pravatar.cc/40?u=user10" class="w-10 h-10 rounded-full"/>
-                                    <div>
-                                        <p class="text-sm font-semibold text-gray-800">@watchCollector</p>
-                                        <p class="text-xs text-gray-500">15 Active Hunts</p>
-                                    </div>
-                                </div>
-                            </div>
-                             <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <img src="https://i.pravatar.cc/40?u=user11" class="w-10 h-10 rounded-full"/>
-                                    <div>
-                                        <p class="text-sm font-semibold text-gray-800">@artSeeker99</p>
-                                        <p class="text-xs text-gray-500">12 Active Hunts</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </aside>
@@ -368,7 +348,7 @@
         <div id="form-view" class="hidden">
             <form id="iso-form" class="p-6 space-y-4">
                 <div><label for="item-name" class="block text-sm font-medium text-gray-700">Item Name</label><input type="text" id="item-name" placeholder="e.g., Jordan 1 Retro High 'Chicago'" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
-                <div><label for="item-category" class="block text-sm font-medium text-gray-700">Category</label><select id="item-category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"><option>Sneakers</option><option>Streetwear</option><option>Collectibles</option><option>Watches</option></select></div>
+                <div><label for="item-category" class="block text-sm font-medium text-gray-700">Category</label><select id="item-category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"><option>Sneakers</option><option>Archival Fashion</option><option>Collectibles</option><option>Watches</option></select></div>
                 <div><label for="item-details" class="block text-sm font-medium text-gray-700">Details (Size, Condition)</label><input type="text" id="item-details" placeholder="e.g., Size 10, New/Unworn" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
                 <div><label for="item-bid" class="block text-sm font-medium text-gray-700">Your Top Offer ($)</label><input type="number" id="item-bid" placeholder="400" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
                 <div>
@@ -398,6 +378,11 @@
     <!-- Sell / Make Offer Modal -->
     <div id="sell-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
         <!-- Sell modal content will be injected here -->
+    </div>
+
+    <!-- Edit ISO Modal -->
+     <div id="edit-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
+        <!-- Edit modal content will be injected here -->
     </div>
 
     <!-- View Bids Modal -->
@@ -434,9 +419,24 @@
             topOffer: 550,
             comments: 12,
             imageUrl: "images/jordan1.png",
-            user: { name: "@sneakerhead23", avatar: "https://i.pravatar.cc/40?u=user3" },
+            user: { name: "@sneakerhead23", avatar: "https://i.pravatar.cc/40?u=user3", rating: 4.9 },
             fundsVerified: true,
-            privateBids: 0
+            privateBids: 0,
+            duration: 30,
+          },
+          {
+            id: 6,
+            name: "Raf Simons 'Riot' Bomber Jacket",
+            category: "Archival Fashion",
+            details: "AW 2001, Size 50, Good condition",
+            upvotes: 88,
+            topOffer: 4500,
+            comments: 19,
+            imageUrl: "images/raf.png",
+            user: { name: "@archive_fiend", avatar: "https://i.pravatar.cc/40?u=user7", rating: 5.0 },
+            fundsVerified: true,
+            privateBids: 1,
+            duration: 14,
           },
           {
             id: 3,
@@ -447,9 +447,10 @@
             topOffer: 850,
             comments: 5,
             imageUrl: "images/margret.jpg",
-            user: { name: "@artcollectorjane", avatar: "https://i.pravatar.cc/40?u=user5" },
+            user: { name: "@artcollectorjane", avatar: "https://i.pravatar.cc/40?u=user5", rating: 5.0 },
             fundsVerified: false,
-            privateBids: 0
+            privateBids: 0,
+            duration: 14,
           },
           {
             id: 4,
@@ -460,9 +461,10 @@
             topOffer: 720,
             comments: 25,
             imageUrl: "images/travis.png",
-            user: { name: "@grailHunter", avatar: "https://i.pravatar.cc/40?u=user1" },
+            user: { name: "@grailHunter", avatar: "https://i.pravatar.cc/40?u=user1", rating: 4.8 },
             fundsVerified: true,
-            privateBids: 3
+            privateBids: 3,
+            duration: 7,
           },
           {
             id: 5,
@@ -473,9 +475,10 @@
             topOffer: 28500,
             comments: 32,
             imageUrl: "images/rolexdaytona.png",
-            user: { name: "@watchguy", avatar: "https://i.pravatar.cc/40?u=user6" },
+            user: { name: "@watchguy", avatar: "https://i.pravatar.cc/40?u=user6", rating: 5.0 },
             fundsVerified: false,
-            privateBids: 0
+            privateBids: 0,
+            duration: 30,
           }
         ];
 
@@ -493,16 +496,19 @@
         const app = document.getElementById('app');
         const isoFeed = document.getElementById('iso-feed');
         const recentlyFoundContainer = document.getElementById('recently-found');
+        const trendingHuntsContainer = document.getElementById('trending-hunts');
         const mainContent = document.getElementById('main-content');
         const detailView = document.getElementById('detail-view');
         const howItWorksView = document.getElementById('how-it-works-view');
         const leaderboardView = document.getElementById('leaderboard-view');
         const leaderboardList = document.getElementById('leaderboard-list');
+        const filterBar = document.getElementById('filter-bar');
 
         // Modal elements
         const postIsoBtn = document.getElementById('post-iso-btn');
         const isoModal = document.getElementById('iso-modal');
         const sellModal = document.getElementById('sell-modal');
+        const editModal = document.getElementById('edit-modal');
         const bidsModal = document.getElementById('bids-modal');
         const aiModal = document.getElementById('ai-modal');
         const aiModalContent = document.getElementById('ai-modal-content');
@@ -531,25 +537,34 @@
         /**
          * Renders the main feed of "In Search Of" cards.
          */
-        function renderFeed() {
+        function renderFeed(filterCategory = 'All') {
+            const filteredData = filterCategory === 'All'
+                ? isoData
+                : isoData.filter(item => item.category === filterCategory);
+
             isoFeed.innerHTML = '';
-            isoData.sort((a, b) => b.upvotes - a.upvotes).forEach(item => {
+            filteredData.sort((a, b) => b.upvotes - a.upvotes).forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden';
                 const fundsVerifiedBadge = item.fundsVerified 
                     ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full flex items-center space-x-1"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Funds Verified</span></span>` 
                     : '';
+                const ratingHtml = item.user.rating ? `<span class="text-xs text-gray-500 flex items-center"><i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.user.rating}</span>` : '';
 
                 card.innerHTML = `
-                    <div class="p-4 flex justify-between items-center border-b border-gray-100">
+                    <div class="p-4 flex justify-between items-start border-b border-gray-100">
                         <div class="flex items-center space-x-3">
                             <img src="${item.user.avatar}" class="w-10 h-10 rounded-full bg-gray-200"/>
                             <div>
                                 <p class="font-semibold text-sm text-gray-800">${item.user.name}</p>
-                                <p class="text-xs text-gray-500">is searching for...</p>
+                                <div class="flex items-center space-x-2">
+                                     ${ratingHtml}
+                                </div>
                             </div>
                         </div>
-                        ${fundsVerifiedBadge}
+                        <div class="text-right">
+                           ${fundsVerifiedBadge}
+                        </div>
                     </div>
                     <div class="p-4 cursor-pointer" data-id="${item.id}">
                         <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center mb-4 bg-center bg-cover" style="background-image: url('${item.imageUrl}')">
@@ -601,6 +616,29 @@
         }
 
         /**
+         * Renders the "Trending Hunts" items in the sidebar.
+         */
+        function renderTrendingHunts() {
+            const trendingData = [...isoData].sort((a, b) => b.upvotes - a.upvotes).slice(0, 3);
+            trendingHuntsContainer.innerHTML = '';
+            trendingData.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex flex-col space-y-2';
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-16 h-12 bg-gray-100 rounded-md bg-cover bg-center" style="background-image: url('${item.imageUrl}')"></div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">${item.name}</p>
+                            <p class="text-xs text-gray-500">${item.upvotes} upvotes</p>
+                        </div>
+                    </div>
+                    <button class="start-similar-btn text-xs font-semibold text-indigo-600 hover:underline text-left">Start a similar hunt</button>
+                `;
+                trendingHuntsContainer.appendChild(div);
+            });
+        }
+
+        /**
          * Renders the detailed view for a single item.
          * @param {string | number} itemId - The ID of the item to display.
          */
@@ -611,6 +649,9 @@
             mainContent.classList.remove('active');
             howItWorksView.classList.remove('active');
             leaderboardView.classList.remove('active');
+            
+            const ratingHtml = item.user.rating ? `<span class="text-sm text-gray-500 flex items-center"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.user.rating} | 5 Successful Hunts</span>` : '';
+
 
             const fundsVerifiedBadge = item.fundsVerified 
                 ? `<span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Funds Verified</span></span>` 
@@ -639,7 +680,10 @@
             detailView.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
                     <button id="back-to-feed" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold"><i data-lucide="arrow-left" class="w-5 h-5"></i><span>Back to Feed</span></button>
-                    <button id="delete-iso-btn" data-id="${item.id}" class="flex items-center space-x-2 text-sm text-red-500 hover:text-red-700 font-semibold"><i data-lucide="trash-2" class="w-4 h-4"></i><span>Delete ISO (Demo)</span></button>
+                    <div class="flex items-center space-x-4">
+                        <button id="edit-iso-btn" data-id="${item.id}" class="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 font-semibold"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit Hunt</span></button>
+                        <button id="delete-iso-btn" data-id="${item.id}" class="flex items-center space-x-2 text-sm text-red-500 hover:text-red-700 font-semibold"><i data-lucide="trash-2" class="w-4 h-4"></i><span>Delete ISO (Demo)</span></button>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
                     <div class="bg-white rounded-lg p-4 flex items-center justify-center shadow-lg lg:col-span-2"><img src="${item.imageUrl}" alt="${item.name}" class="max-h-96 object-contain rounded-md"></div>
@@ -648,7 +692,7 @@
                             <img src="${item.user.avatar}" class="w-12 h-12 rounded-full"/>
                             <div>
                                 <p class="font-semibold text-gray-800">${item.user.name}</p>
-                                <p class="text-sm text-gray-500">Started this hunt</p>
+                                ${ratingHtml}
                             </div>
                         </div>
                         <h2 class="text-3xl font-bold tracking-tight text-gray-900 mt-1">${item.name}</h2>
@@ -714,6 +758,7 @@
                 renderFeed();
             });
             document.getElementById('delete-iso-btn').addEventListener('click', handleDeleteIso);
+             document.getElementById('edit-iso-btn').addEventListener('click', handleEditIso);
             document.getElementById('get-ai-insights-btn').addEventListener('click', handleGetAiInsights);
             
             const sellBtn = document.querySelector('.sell-item-btn');
@@ -780,12 +825,14 @@
                 topOffer: parseInt(document.getElementById('item-bid').value) || 0, 
                 comments: 0, 
                 imageUrl: imageUrl,
-                user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}` },
+                user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}`, rating: 5.0 },
                 fundsVerified: false,
-                privateBids: 0
+                privateBids: 0,
+                duration: 30
             }; 
             isoData.unshift(newItem);
             renderFeed();
+            renderTrendingHunts();
             resetIsoForm();
             toggleModal(isoModal, false); 
             switchView('main-content');
@@ -856,9 +903,9 @@
 
             // Simulated bids
             const bids = [
-                { user: '@resell_king', avatar: 'https://i.pravatar.cc/40?u=resell', price: 710, condition: 'Deadstock with original box. Can ship today.' },
-                { user: '@sneakerVault', avatar: 'https://i.pravatar.cc/40?u=vault', price: 680, condition: 'VNDS, worn once indoors. Includes extra laces.' },
-                { user: '@kickzCircle', avatar: 'https://i.pravatar.cc/40?u=kickz', price: 725, condition: 'Perfect condition, OG all. Includes receipt.' },
+                { user: '@resell_king', avatar: 'https://i.pravatar.cc/40?u=resell', price: 710, condition: 'Deadstock with original box. Can ship today.', rating: 4.9 },
+                { user: '@sneakerVault', avatar: 'https://i.pravatar.cc/40?u=vault', price: 680, condition: 'VNDS, worn once indoors. Includes extra laces.', rating: 5.0 },
+                { user: '@kickzCircle', avatar: 'https://i.pravatar.cc/40?u=kickz', price: 725, condition: 'Perfect condition, OG all. Includes receipt.', rating: 4.7 },
             ];
 
             const bidsHtml = bids.map(bid => `
@@ -866,13 +913,16 @@
                     <img src="${bid.avatar}" class="w-10 h-10 rounded-full mt-1"/>
                     <div class="flex-1">
                         <div class="flex justify-between items-center">
-                            <p class="font-semibold text-gray-800">${bid.user}</p>
+                            <div class="flex items-center space-x-2">
+                                <p class="font-semibold text-gray-800">${bid.user}</p>
+                                <span class="text-xs text-gray-500 flex items-center"><i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1"></i> ${bid.rating}</span>
+                            </div>
                             <p class="text-2xl font-bold text-green-600">$${bid.price}</p>
                         </div>
                         <p class="text-sm text-gray-600 mt-1">${bid.condition}</p>
                     </div>
                     <div class="flex flex-col space-y-2">
-                        <button class="bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-indigo-700">Accept Offer</button>
+                        <button data-price="${bid.price}" class="accept-offer-btn bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-indigo-700">Accept Offer</button>
                         <button class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-4 py-2 rounded-md hover:bg-gray-100">Counter-offer</button>
                     </div>
                 </div>
@@ -886,13 +936,118 @@
                     </div>
                     <button id="close-bids-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
                 </div>
-                <div class="p-6 bg-gray-50">
+                <div id="bids-content" class="p-6 bg-gray-50">
                     <div class="space-y-4">${bidsHtml}</div>
                 </div>
             `;
             toggleModal(bidsModal, true);
             lucide.createIcons();
             document.getElementById('close-bids-modal').addEventListener('click', () => toggleModal(bidsModal, false));
+            document.querySelectorAll('.accept-offer-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => handleAcceptOffer(item, e.currentTarget.dataset.price));
+            });
+        }
+        
+        /**
+         * Simulates accepting an offer and shows shipping options.
+         */
+        function handleAcceptOffer(item, price) {
+            const bidsContent = document.getElementById('bids-content');
+            const total = parseInt(price) + 15 + 25; // price + shipping + fee
+
+            bidsContent.innerHTML = `
+                <h4 class="text-lg font-bold text-gray-900">Complete Your Purchase</h4>
+                <div class="mt-4 space-y-4">
+                    <div class="p-4 border rounded-lg bg-white">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Item Price</span>
+                            <span class="font-semibold">$${parseInt(price).toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-600">ISO Service Fee (5%)</span>
+                            <span class="font-semibold">$${(price * 0.05).toLocaleString()}</span>
+                        </div>
+                         <div class="pt-4 mt-4 border-t">
+                            <p class="font-medium mb-2">Shipping Options</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center p-3 border rounded-md has-[:checked]:bg-indigo-50 has-[:checked]:border-indigo-500">
+                                    <input type="radio" name="shipping" value="15" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
+                                    <span class="ml-3 text-sm flex-1">Standard Shipping</span>
+                                    <span class="font-semibold">$15.00</span>
+                                </label>
+                                <label class="flex items-center p-3 border rounded-md has-[:checked]:bg-indigo-50 has-[:checked]:border-indigo-500">
+                                    <input type="radio" name="shipping" value="150" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                                    <span class="ml-3 text-sm flex-1">Worldnet Secure (Insured)</span>
+                                    <span class="font-semibold">$150.00</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t-2 border-dashed">
+                            <span class="text-lg font-bold">Total</span>
+                            <span id="total-price" class="text-lg font-bold">$${(parseInt(price) + (price*0.05) + 15).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <button id="confirm-purchase-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700">Confirm Purchase</button>
+                </div>
+            `;
+            
+            bidsContent.querySelectorAll('input[name="shipping"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    const shippingCost = parseInt(e.target.value);
+                    const newTotal = parseInt(price) + (price * 0.05) + shippingCost;
+                    document.getElementById('total-price').textContent = `$${newTotal.toLocaleString()}`;
+                });
+            });
+
+            document.getElementById('confirm-purchase-btn').addEventListener('click', () => {
+                alert('Purchase confirmed! Funds will be held in escrow until you receive and verify the item.');
+                toggleModal(bidsModal, false);
+            });
+        }
+        
+        /**
+         * Opens the edit modal for an ISO.
+         */
+        function handleEditIso(event) {
+            const itemId = parseInt(event.currentTarget.dataset.id);
+            const item = isoData.find(i => i.id === itemId);
+            if (!item) return;
+
+            editModal.innerHTML = `
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-xl font-bold">Edit Your Hunt</h3>
+                    <button id="close-edit-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <form id="edit-form" class="p-6 space-y-4">
+                     <div><label for="edit-item-name" class="block text-sm font-medium text-gray-700">Item Name</label><input type="text" id="edit-item-name" value="${item.name}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"></div>
+                     <div><label for="edit-item-details" class="block text-sm font-medium text-gray-700">Details</label><input type="text" id="edit-item-details" value="${item.details}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"></div>
+                     <div><label for="edit-item-bid" class="block text-sm font-medium text-gray-700">Your Top Offer ($)</label><input type="number" id="edit-item-bid" value="${item.topOffer}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3"></div>
+                     <div><label for="edit-item-duration" class="block text-sm font-medium text-gray-700">Hunt Duration</label>
+                        <select id="edit-item-duration" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
+                            <option value="7" ${item.duration === 7 ? 'selected' : ''}>7 Days</option>
+                            <option value="14" ${item.duration === 14 ? 'selected' : ''}>14 Days</option>
+                            <option value="30" ${item.duration === 30 ? 'selected' : ''}>30 Days</option>
+                        </select>
+                     </div>
+                    <div class="pt-2 flex justify-end"><button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg">Save Changes</button></div>
+                </form>
+            `;
+            toggleModal(editModal, true);
+            lucide.createIcons();
+
+            document.getElementById('close-edit-modal').addEventListener('click', () => toggleModal(editModal, false));
+            document.getElementById('edit-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const itemIndex = isoData.findIndex(i => i.id === itemId);
+                if (itemIndex > -1) {
+                    isoData[itemIndex].name = document.getElementById('edit-item-name').value;
+                    isoData[itemIndex].details = document.getElementById('edit-item-details').value;
+                    isoData[itemIndex].topOffer = parseInt(document.getElementById('edit-item-bid').value);
+                    isoData[itemIndex].duration = parseInt(document.getElementById('edit-item-duration').value);
+                    renderDetailView(itemId); // Re-render the detail view to show changes
+                }
+                toggleModal(editModal, false);
+            });
         }
         
         /**
@@ -936,6 +1091,7 @@
         const chatFlow = [
             { bot: "Hey! I'll help create your ISO. What are you searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
             { bot: "Got it. Any specific details? (Size, condition, etc.)", key: 'details', placeholder: "e.g., Size 10, New" },
+            { bot: "Which category does this fall under?", action: 'category' },
             { bot: "What's the top offer you'd like to make for this item?", key: 'topOffer', placeholder: "$550" },
             { bot: "A picture is worth a thousand words! Please upload a reference image for your hunt.", action: 'image' },
             { bot: "Great. To ensure sellers know you're serious, we'll simulate a fund verification. This signals you're a ready buyer.", action: 'verify' },
@@ -1005,7 +1161,24 @@
                 chatLog.removeChild(chatLog.lastChild);
                 addBotMessage(nextStep.bot);
                 
-                if (nextStep.action === 'image') {
+                if (nextStep.action === 'category') {
+                     const categories = ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'];
+                     const categoryButtonsHTML = `
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            ${categories.map(cat => `<button class="chat-category-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${cat}</button>`).join('')}
+                        </div>
+                     `;
+                     addMessage(categoryButtonsHTML, false);
+                     document.querySelectorAll('.chat-category-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const category = btn.textContent;
+                            isoInProgress.category = category;
+                            addUserMessage(category);
+                            currentChatStep++;
+                            processNextChatStep();
+                        });
+                     });
+                } else if (nextStep.action === 'image') {
                     const imageUploaderHTML = `
                         <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                             <div class="space-y-1 text-center">
@@ -1052,16 +1225,18 @@
                 name: isoInProgress.name,
                 details: isoInProgress.details,
                 topOffer: parseInt(isoInProgress.topOffer.replace(/\D/g,'')) || 0,
-                category: "Uncategorized",
+                category: isoInProgress.category || "Uncategorized",
                 upvotes: 1,
                 comments: 0,
                 imageUrl: isoInProgress.imageUrl || "https://placehold.co/700x500/e2e8f0/4a5568?text=New+Hunt",
-                user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}` },
+                user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}`, rating: 5.0 },
                 fundsVerified: true,
-                privateBids: 0
+                privateBids: 0,
+                duration: 30
             };
             isoData.unshift(newItem);
             renderFeed();
+            renderTrendingHunts();
             switchView('main-content');
         }
 
@@ -1134,6 +1309,7 @@
                 isoData.splice(itemIndex, 1);
                 switchView('main-content');
                 renderFeed();
+                renderTrendingHunts();
             }
         }
 
@@ -1152,6 +1328,7 @@
             toggleModal(sellModal, false);
             toggleModal(aiModal, false);
             toggleModal(bidsModal, false);
+            toggleModal(editModal, false);
         });
         document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
         
@@ -1232,6 +1409,11 @@
                  e.preventDefault();
                  switchView(navLink.dataset.view);
              }
+             const similarBtn = e.target.closest('.start-similar-btn');
+             if(similarBtn) {
+                toggleModal(isoModal, true);
+                startChat();
+             }
         });
         
         document.getElementById('logo-link').addEventListener('click', (e) => {
@@ -1239,10 +1421,19 @@
             switchView('main-content');
         });
 
+        filterBar.addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                renderFeed(e.target.dataset.category);
+            }
+        });
+
         // --- INITIAL RENDER ---
         function initializeApp() {
             renderFeed();
             renderRecentlyFound();
+            renderTrendingHunts();
             renderLeaderboard();
             startCountdown();
             mainContent.classList.add('active');
@@ -1252,6 +1443,4 @@
     </script>
 </body>
 </html>
-
-
 

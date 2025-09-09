@@ -31,14 +31,14 @@
         .main-content, .detail-view, .how-it-works-view, .leaderboard-view { display: none; }
         .main-content.active, .detail-view.active, .how-it-works-view.active, .leaderboard-view.active { display: block; }
         .upvote-btn.upvoted { background-color: #4f46e5; color: white; }
-        .comment-bubble {
+        .comment-bubble, .chat-bubble {
             max-width: 80%;
             word-wrap: break-word;
         }
         .loader {
             width: 48px;
             height: 48px;
-            border: 5px solid #FFF;
+            border: 5px solid #E5E7EB;
             border-bottom-color: #4f46e5;
             border-radius: 50%;
             display: inline-block;
@@ -57,10 +57,24 @@
         }
         @keyframes upvote-animation {
             50% { 
-                background-color: #34d399; /* A nice green color */
+                background-color: #34d399;
                 color: white;
                 transform: scale(1.1);
             }
+        }
+        .chat-message { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing-indicator span {
+            animation: bob 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bob {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
         }
     </style>
 </head>
@@ -84,7 +98,7 @@
             </nav>
             <button id="post-iso-btn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors flex items-center space-x-2">
                 <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                <span class="hidden md:inline">Post a Request</span>
+                <span class="hidden md:inline">Create ISO</span>
                 <span class="md:hidden">Post</span>
             </button>
         </header>
@@ -117,7 +131,7 @@
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
                         <h3 class="font-bold text-lg mb-4 text-gray-900">Recently Found</h3>
                         <div id="recently-found" class="space-y-4">
-                           <!-- Recently found items will be injected here -->
+                            <!-- Recently found items will be injected here -->
                         </div>
                     </div>
                      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
@@ -189,48 +203,41 @@
                 <!-- Step 1 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
-                        <i data-lucide="edit" class="w-6 h-6"></i>
+                        <i data-lucide="message-circle" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">1. Post Your Hunt</h3>
-                    <p class="text-sm text-gray-600">Tell the community what you're "In Search Of." Add details, your top offer, and a reference photo.</p>
+                    <h3 class="font-bold text-lg mb-2">1. Start a Chat</h3>
+                    <p class="text-sm text-gray-600">Create your ISO through a simple, guided conversation. Tell our assistant what you want and your top offer.</p>
                 </div>
                 <!-- Step 2 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
-                        <i data-lucide="users" class="w-6 h-6"></i>
+                        <i data-lucide="send" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">2. Demand Grows</h3>
-                    <p class="text-sm text-gray-600">Other users who want the same item can upvote your hunt, creating a powerful signal of collective demand.</p>
+                    <h3 class="font-bold text-lg mb-2">2. Verify & Syndicate</h3>
+                    <p class="text-sm text-gray-600">With simulated fund verification, your ISO becomes an active demand signal. Our engine broadcasts it to seller networks.</p>
                 </div>
                 <!-- Step 3 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
-                        <i data-lucide="tag" class="w-6 h-6"></i>
+                        <i data-lucide="inbox" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">3. Sellers Respond</h3>
-                    <p class="text-sm text-gray-600">Sellers with the item are notified. They can start an auction for all interested buyers.</p>
+                    <h3 class="font-bold text-lg mb-2">3. Receive Private Bids</h3>
+                    <p class="text-sm text-gray-600">Verified sellers are notified and submit private bids directly to you. No public price wars, just competitive offers.</p>
                 </div>
                 <!-- Step 4 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
-                        <i data-lucide="gavel" class="w-6 h-6"></i>
+                        <i data-lucide="handshake" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">4. A Fair Price is Set</h3>
-                    <div class="text-sm text-gray-600 text-left space-y-3 mt-auto">
-                        <p>Our Blind Dutch Auction ensures fairness. Here’s how:</p>
-                        <ul class="list-disc list-inside space-y-2 text-gray-500">
-                           <li><span class="font-semibold text-gray-700">All Seekers Bid:</span> Every user who upvoted the hunt is invited to submit one secret, maximum bid.</li>
-                           <li><span class="font-semibold text-gray-700">Winners are Determined:</span> For one item, the highest bidder wins. For multiple items, the top bidders win.</li>
-                           <li><span class="font-semibold text-gray-700">The "Clearing Price" Magic:</span> Instead of paying their top bid, all winners pay the same price: the lowest winning bid. This ensures no one overpays and the true market price is found.</li>
-                        </ul>
-                    </div>
+                    <h3 class="font-bold text-lg mb-2">4. Close the Deal</h3>
+                    <p class="text-sm text-gray-600">Accept the best offer. We'll simulate item verification and escrow to complete the transaction securely.</p>
                 </div>
             </div>
 
             <div class="mt-16">
                  <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900">Trust & Intelligence</h2>
-                    <p class="text-lg text-gray-500 mt-2 max-w-2xl mx-auto">We're building more than a marketplace; we're building a community you can trust.</p>
+                    <h2 class="text-3xl font-bold text-gray-900">Your Demand Syndication Engine</h2>
+                    <p class="text-lg text-gray-500 mt-2 max-w-3xl mx-auto">We don't just wait for sellers to find you. We actively broadcast your verified demand to where the sellers are.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start space-x-4">
@@ -238,8 +245,8 @@
                             <i data-lucide="shield-check" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg mb-2">Building Trust, Together</h3>
-                            <p class="text-sm text-gray-600">Every transaction is protected by secure escrow payments. We hold funds until the item is confirmed, protecting both buyers and sellers. Our community rating system ensures everyone is accountable.</p>
+                            <h3 class="font-bold text-lg mb-2">Trust & Verification</h3>
+                            <p class="text-sm text-gray-600">Fund verification ensures sellers only deal with serious buyers. Escrow protection and item verification protect every transaction.</p>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start space-x-4">
@@ -247,8 +254,8 @@
                             <i data-lucide="sparkles" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg mb-2">Your AI Collector Buddy</h3>
-                            <p class="text-sm text-gray-600">Powered by Gemini, our AI provides expert commentary on an item's history and market standing. It’s like having a knowledgeable collector friend to help you make informed decisions on your hunt.</p>
+                            <h3 class="font-bold text-lg mb-2">AI-Powered Insights</h3>
+                            <p class="text-sm text-gray-600">Powered by Gemini, our AI provides expert commentary on an item's history and market standing to help you make informed decisions.</p>
                         </div>
                     </div>
                 </div>
@@ -307,40 +314,79 @@
 
     <!-- Modals -->
     <div id="modal-backdrop" class="modal-backdrop"></div>
+    
+    <!-- New ISO Creation Modal -->
     <div id="iso-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
-        <div class="p-6 border-b border-gray-200 flex justify-between items-center"><h3 class="text-xl font-bold">Post Your "In Search Of" Request</h3><button id="close-iso-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button></div>
-        <form id="iso-form" class="p-6 space-y-4">
-            <div><label for="item-name" class="block text-sm font-medium text-gray-700">Item Name</label><input type="text" id="item-name" placeholder="e.g., Jordan 1 Retro High 'Chicago'" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
-            <div><label for="item-category" class="block text-sm font-medium text-gray-700">Category</label><select id="item-category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"><option>Sneakers</option><option>Streetwear</option><option>Collectibles</option><option>Watches</option></select></div>
-            <div><label for="item-details" class="block text-sm font-medium text-gray-700">Details (Size, Condition)</label><input type="text" id="item-details" placeholder="e.g., Size 10, New/Unworn" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
-            <div><label for="item-bid" class="block text-sm font-medium text-gray-700">Your Top Offer ($)</label><input type="number" id="item-bid" placeholder="400" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
-            <div>
-                <label for="item-image-upload" class="block text-sm font-medium text-gray-700">Reference Image</label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                    <div class="space-y-1 text-center">
-                        <img id="image-preview" src="" class="hidden mx-auto h-24 w-auto mb-4 rounded-md"/>
-                        <svg id="image-upload-icon" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                            <path d="M28 8H12a4 4
- 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <div class="flex text-sm text-gray-600">
-                            <label for="item-image-upload-input" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                <span>Upload a file</span>
-                                <input id="item-image-upload-input" name="file-upload" type="file" class="sr-only" accept="image/*">
-                            </label>
-                            <p class="pl-1">or drag and drop</p>
-                        </div>
-                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                    </div>
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+             <div class="flex items-center space-x-2">
+                <h3 class="text-xl font-bold">Create a New ISO</h3>
+             </div>
+             <button id="close-iso-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <!-- Tabs -->
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-4" aria-label="Tabs">
+                <button id="tab-chat" class="px-3 py-2 font-medium text-sm rounded-t-md text-indigo-600 border-b-2 border-indigo-500">
+                    Chat Assistant
+                </button>
+                <button id="tab-form" class="px-3 py-2 font-medium text-sm rounded-md text-gray-500 hover:text-gray-700">
+                    Manual Form
+                </button>
+            </nav>
+        </div>
+
+        <!-- Chat View -->
+        <div id="chat-view">
+            <div id="chat-log" class="p-6 h-96 overflow-y-auto space-y-4">
+                <!-- Chat messages will be injected here -->
+            </div>
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="chat-input" placeholder="Type your answer..." class="flex-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500" disabled>
+                    <button id="chat-submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors" disabled>Send</button>
                 </div>
             </div>
-            <div class="pt-2 flex justify-end"><button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Submit Request</button></div>
-        </form>
+        </div>
+
+        <!-- Form View -->
+        <div id="form-view" class="hidden">
+            <form id="iso-form" class="p-6 space-y-4">
+                <div><label for="item-name" class="block text-sm font-medium text-gray-700">Item Name</label><input type="text" id="item-name" placeholder="e.g., Jordan 1 Retro High 'Chicago'" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
+                <div><label for="item-category" class="block text-sm font-medium text-gray-700">Category</label><select id="item-category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"><option>Sneakers</option><option>Streetwear</option><option>Collectibles</option><option>Watches</option></select></div>
+                <div><label for="item-details" class="block text-sm font-medium text-gray-700">Details (Size, Condition)</label><input type="text" id="item-details" placeholder="e.g., Size 10, New/Unworn" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
+                <div><label for="item-bid" class="block text-sm font-medium text-gray-700">Your Top Offer ($)</label><input type="number" id="item-bid" placeholder="400" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
+                <div>
+                    <label for="item-image-upload" class="block text-sm font-medium text-gray-700">Reference Image</label>
+                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                        <div class="space-y-1 text-center">
+                            <img id="image-preview" src="" class="hidden mx-auto h-24 w-auto mb-4 rounded-md"/>
+                            <svg id="image-upload-icon" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-gray-600">
+                                <label for="item-image-upload-input" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                    <span>Upload a file</span>
+                                    <input id="item-image-upload-input" name="file-upload" type="file" class="sr-only" accept="image/*">
+                                </label>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-2 flex justify-end"><button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Submit Request</button></div>
+            </form>
+        </div>
     </div>
     
-    <!-- Sell / Start Auction Modal -->
+    <!-- Sell / Make Offer Modal -->
     <div id="sell-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
         <!-- Sell modal content will be injected here -->
+    </div>
+
+    <!-- View Bids Modal -->
+    <div id="bids-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+        <!-- Bids modal content will be injected here -->
     </div>
     
     <!-- AI Insights Modal -->
@@ -360,11 +406,8 @@
 
         // =================================================================================
         // FAKE DATA STORE
-        // In a real application, this data would come from a database.
-        // For this prototype, we're using static JavaScript objects to simulate our data.
         // =================================================================================
         
-        // This array holds all the "In Search Of" posts.
         let isoData = [
           {
             id: 1,
@@ -375,7 +418,9 @@
             topOffer: 550,
             comments: 12,
             imageUrl: "images/jordan1.png",
-            user: { name: "@sneakerhead23", avatar: "https://i.pravatar.cc/40?u=user3" }
+            user: { name: "@sneakerhead23", avatar: "https://i.pravatar.cc/40?u=user3" },
+            fundsVerified: true,
+            privateBids: 0
           },
           {
             id: 3,
@@ -383,10 +428,12 @@
             category: "Collectibles",
             details: "1960, 'The Crying Girl'",
             upvotes: 45,
-            topOffer: 12000,
+            topOffer: 850,
             comments: 5,
             imageUrl: "images/margret.jpg",
-            user: { name: "@artcollectorjane", avatar: "https://i.pravatar.cc/40?u=user5" }
+            user: { name: "@artcollectorjane", avatar: "https://i.pravatar.cc/40?u=user5" },
+            fundsVerified: false,
+            privateBids: 0
           },
           {
             id: 4,
@@ -397,7 +444,9 @@
             topOffer: 720,
             comments: 25,
             imageUrl: "images/travis.png",
-            user: { name: "@grailHunter", avatar: "https://i.pravatar.cc/40?u=user1" }
+            user: { name: "@grailHunter", avatar: "https://i.pravatar.cc/40?u=user1" },
+            fundsVerified: true,
+            privateBids: 3
           },
           {
             id: 5,
@@ -408,12 +457,12 @@
             topOffer: 28500,
             comments: 32,
             imageUrl: "images/rolexdaytona.png",
-            user: { name: "@watchguy", avatar: "https://i.pravatar.cc/40?u=user6" }
+            user: { name: "@watchguy", avatar: "https://i.pravatar.cc/40?u=user6" },
+            fundsVerified: false,
+            privateBids: 0
           }
         ];
 
-        // This object simulates the responses from the Gemini API.
-        // The keys match the item names from isoData.
         const aiInsightsData = {
             "Jordan 1 Retro High 'Chicago'": "The Air Jordan 1 'Chicago' is arguably the most iconic sneaker ever created. Originally released in 1985, its 'Chicago' colorway is a cornerstone of sneaker culture, synonymous with Michael Jordan's rookie season. The 2022 'Reimagined' version added a vintage, aged look that was met with massive commercial success. For collectors, condition and originality are key; a true 1985 pair is a museum piece, while the Reimagined version offers a more accessible entry into its legacy. The market for this shoe is consistently strong, making it a true blue-chip collectible.",
             "Margaret Keane: 'Big Eyes' Painting": "Margaret Keane's Big Eyes paintings are defined by their signature, disproportionately large, doe-like eyes that dominate the canvas. The artworks typically feature women, children, and animals in styles ranging from melancholy and dark to joyful and bright, reflecting different periods of the artist's life.",
@@ -424,8 +473,6 @@
         
         // =================================================================================
         // DOM ELEMENT SELECTORS
-        // We select all the important HTML elements here so we can easily reference them
-        // throughout the script. This is more efficient than searching for them repeatedly.
         // =================================================================================
         const app = document.getElementById('app');
         const isoFeed = document.getElementById('iso-feed');
@@ -440,11 +487,21 @@
         const postIsoBtn = document.getElementById('post-iso-btn');
         const isoModal = document.getElementById('iso-modal');
         const sellModal = document.getElementById('sell-modal');
+        const bidsModal = document.getElementById('bids-modal');
         const aiModal = document.getElementById('ai-modal');
         const aiModalContent = document.getElementById('ai-modal-content');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const closeIsoModalBtn = document.getElementById('close-iso-modal');
         
+        // New ISO Modal elements
+        const tabChat = document.getElementById('tab-chat');
+        const tabForm = document.getElementById('tab-form');
+        const chatView = document.getElementById('chat-view');
+        const formView = document.getElementById('form-view');
+        const chatLog = document.getElementById('chat-log');
+        const chatInput = document.getElementById('chat-input');
+        const chatSubmit = document.getElementById('chat-submit');
+
         // Form elements
         const isoForm = document.getElementById('iso-form');
         const imageUploadInput = document.getElementById('item-image-upload-input');
@@ -453,18 +510,20 @@
 
         // =================================================================================
         // CORE FUNCTIONS
-        // These are the main functions that control the application's logic and display.
         // =================================================================================
 
         /**
          * Renders the main feed of "In Search Of" cards.
-         * It clears the existing feed, sorts the data by upvotes, and creates an HTML card for each item.
          */
         function renderFeed() {
             isoFeed.innerHTML = '';
             isoData.sort((a, b) => b.upvotes - a.upvotes).forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden';
+                const fundsVerifiedBadge = item.fundsVerified 
+                    ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full flex items-center space-x-1"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Funds Verified</span></span>` 
+                    : '';
+
                 card.innerHTML = `
                     <div class="p-4 flex justify-between items-center border-b border-gray-100">
                         <div class="flex items-center space-x-3">
@@ -474,6 +533,7 @@
                                 <p class="text-xs text-gray-500">is searching for...</p>
                             </div>
                         </div>
+                        ${fundsVerifiedBadge}
                     </div>
                     <div class="p-4 cursor-pointer" data-id="${item.id}">
                         <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center mb-4 bg-center bg-cover" style="background-image: url('${item.imageUrl}')">
@@ -506,7 +566,7 @@
          */
         function renderRecentlyFound() {
             const recentlyFoundData = [
-              { name: "Jordan 1 'Chicago'", price: 520, user: "@sneakerhead23", imageUrl: "images/jordan1.png" },
+              { name: "Jordan 1 'Chicago'", price: 520, user: "@sneakerhead23", imageUrl: "https://images.unsplash.com/photo-1516478177764-9fe567e9777d?q=80&w=200&auto=format&fit=crop" },
               { name: "Kaws: 'Companion'", user: "@artcollectorjane", imageUrl: "images/kaws.png" }
             ];
             recentlyFoundContainer.innerHTML = '';
@@ -525,21 +585,46 @@
         }
 
         /**
-         * Renders the detailed view for a single item when a user clicks on it.
+         * Renders the detailed view for a single item.
          * @param {string | number} itemId - The ID of the item to display.
          */
         function renderDetailView(itemId) {
             const item = isoData.find(i => i.id === parseInt(itemId));
-            if (!item) return; // Exit if the item isn't found
+            if (!item) return;
 
-            // Hide other views and show the detail view
             mainContent.classList.remove('active');
             howItWorksView.classList.remove('active');
             leaderboardView.classList.remove('active');
+
+            const fundsVerifiedBadge = item.fundsVerified 
+                ? `<span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Funds Verified</span></span>` 
+                : `<span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-1 rounded-full">Funds Unverified</span>`;
             
-            // Populate the detail view with the item's data
+            const syndicationModule = item.fundsVerified ? `
+                <div class="mt-8">
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">Syndication Engine</h3>
+                    <p class="text-sm text-gray-500 mb-4">Broadcasting your demand to verified seller networks.</p>
+                    <div id="syndication-channels" class="space-y-3 bg-gray-50 p-4 rounded-lg border">
+                        <!-- Syndication channels will be injected here -->
+                    </div>
+                </div>
+            ` : '';
+            
+            let actionButtons;
+            if (item.privateBids > 0) {
+                actionButtons = `<button data-item-id="${item.id}" id="view-bids-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"><i data-lucide="gavel" class="w-5 h-5"></i><span>Review ${item.privateBids} Private Offers</span></button>`;
+            } else {
+                actionButtons = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <button data-item-id="${item.id}" class="join-hunt-btn w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2"><i data-lucide="user-plus" class="w-5 h-5"></i><span>Join Hunt & Offer</span></button>
+                                <button data-item-id="${item.id}" class="sell-item-btn w-full bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"><i data-lucide="tag" class="w-5 h-5"></i><span>I Have This - Sell</span></button>
+                             </div>`;
+            }
+
             detailView.innerHTML = `
-                <button id="back-to-feed" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold mb-6"><i data-lucide="arrow-left" class="w-5 h-5"></i><span>Back to Feed</span></button>
+                <div class="flex justify-between items-center mb-6">
+                    <button id="back-to-feed" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold"><i data-lucide="arrow-left" class="w-5 h-5"></i><span>Back to Feed</span></button>
+                    <button id="delete-iso-btn" data-id="${item.id}" class="flex items-center space-x-2 text-sm text-red-500 hover:text-red-700 font-semibold"><i data-lucide="trash-2" class="w-4 h-4"></i><span>Delete ISO (Demo)</span></button>
+                </div>
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
                     <div class="bg-white rounded-lg p-4 flex items-center justify-center shadow-lg lg:col-span-2"><img src="${item.imageUrl}" alt="${item.name}" class="max-h-96 object-contain rounded-md"></div>
                     <div class="lg:col-span-3">
@@ -566,17 +651,19 @@
                             </div>
                         </div>
 
+                        <div class="mt-6 flex items-center space-x-4">${fundsVerifiedBadge}</div>
+
                         <div class="mt-6 grid grid-cols-1 gap-4">
-                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <button data-item-id="${item.id}" class="join-hunt-btn w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2"><i data-lucide="user-plus" class="w-5 h-5"></i><span>Join Hunt & Offer</span></button>
-                                <button data-item-id="${item.id}" class="sell-item-btn w-full bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"><i data-lucide="tag" class="w-5 h-5"></i><span>I Have This - Sell</span></button>
-                             </div>
+                             ${actionButtons}
                              <button data-item-name="${item.name}" id="get-ai-insights-btn" class="w-full bg-white border-2 border-indigo-500 text-indigo-600 font-semibold py-3 rounded-lg hover:bg-indigo-50 transition-colors flex items-center justify-center space-x-2">
                                 <i data-lucide="sparkles" class="w-5 h-5"></i><span>Get AI Market Insights</span>
                              </button>
                         </div>
                     </div>
                 </div>
+
+                ${syndicationModule}
+
                 <!-- Simulated Comments Section -->
                 <div class="mt-12">
                     <h3 class="text-xl font-bold mb-4">Community Discussion (${item.comments})</h3>
@@ -599,31 +686,36 @@
                 </div>
             `;
             detailView.classList.add('active');
-            lucide.createIcons(); // Re-initialize icons for the new elements
+            lucide.createIcons();
 
-            // Add event listeners for the new buttons in the detail view
+            if (item.fundsVerified) {
+                startSyndicationAnimation();
+            }
+
             document.getElementById('back-to-feed').addEventListener('click', () => {
                 detailView.classList.remove('active');
                 mainContent.classList.add('active');
-                renderFeed(); // Re-render feed to ensure it's up to date
+                renderFeed();
             });
+            document.getElementById('delete-iso-btn').addEventListener('click', handleDeleteIso);
             document.getElementById('get-ai-insights-btn').addEventListener('click', handleGetAiInsights);
-            document.querySelector('.sell-item-btn').addEventListener('click', handleSellItemClick);
+            
+            const sellBtn = document.querySelector('.sell-item-btn');
+            if (sellBtn) sellBtn.addEventListener('click', handleSellItemClick);
+
+            const viewBidsBtn = document.getElementById('view-bids-btn');
+            if (viewBidsBtn) viewBidsBtn.addEventListener('click', handleViewBids);
         }
         
         /**
-         * Switches between the main views of the application (Hunts, Leaderboard, How It Works).
-         * @param {string} viewId - The ID of the view to make active.
+         * Switches between the main application views.
          */
         function switchView(viewId) {
-            // Hide all views
             document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .leaderboard-view').forEach(view => {
                 view.classList.remove('active');
             });
-            // Show the selected view
             document.getElementById(viewId).classList.add('active');
 
-            // Update the active state of the navigation links
             document.querySelectorAll('.nav-link, .nav-link-mobile').forEach(link => {
                 link.classList.remove('active', 'text-gray-800', 'text-indigo-600', 'border-indigo-600');
                 if (link.dataset.view === viewId) {
@@ -631,27 +723,24 @@
                     if(link.classList.contains('nav-link-mobile')){
                        link.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
                     } else {
-                        link.classList.add('text-gray-800');
+                       link.classList.add('text-gray-800');
                     }
                 } else {
                     link.classList.add('text-gray-500');
                 }
             });
-            // Re-initialize icons if the new view needs them
              if(viewId === 'how-it-works-view' || viewId === 'leaderboard-view'){
-                lucide.createIcons();
+                 lucide.createIcons();
             }
         }
         
         /**
-         * Toggles the visibility of a modal and its backdrop.
-         * @param {HTMLElement} modal - The modal element to show/hide.
-         * @param {boolean} show - True to show the modal, false to hide it.
+         * Toggles modal visibility.
          */
         function toggleModal(modal, show) { if (show) { modalBackdrop.style.display = 'block'; modal.style.display = 'block'; modal.classList.add('animate-fade-in'); } else { modal.classList.remove('animate-fade-in'); modal.style.display = 'none'; modalBackdrop.style.display = 'none'; } }
         
         /**
-         * Resets the "Post a Request" form to its default state.
+         * Resets the manual form.
          */
         function resetIsoForm() {
             isoForm.reset();
@@ -661,13 +750,11 @@
         }
 
         /**
-         * Handles the submission of the "Post a Request" form.
-         * @param {Event} e - The form submission event.
+         * Handles manual form submission.
          */
         function handleIsoSubmit(e) { 
             e.preventDefault(); 
             const imageUrl = imagePreview.src && imagePreview.src.startsWith('data:') ? imagePreview.src : "https://placehold.co/700x500/e2e8f0/4a5568?text=New+Request";
-            // Create a new item object from the form data
             const newItem = { 
                 id: Date.now(), 
                 name: document.getElementById('item-name').value, 
@@ -677,190 +764,406 @@
                 topOffer: parseInt(document.getElementById('item-bid').value) || 0, 
                 comments: 0, 
                 imageUrl: imageUrl,
-                user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}` } 
+                user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}` },
+                fundsVerified: false,
+                privateBids: 0
             }; 
-            isoData.unshift(newItem); // Add the new item to the beginning of our data array
-            renderFeed(); // Re-render the feed to show the new item
+            isoData.unshift(newItem);
+            renderFeed();
             resetIsoForm();
             toggleModal(isoModal, false); 
             switchView('main-content');
         }
 
         /**
-         * Simulates a call to the Gemini API to get market insights.
-         * @param {string} itemName - The name of the item to get insights for.
-         * @returns {Promise<string>} A promise that resolves with the AI-generated text.
-         */
-        async function getAiInsights(itemName) {
-            // This function simulates a real API call.
-            console.log(`Simulating Gemini API call for: ${itemName}`);
-            const systemPrompt = "You are a world-class collectibles expert. Provide a concise, single-paragraph summary of the requested item's history, cultural significance, and general market standing. Speak with authority and insight.";
-            const userQuery = `Tell me about the ${itemName}.`;
-            const apiKey = ""; // In a real app, the API key is handled securely.
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-            
-            // Simulate network delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // For the prototype, we get the result from our mock data object.
-            const insight = aiInsightsData[itemName] || "No specific insights available for this item. It is considered a rare collectible within its community.";
-            return insight;
-        }
-        
-        /**
-         * Handles the click event for the "Get AI Insights" button.
-         * @param {Event} event - The click event.
+         * Fetches and displays AI insights.
          */
         async function handleGetAiInsights(event) {
             const itemName = event.currentTarget.dataset.itemName;
             toggleModal(aiModal, true);
-            // Show a loading spinner while we "fetch" the data
-            aiModalContent.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-48">
-                    <div class="loader"></div>
-                    <p class="mt-4 text-gray-600 font-semibold">Contacting Gemini for insights...</p>
-                </div>
-            `;
-            
-            // Get the insights and display them
+            aiModalContent.innerHTML = `<div class="flex flex-col items-center justify-center h-48"><div class="loader"></div><p class="mt-4 text-gray-600 font-semibold">Contacting Gemini for insights...</p></div>`;
             const insights = await getAiInsights(itemName);
-            aiModalContent.innerHTML = `
-                <div class="space-y-4">
-                    <p class="text-gray-700 leading-relaxed">${insights}</p>
-                    <p class="text-xs text-gray-400 pt-2 border-t border-gray-200">✨ Powered by Gemini. Insights are for informational purposes and are not financial advice.</p>
-                </div>
-            `;
+            aiModalContent.innerHTML = `<div class="space-y-4"><p class="text-gray-700 leading-relaxed">${insights}</p><p class="text-xs text-gray-400 pt-2 border-t border-gray-200">✨ Powered by Gemini. Insights are for informational purposes and are not financial advice.</p></div>`;
+        }
+
+        async function getAiInsights(itemName) {
+            console.log(`Simulating Gemini API call for: ${itemName}`);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            return aiInsightsData[itemName] || "No specific insights available for this item. It is considered a rare collectible within its community.";
         }
         
         /**
-         * Handles the click event for the "I Have This - Sell" button.
-         * @param {Event} event - The click event.
+         * Opens the sell/make offer modal.
          */
         function handleSellItemClick(event) {
             const itemId = event.currentTarget.dataset.itemId;
             const item = isoData.find(i => i.id === parseInt(itemId));
             if (!item) return;
-
-            // Populate and show the "Start Auction" modal
             sellModal.innerHTML = `
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-xl font-bold">Start an Auction</h3>
+                    <h3 class="text-xl font-bold">Make a Private Offer</h3>
                     <button id="close-sell-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
                 </div>
                 <div class="p-6">
-                    <p class="text-gray-600 mb-4">You are about to start an auction for the <span class="font-bold">${item.name}</span>. We will invite all interested seekers to participate.</p>
-                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-md mb-6">
-                        <p class="font-bold text-indigo-800">Ready Audience</p>
-                        <p class="text-sm text-indigo-700">Your auction will be sent to <span class="font-bold text-2xl">${item.upvotes + 1}</span> interested seekers.</p>
-                    </div>
-                    <form id="auction-form" class="space-y-4">
+                    <p class="text-gray-600 mb-4">You are making a private offer for the <span class="font-bold">${item.name}</span>. Only the buyer will see this.</p>
+                    <form id="offer-form" class="space-y-4">
                         <div>
-                            <label for="starting-bid" class="block text-sm font-medium text-gray-700">Starting Bid ($)</label>
-                            <input type="number" id="starting-bid" placeholder="${item.topOffer}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <label for="offer-price" class="block text-sm font-medium text-gray-700">Your Offer Price ($)</label>
+                            <input type="number" id="offer-price" placeholder="e.g., ${item.topOffer}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <div>
-                            <label for="reserve-price" class="block text-sm font-medium text-gray-700">Secret Reserve Price ($) <span class="font-normal text-gray-500">(Optional)</span></label>
-                            <input type="number" id="reserve-price" placeholder="e.g., 600" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                            <p class="text-xs text-gray-500 mt-1">The auction will only succeed if the final bid meets this price.</p>
+                            <label for="offer-condition" class="block text-sm font-medium text-gray-700">Condition & Details</label>
+                            <textarea id="offer-condition" placeholder="e.g., Deadstock, with original box and receipt." required rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                         </div>
                         <div class="pt-4 flex justify-end">
-                            <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Launch 24-Hour Auction</button>
+                            <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Send Private Offer</button>
                         </div>
                     </form>
-                </div>
-            `;
+                </div>`;
             toggleModal(sellModal, true);
             lucide.createIcons();
-
-            // Add event listeners for the new modal's buttons
             document.getElementById('close-sell-modal').addEventListener('click', () => toggleModal(sellModal, false));
-            document.getElementById('auction-form').addEventListener('submit', (e) => {
+            document.getElementById('offer-form').addEventListener('submit', (e) => {
                 e.preventDefault();
-                alert(`Auction for "${item.name}" has been launched! All ${item.upvotes + 1} seekers have been notified.`);
+                alert(`Your private offer for "${item.name}" has been sent!`);
                 toggleModal(sellModal, false);
             });
         }
+
+        /**
+         * Opens the modal to view private bids.
+         */
+        function handleViewBids(event) {
+            const itemId = event.currentTarget.dataset.itemId;
+            const item = isoData.find(i => i.id === parseInt(itemId));
+            if (!item) return;
+
+            // Simulated bids
+            const bids = [
+                { user: '@resell_king', avatar: 'https://i.pravatar.cc/40?u=resell', price: 710, condition: 'Deadstock with original box. Can ship today.' },
+                { user: '@sneakerVault', avatar: 'https://i.pravatar.cc/40?u=vault', price: 680, condition: 'VNDS, worn once indoors. Includes extra laces.' },
+                { user: '@kickzCircle', avatar: 'https://i.pravatar.cc/40?u=kickz', price: 725, condition: 'Perfect condition, OG all. Includes receipt.' },
+            ];
+
+            const bidsHtml = bids.map(bid => `
+                <div class="p-4 border rounded-lg flex items-start space-x-4 hover:bg-gray-50">
+                    <img src="${bid.avatar}" class="w-10 h-10 rounded-full mt-1"/>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center">
+                            <p class="font-semibold text-gray-800">${bid.user}</p>
+                            <p class="text-2xl font-bold text-green-600">$${bid.price}</p>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">${bid.condition}</p>
+                    </div>
+                    <div class="flex flex-col space-y-2">
+                        <button class="bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-indigo-700">Accept Offer</button>
+                        <button class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-4 py-2 rounded-md hover:bg-gray-100">Counter-offer</button>
+                    </div>
+                </div>
+            `).join('');
+
+            bidsModal.innerHTML = `
+                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold">Private Offers Received</h3>
+                        <p class="text-sm text-gray-500">for ${item.name}</p>
+                    </div>
+                    <button id="close-bids-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <div class="p-6 bg-gray-50">
+                    <div class="space-y-4">${bidsHtml}</div>
+                </div>
+            `;
+            toggleModal(bidsModal, true);
+            lucide.createIcons();
+            document.getElementById('close-bids-modal').addEventListener('click', () => toggleModal(bidsModal, false));
+        }
         
         /**
-         * Starts the countdown timer for the monthly leaderboard reset.
+         * Starts various timers and leaderboards.
          */
         function startCountdown() {
             const countdownElement = document.getElementById('countdown-timer');
             if (!countdownElement) return;
-
             const endOfMonth = new Date();
             endOfMonth.setMonth(endOfMonth.getMonth() + 1);
             endOfMonth.setDate(0);
             endOfMonth.setHours(23, 59, 59, 999);
-
             const interval = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = endOfMonth - now;
-
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
                 countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-
-                if (distance < 0) {
-                    clearInterval(interval);
-                    countdownElement.innerHTML = "Leaderboard Reset!";
-                }
+                if (distance < 0) { clearInterval(interval); countdownElement.innerHTML = "Leaderboard Reset!"; }
             }, 1000);
         }
         
-        /**
-         * Renders the list of players for the leaderboard.
-         */
         function renderLeaderboard() {
-            const leaderboardData = [
-                { rank: 4, name: 'TokyoHypeBeast', score: 35514 },
-                { rank: 5, name: 'KicksCanada', score: 33504 },
-                { rank: 6, name: 'GrailCollector', score: 33288 },
-                { rank: 7, name: 'TimelessPieces', score: 27462 },
-                { rank: 8, name: 'TheCardboardKing', score: 26310 },
-                { rank: 9, name: 'ArtToyAddict', score: 26022 },
-                { rank: 10, name: 'StreetwearArchives', score: 25200 },
-            ];
+            const leaderboardData = [ { rank: 4, name: 'TokyoHypeBeast', score: 35514 }, { rank: 5, name: 'KicksCanada', score: 33504 }, { rank: 6, name: 'GrailCollector', score: 33288 }, { rank: 7, name: 'TimelessPieces', score: 27462 }, { rank: 8, name: 'TheCardboardKing', score: 26310 }, { rank: 9, name: 'ArtToyAddict', score: 26022 }, { rank: 10, name: 'StreetwearArchives', score: 25200 }, ];
             leaderboardList.innerHTML = '';
             leaderboardData.forEach(player => {
                 const item = document.createElement('div');
                 item.className = 'flex items-center p-3 rounded-lg hover:bg-gray-50';
-                item.innerHTML = `
-                    <div class="w-8 text-gray-500 font-bold text-sm">#${player.rank}</div>
-                    <img src="https://i.pravatar.cc/40?u=${player.name}" class="w-10 h-10 rounded-full mx-4"/>
-                    <div class="flex-grow font-semibold text-gray-800">${player.name}</div>
-                    <div class="font-bold text-indigo-600 text-sm">${player.score.toLocaleString()} pts</div>
-                `;
+                item.innerHTML = `<div class="w-8 text-gray-500 font-bold text-sm">#${player.rank}</div><img src="https://i.pravatar.cc/40?u=${player.name}" class="w-10 h-10 rounded-full mx-4"/><div class="flex-grow font-semibold text-gray-800">${player.name}</div><div class="font-bold text-indigo-600 text-sm">${player.score.toLocaleString()} pts</div>`;
                 leaderboardList.appendChild(item);
             });
         }
 
         // =================================================================================
+        // NEW CHAT & SYNDICATION LOGIC
+        // =================================================================================
+        let currentChatStep = 0;
+        let isoInProgress = {};
+        const chatFlow = [
+            { bot: "Hey! I'll help create your ISO. What are you searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
+            { bot: "Got it. Any specific details? (Size, condition, etc.)", key: 'details', placeholder: "e.g., Size 10, New" },
+            { bot: "What's the top offer you'd like to make for this item?", key: 'topOffer', placeholder: "$550" },
+            { bot: "A picture is worth a thousand words! Please upload a reference image for your hunt.", action: 'image' },
+            { bot: "Great. To ensure sellers know you're serious, we'll simulate a fund verification. This signals you're a ready buyer.", action: 'verify' },
+            { bot: "Perfect! Your funds are verified. We are now syndicating your ISO to our network of sellers.", action: 'syndicate' }
+        ];
+
+        function startChat() {
+            currentChatStep = 0;
+            isoInProgress = {};
+            chatLog.innerHTML = '';
+            addBotMessage(chatFlow[0].bot);
+            chatInput.placeholder = chatFlow[0].placeholder;
+            chatInput.disabled = false;
+            chatSubmit.disabled = false;
+            chatInput.focus();
+        }
+
+        function addMessage(content, isUser = false) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `chat-message flex ${isUser ? 'justify-end' : 'justify-start'}`;
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble p-3 rounded-2xl text-sm ${isUser ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`;
+            bubble.innerHTML = content;
+            messageWrapper.appendChild(bubble);
+            chatLog.appendChild(messageWrapper);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+        
+        function addBotMessage(text) {
+            addMessage(text, false);
+        }
+
+        function addUserMessage(text) {
+            addMessage(text, true);
+        }
+
+        function handleChatSubmission() {
+            const userText = chatInput.value.trim();
+            if (!userText) return;
+
+            addUserMessage(userText);
+            const currentStep = chatFlow[currentChatStep];
+            if (currentStep.key) {
+                isoInProgress[currentStep.key] = userText;
+            }
+
+            chatInput.value = '';
+            chatInput.disabled = true;
+            chatSubmit.disabled = true;
+
+            currentChatStep++;
+            processNextChatStep();
+        }
+        
+        function processNextChatStep() {
+            const nextStep = chatFlow[currentChatStep];
+            if (!nextStep) {
+                chatInput.placeholder = "All done!";
+                return;
+            }
+            
+            const typingIndicator = `<div class="chat-message flex justify-start"><div class="chat-bubble p-3 rounded-2xl bg-gray-200"><div class="typing-indicator flex items-center space-x-1"><span></span><span></span><span></span></div></div></div>`;
+            chatLog.innerHTML += typingIndicator;
+            chatLog.scrollTop = chatLog.scrollHeight;
+
+            setTimeout(() => {
+                chatLog.removeChild(chatLog.lastChild);
+                addBotMessage(nextStep.bot);
+                
+                if (nextStep.action === 'image') {
+                    const imageUploaderHTML = `
+                        <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                            <div class="space-y-1 text-center">
+                                <img id="chat-image-preview" src="" class="hidden mx-auto h-24 w-auto mb-4 rounded-md"/>
+                                <svg id="chat-image-upload-icon" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="chat-image-upload-input" class="relative cursor-pointer bg-gray-200 rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 px-1">
+                                        <span>Upload a file</span>
+                                        <input id="chat-image-upload-input" name="file-upload" type="file" class="sr-only" accept="image/*">
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                            </div>
+                        </div>`;
+                    addMessage(imageUploaderHTML, false);
+                    document.getElementById('chat-image-upload-input').addEventListener('change', handleChatImageUpload);
+                } else if (nextStep.action === 'verify') {
+                    setTimeout(() => {
+                        const successMsg = `<div class="flex items-center space-x-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i><p>Funds Verified!</p></div>`;
+                        addMessage(successMsg, false);
+                        lucide.createIcons();
+                        currentChatStep++;
+                        processNextChatStep();
+                    }, 2000);
+                } else if (nextStep.action === 'syndicate') {
+                    setTimeout(() => {
+                        createNewIsoFromChat();
+                        toggleModal(isoModal, false);
+                    }, 2000);
+                } else {
+                    chatInput.placeholder = nextStep.placeholder;
+                    chatInput.disabled = false;
+                    chatSubmit.disabled = false;
+                    chatInput.focus();
+                }
+            }, 1500);
+        }
+        
+        function createNewIsoFromChat() {
+            const newItem = {
+                id: Date.now(),
+                name: isoInProgress.name,
+                details: isoInProgress.details,
+                topOffer: parseInt(isoInProgress.topOffer.replace(/\D/g,'')) || 0,
+                category: "Uncategorized",
+                upvotes: 1,
+                comments: 0,
+                imageUrl: isoInProgress.imageUrl || "https://placehold.co/700x500/e2e8f0/4a5568?text=New+Hunt",
+                user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}` },
+                fundsVerified: true,
+                privateBids: 0
+            };
+            isoData.unshift(newItem);
+            renderFeed();
+            switchView('main-content');
+        }
+
+        function handleChatImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                isoInProgress.imageUrl = event.target.result;
+                const preview = document.getElementById('chat-image-preview');
+                const icon = document.getElementById('chat-image-upload-icon');
+                if (preview) {
+                    preview.src = event.target.result;
+                    preview.classList.remove('hidden');
+                }
+                if (icon) icon.style.display = 'none';
+
+                currentChatStep++;
+                processNextChatStep();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function startSyndicationAnimation() {
+            const container = document.getElementById('syndication-channels');
+            if (!container) return;
+            
+            const channels = [
+                { name: 'Instagram Dealer Network', count: '47 dealers' },
+                { name: 'Discord Collector Groups', count: '8 communities' },
+                { name: 'Facebook Collector Groups', count: '15 groups' },
+                { name: 'Verified Email Network', count: '1,200+ sellers' }
+            ];
+            
+            container.innerHTML = ''; 
+            
+            channels.forEach((channel, index) => {
+                setTimeout(() => {
+                    const channelDiv = document.createElement('div');
+                    channelDiv.className = 'flex items-center justify-between text-sm opacity-0 transition-opacity duration-500';
+                    channelDiv.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="loader !w-4 !h-4 !border-2"></div>
+                            <span class="font-medium text-gray-700">${channel.name}</span>
+                        </div>
+                        <span class="text-gray-500" id="status-${index}">Broadcasting...</span>`;
+                    container.appendChild(channelDiv);
+                    setTimeout(() => channelDiv.classList.remove('opacity-0'), 10);
+                    
+                    setTimeout(() => {
+                        const statusEl = document.getElementById(`status-${index}`);
+                        const loaderEl = channelDiv.querySelector('.loader');
+                        if (loaderEl) loaderEl.style.display = 'none';
+                        channelDiv.querySelector('.flex').insertAdjacentHTML('afterbegin', `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>`);
+                        if (statusEl) {
+                           statusEl.textContent = `✓ Syndicated (${channel.count})`;
+                           statusEl.classList.add('font-semibold', 'text-green-600');
+                        }
+                        lucide.createIcons();
+                    }, 1500 + (index * 500));
+                }, index * 1000);
+            });
+        }
+
+        function handleDeleteIso(event) {
+            const itemId = parseInt(event.currentTarget.dataset.id);
+            const itemIndex = isoData.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                isoData.splice(itemIndex, 1);
+                switchView('main-content');
+                renderFeed();
+            }
+        }
+
+        // =================================================================================
         // EVENT LISTENERS
-        // This section sets up all the interactive parts of the application.
         // =================================================================================
 
-        // General modal open/close listeners
-        postIsoBtn.addEventListener('click', () => toggleModal(isoModal, true));
-        closeIsoModalBtn.addEventListener('click', () => {
-            toggleModal(isoModal, false);
-            resetIsoForm();
+        postIsoBtn.addEventListener('click', () => {
+            toggleModal(isoModal, true);
+            startChat();
         });
+
+        closeIsoModalBtn.addEventListener('click', () => toggleModal(isoModal, false));
         modalBackdrop.addEventListener('click', () => {
             toggleModal(isoModal, false);
             toggleModal(sellModal, false);
             toggleModal(aiModal, false);
-            resetIsoForm();
+            toggleModal(bidsModal, false);
         });
         document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
         
-        // Form submission listener
+        tabChat.addEventListener('click', () => {
+            tabChat.classList.add('text-indigo-600', 'border-indigo-500');
+            tabChat.classList.remove('text-gray-500');
+            tabForm.classList.remove('text-indigo-600', 'border-indigo-500');
+            tabForm.classList.add('text-gray-500');
+            chatView.classList.remove('hidden');
+            formView.classList.add('hidden');
+        });
+
+        tabForm.addEventListener('click', () => {
+            tabForm.classList.add('text-indigo-600', 'border-indigo-500');
+            tabForm.classList.remove('text-gray-500');
+            tabChat.classList.remove('text-indigo-600', 'border-indigo-500');
+            tabChat.classList.add('text-gray-500');
+            formView.classList.remove('hidden');
+            chatView.classList.add('hidden');
+        });
+        
+        chatSubmit.addEventListener('click', handleChatSubmission);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleChatSubmission();
+        });
+
         isoForm.addEventListener('submit', handleIsoSubmit);
 
-        // Image upload listener
         imageUploadInput.addEventListener('change', () => {
             const file = imageUploadInput.files[0];
             if (file) {
@@ -874,7 +1177,6 @@
             }
         });
 
-        // Event delegation for the main feed to handle clicks on cards, upvotes, etc.
         isoFeed.addEventListener('click', (event) => {
             const viewBtn = event.target.closest('.view-details-btn');
             const cardBody = event.target.closest('.cursor-pointer');
@@ -884,15 +1186,8 @@
                 const id = viewBtn ? viewBtn.dataset.id : cardBody.dataset.id;
                 renderDetailView(id);
             } else if (upvoteBtn) {
-                // Add the blink animation for visual feedback
                 upvoteBtn.classList.add('upvote-blink');
-                
-                // Remove the animation class after it finishes so it can be re-triggered
-                setTimeout(() => {
-                    upvoteBtn.classList.remove('upvote-blink');
-                }, 500);
-
-                // Update the upvote count in our data
+                setTimeout(() => upvoteBtn.classList.remove('upvote-blink'), 500);
                 const itemId = parseInt(upvoteBtn.dataset.id);
                 const item = isoData.find(i => i.id === itemId);
                 if (item) {
@@ -908,15 +1203,13 @@
             }
         });
         
-        // Event delegation for the detail view (specifically for the "Sell" button)
         detailView.addEventListener('click', (event) => {
             const sellBtn = event.target.closest('.sell-item-btn');
-            if (sellBtn) {
-                handleSellItemClick(event);
-            }
+            const viewBidsBtn = event.target.closest('#view-bids-btn');
+            if (sellBtn) handleSellItemClick(event);
+            if (viewBidsBtn) handleViewBids(event);
         });
 
-        // Event delegation for the main navigation (desktop and mobile)
         app.addEventListener('click', (e) => {
              const navLink = e.target.closest('.nav-link, .nav-link-mobile');
              if(navLink) {
@@ -925,14 +1218,12 @@
              }
         });
         
-        // Listener for the logo to always return to the main feed
         document.getElementById('logo-link').addEventListener('click', (e) => {
             e.preventDefault();
             switchView('main-content');
         });
 
         // --- INITIAL RENDER ---
-        // This function runs once when the page loads to set everything up.
         function initializeApp() {
             renderFeed();
             renderRecentlyFound();

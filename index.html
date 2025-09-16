@@ -28,8 +28,8 @@
             from { opacity: 0; transform: translate(-50%, -48%) scale(0.95); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-        .main-content, .detail-view, .how-it-works-view, .leaderboard-view { display: none; }
-        .main-content.active, .detail-view.active, .how-it-works-view.active, .leaderboard-view.active { display: block; }
+        .main-content, .detail-view, .how-it-works-view, .leaderboard-view, .my-iso-view, .finder-hub-view, .seller-portal-view { display: none; }
+        .main-content.active, .detail-view.active, .how-it-works-view.active, .leaderboard-view.active, .my-iso-view.active, .finder-hub-view.active, .seller-portal-view.active { display: block; }
         .upvote-btn.upvoted { background-color: #4f46e5; color: white; }
         .comment-bubble, .chat-bubble {
             max-width: 80%;
@@ -80,9 +80,19 @@
             background-color: #4f46e5;
             color: white;
         }
+        .nav-link.active, .nav-link-mobile.active {
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .nav-link-mobile.active {
+            border-bottom: 2px solid #4f46e5;
+        }
     </style>
 </head>
 <body class="text-gray-800">
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="fixed top-5 right-5 z-[100] space-y-2 w-full max-w-xs"></div>
 
     <!-- Main Application Container -->
     <div id="app" class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -95,10 +105,13 @@
                 </div>
                 <h1 class="text-2xl md:text-3xl font-bold tracking-tight">In Search Of</h1>
             </a>
-             <nav class="hidden md:flex items-center space-x-8">
-                <a href="#" class="nav-link active font-semibold text-gray-800" data-view="main-content">Hunts</a>
-                <a href="#" class="nav-link text-gray-500 hover:text-gray-800" data-view="leaderboard-view">Leaderboard</a>
-                <a href="#" class="nav-link text-gray-500 hover:text-gray-800" data-view="how-it-works-view">How It Works</a>
+             <nav class="hidden md:flex items-center space-x-6 text-sm">
+                <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="main-content">Hunts</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="my-iso-view">My ISO</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="finder-hub-view">Finder Hub</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="seller-portal-view">Seller Portal</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="leaderboard-view">Leaderboard</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="how-it-works-view">How It Works</a>
             </nav>
             <button id="post-iso-btn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors flex items-center space-x-2">
                 <i data-lucide="plus-circle" class="w-5 h-5"></i>
@@ -109,21 +122,29 @@
         
         <!-- Mobile Nav -->
         <div class="md:hidden mt-4 mb-4">
-             <nav class="flex items-center space-x-6 border-b">
-                <a href="#" class="nav-link-mobile active flex-1 text-center py-3 font-semibold text-indigo-600 border-b-2 border-indigo-600" data-view="main-content">Hunts</a>
-                <a href="#" class="nav-link-mobile flex-1 text-center py-3 font-semibold text-gray-500" data-view="leaderboard-view">Leaderboard</a>
-                <a href="#" class="nav-link-mobile flex-1 text-center py-3 font-semibold text-gray-500" data-view="how-it-works-view">How It Works</a>
+             <nav class="flex items-center justify-around text-sm border-b">
+                <a href="#" class="nav-link-mobile flex-1 text-center py-3 font-semibold text-gray-500" data-view="main-content">Hunts</a>
+                <a href="#" class="nav-link-mobile flex-1 text-center py-3 font-semibold text-gray-500" data-view="my-iso-view">My ISO</a>
+                <a href="#" class="nav-link-mobile flex-1 text-center py-3 font-semibold text-gray-500" data-view="finder-hub-view">Finder</a>
+                <a href="#" class="nav-link-mobile flex-1 text-center py-3 font-semibold text-gray-500" data-view="seller-portal-view">Seller</a>
             </nav>
         </div>
 
 
         <!-- Main Content View (Feed) -->
-        <div id="main-content" class="main-content active">
+        <div id="main-content" class="main-content">
             <div class="py-6">
                 <div class="flex justify-between items-center">
                     <div>
                         <h2 class="text-xl font-bold text-gray-900">Community Wanted Board</h2>
                         <p class="text-gray-500 mt-1">Discover what the community is hunting for. Upvote requests you're also interested in!</p>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div class="mt-6 relative">
+                    <input type="search" id="search-bar" placeholder="Search for items, brands, or users..." class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
                     </div>
                 </div>
                  <!-- Filters -->
@@ -160,6 +181,148 @@
             </div>
         </div>
 
+        <!-- My ISO View (Buyer Dashboard) -->
+        <div id="my-iso-view" class="my-iso-view">
+            <div class="py-6">
+                <h2 class="text-2xl font-bold text-gray-900">My ISO Hub</h2>
+                <p class="text-gray-500 mt-1">Manage your active hunts, review offers, and view your collection.</p>
+            </div>
+
+            <!-- Action Required Section -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">Action Required</h3>
+                <div id="my-iso-action-required">
+                    <!-- Actionable items will be injected here -->
+                </div>
+            </div>
+
+            <!-- Active Hunts Section -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">My Active Hunts</h3>
+                <div id="my-iso-active-hunts" class="space-y-4">
+                     <!-- Active hunts will be injected here -->
+                </div>
+            </div>
+
+             <!-- My Collection Section -->
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">My Collection</h3>
+                <div id="my-iso-collection" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Collection items will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Finder Hub View -->
+        <div id="finder-hub-view" class="finder-hub-view">
+            <div class="py-6">
+                <h2 class="text-2xl font-bold text-gray-900">Finder Hub</h2>
+                <p class="text-gray-500 mt-1">Manage your claimed hunts, source new leads, and track your performance.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Hunt Pool -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">The Hunt Pool (New Leads)</h3>
+                        <div class="space-y-4">
+                             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                                <p class="text-xs text-gray-500">Sneakers | Posted 2 hours ago</p>
+                                <p class="font-bold text-gray-900 mt-1">Travis Scott Jordan 1 Low</p>
+                                <div class="flex justify-between items-center mt-2">
+                                    <div>
+                                        <p class="text-sm font-semibold text-green-600">$720</p>
+                                        <p class="text-xs text-gray-500">Buyer's Offer</p>
+                                    </div>
+                                    <button class="claim-hunt-btn bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Claim Hunt</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- My Active Hunts -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">My Active Hunts</h3>
+                        <div id="finder-active-hunts" class="space-y-4">
+                             <!-- Finder's active hunts will be injected here -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Finder Stats -->
+                <aside>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 space-y-6">
+                        <div>
+                            <h3 class="font-bold text-lg mb-4 text-gray-900">Your Stats</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Active Hunts</span>
+                                    <span class="font-bold text-indigo-600">1</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Success Rate</span>
+                                    <span class="font-bold">92%</span>
+                                </div>
+                                 <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Your Rating</span>
+                                    <span class="font-bold flex items-center">5.0 <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 ml-1"></i></span>
+                                </div>
+                                <div class="pt-4 border-t">
+                                    <p class="text-sm text-gray-600">Earnings (30 Days)</p>
+                                    <p class="text-2xl font-bold text-green-600">$1,850</p>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Onboarding CTA -->
+                        <div class="pt-6 border-t">
+                            <h3 class="font-bold text-lg mb-2">Become a Pro Finder</h3>
+                            <p class="text-sm text-gray-600 mb-4">Unlock lower fees, priority access to new hunts, and a "Pro" badge on your profile.</p>
+                            <button class="w-full bg-indigo-100 text-indigo-700 font-semibold py-2 rounded-lg hover:bg-indigo-200 transition-colors">Apply Now</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+        
+        <!-- Seller Portal View -->
+        <div id="seller-portal-view" class="seller-portal-view">
+            <div class="py-6">
+                <h2 class="text-2xl font-bold text-gray-900">Seller Portal</h2>
+                <p class="text-gray-500 mt-1">Respond to qualified leads from our expert Finders.</p>
+            </div>
+            <div class="space-y-8">
+                 <!-- Requests from Finders -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Requests from Finders</h3>
+                     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex items-center space-x-3 mb-3">
+                             <img src="https://i.pravatar.cc/40?u=curator" class="w-10 h-10 rounded-full"/>
+                             <div>
+                                 <p class="text-sm">Request from <span class="font-bold">@TheCurator</span></p>
+                                 <p class="text-xs text-gray-500">Archival Fashion Expert</p>
+                             </div>
+                        </div>
+                        <p class="font-bold text-gray-900">Item: Raf Simons 'Riot' Bomber Jacket</p>
+                        <p class="text-sm text-gray-600 mt-1">Details: Buyer has verified funds for a $4,500 offer. Do you have this in inventory?</p>
+                        <div class="mt-4">
+                             <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Submit Private Offer</button>
+                        </div>
+                    </div>
+                </div>
+                 <!-- My Sent Offers -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">My Sent Offers</h3>
+                     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-bold text-gray-900">Raf Simons 'Riot' Bomber Jacket</p>
+                                <p class="text-sm text-gray-500">Your Offer: $4,400</p>
+                            </div>
+                            <p class="text-sm font-semibold text-green-600">Presented to Buyer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Detail View -->
         <div id="detail-view" class="detail-view">
             <!-- Detail content will be injected here -->
@@ -168,56 +331,57 @@
         <!-- How It Works View -->
         <div id="how-it-works-view" class="how-it-works-view">
              <div class="py-12 text-center">
-                <h2 class="text-3xl font-bold text-gray-900">A Marketplace Built on Demand</h2>
-                <p class="text-lg text-gray-500 mt-2 max-w-2xl mx-auto">We flip the traditional model. Instead of sellers listing items, our community of seekers posts what they're looking for first.</p>
-            </div>
-
-            <div class="my-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-4xl mx-auto">
-                <h3 class="text-2xl font-bold text-center text-gray-900 mb-4">Community vs. Commodity</h3>
-                <p class="text-center text-gray-600 leading-relaxed">
-                    Traditional marketplaces are built for sellers to list inventory. We are a platform built for communities to express demand. We believe that for the most passionate collectors, <span class="font-bold text-indigo-600">the hunt is just as important as the purchase</span>, and our entire model is designed to make that hunt social, exciting, and ultimately, more rewarding for everyone.
-                </p>
+                <h2 class="text-3xl font-bold text-gray-900">The Triangulation Marketplace</h2>
+                <p class="text-lg text-gray-500 mt-2 max-w-3xl mx-auto">We connect Buyers, Sellers, and expert Finders to create the most trusted and efficient marketplace for high-value collectibles.</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-start my-12 max-w-6xl mx-auto">
                 <!-- Step 1 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="message-circle" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">1. Start a Chat</h3>
-                    <p class="text-sm text-gray-600">Create your ISO through a guided conversation. Describe what you want, add a reference photo, and set your top offer.</p>
+                    <h3 class="font-bold text-lg mb-2">1. Post Your ISO</h3>
+                    <p class="text-sm text-gray-600">A buyer starts a hunt by telling our Chat Assistant exactly what they're looking for and verifying their funds.</p>
                 </div>
                 <!-- Step 2 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
-                        <i data-lucide="send" class="w-6 h-6"></i>
+                        <i data-lucide="user-check" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">2. Verify & Syndicate</h3>
-                    <p class="text-sm text-gray-600">With simulated fund verification, your ISO becomes an active demand signal. Our engine broadcasts it to seller networks.</p>
+                    <h3 class="font-bold text-lg mb-2">2. Match with a Finder</h3>
+                    <p class="text-sm text-gray-600">We match the hunt with a vetted expert (a "Finder") in that category who acts as the buyer's trusted Hunt Manager.</p>
                 </div>
                 <!-- Step 3 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
-                        <i data-lucide="inbox" class="w-6 h-6"></i>
+                        <i data-lucide="search" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">3. Receive Private Bids</h3>
-                    <p class="text-sm text-gray-600">Verified sellers are notified and submit private bids directly to you. No public price wars, just competitive offers.</p>
+                    <h3 class="font-bold text-lg mb-2">3. Finder Sources Items</h3>
+                    <p class="text-sm text-gray-600">The Finder uses our Syndication Engine and their private network to source options from trusted sellers.</p>
                 </div>
                 <!-- Step 4 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">4. Verify & Present</h3>
+                    <p class="text-sm text-gray-600">The Finder verifies the items, provides expert context, and presents the curated options to the buyer.</p>
+                </div>
+                 <!-- Step 5 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                    <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="handshake" class="w-6 h-6"></i>
                     </div>
-                    <h3 class="font-bold text-lg mb-2">4. Close the Deal</h3>
-                    <p class="text-sm text-gray-600">Accept the best offer. We'll simulate item verification and escrow to complete the transaction securely.</p>
+                    <h3 class="font-bold text-lg mb-2">5. Secure the Deal</h3>
+                    <p class="text-sm text-gray-600">The buyer accepts the best offer. We handle the secure escrow payment and insured shipping to complete the deal.</p>
                 </div>
             </div>
 
             <div class="mt-16">
                  <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900">Your Demand Syndication Engine</h2>
-                    <p class="text-lg text-gray-500 mt-2 max-w-3xl mx-auto">We don't just wait for sellers to find you. We actively broadcast your verified demand to where the sellers are.</p>
+                    <h2 class="text-3xl font-bold text-gray-900">A Marketplace Built on Trust</h2>
+                    <p class="text-lg text-gray-500 mt-2 max-w-3xl mx-auto">By adding a layer of vetted human expertise, we eliminate the risks and friction of high-value online transactions.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start space-x-4">
@@ -225,17 +389,17 @@
                             <i data-lucide="shield-check" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg mb-2">Trust & Verification</h3>
-                            <p class="text-sm text-gray-600">Fund verification ensures sellers only deal with serious buyers. Escrow protection and item verification protect every transaction.</p>
+                            <h3 class="font-bold text-lg mb-2">For Buyers</h3>
+                            <p class="text-sm text-gray-600">Get exactly what you want without the endless search. Every item is verified by a trusted expert, and every transaction is protected by secure escrow.</p>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start space-x-4">
                         <div class="bg-purple-100 text-purple-600 w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-full">
-                            <i data-lucide="sparkles" class="w-6 h-6"></i>
+                            <i data-lucide="tag" class="w-6 h-6"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg mb-2">AI-Powered Insights</h3>
-                            <p class="text-sm text-gray-600">Powered by Gemini, our AI provides expert commentary on an item's history and market standing to help you make informed decisions.</p>
+                            <h3 class="font-bold text-lg mb-2">For Sellers & Finders</h3>
+                            <p class="text-sm text-gray-600">Stop waiting for buyers. Get direct access to a stream of verified, high-intent demand and monetize your inventory or your expertise with zero risk.</p>
                         </div>
                     </div>
                 </div>
@@ -262,8 +426,8 @@
                 <!-- 1st Place -->
                 <div class="podium-1 bg-white p-8 rounded-xl shadow-lg border-2 border-yellow-400 text-center w-full max-w-xs">
                     <img src="https://i.pravatar.cc/100?u=SoleSeeker" class="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-yellow-400"/>
-                    <p class="font-bold text-xl">@SoleSeeker</p>
-                    <p class="text-sm text-gray-500">High-Value Watch Collector</p>
+                    <p class="font-bold text-xl">@TheCurator</p>
+                    <p class="text-sm text-gray-500">Top Rated Finder</p>
                     <p class="text-3xl font-bold text-yellow-500 mt-2">53,430 pts</p>
                     <p class="font-bold text-yellow-400 mt-2">1st 🏆</p>
                 </div>
@@ -280,17 +444,17 @@
             <div class="my-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-4xl mx-auto">
                 <h3 class="text-2xl font-bold text-center text-gray-900 mb-2">How to Climb the Ranks</h3>
                 <p class="text-gray-600 leading-relaxed mb-6 text-center">
-                    Earn points for valuable actions across the marketplace. The more you contribute, the higher you climb.
+                    Earn points for valuable actions across the marketplace. Buyers, Sellers, and Finders all have a path to the top.
                 </p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-left text-sm">
                     <div class="p-3 bg-gray-50 rounded-lg"><strong>+50 pts</strong> for creating a "Funds Verified" ISO</div>
                     <div class="p-3 bg-gray-50 rounded-lg"><strong>+1 pt</strong> for each upvote your ISO gets</div>
-                    <div class="p-3 bg-gray-50 rounded-lg"><strong>+5 pts</strong> for each private offer you receive</div>
-                    <div class="p-3 bg-gray-50 rounded-lg"><strong>+10 pts</strong> for creating any new ISO</div>
+                    <div class="p-3 bg-gray-50 rounded-lg"><strong>+10 pts (Finder)</strong> for claiming a hunt</div>
+                    <div class="p-3 bg-gray-50 rounded-lg"><strong>+25 pts (Finder)</strong> for sourcing a verified offer</div>
                 </div>
                 <div class="mt-4 p-4 bg-indigo-50 text-indigo-800 rounded-lg text-center">
                     <p class="font-bold">The biggest points come from successful deals!</p>
-                    <p class="text-sm">Earn <span class="font-bold">200 points + 1 point per dollar</span> of the final transaction value as both a buyer and a seller.</p>
+                    <p class="text-sm">Earn <span class="font-bold">200 points + 1 point per dollar</span> of the final transaction value as a Buyer, Seller, or Finder.</p>
                 </div>
                 <div class="mt-8 pt-6 border-t border-gray-200 text-center">
                     <h4 class="font-bold text-lg text-gray-800">Monthly Prizes</h4>
@@ -352,6 +516,14 @@
                 <div><label for="item-details" class="block text-sm font-medium text-gray-700">Details (Size, Condition)</label><input type="text" id="item-details" placeholder="e.g., Size 10, New/Unworn" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
                 <div><label for="item-bid" class="block text-sm font-medium text-gray-700">Your Top Offer ($)</label><input type="number" id="item-bid" placeholder="400" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></div>
                 <div>
+                     <label for="item-duration-form" class="block text-sm font-medium text-gray-700">Hunt Duration</label>
+                     <select id="item-duration-form" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                         <option value="7">7 Days</option>
+                         <option value="14">14 Days</option>
+                         <option value="30" selected>30 Days</option>
+                     </select>
+                </div>
+                <div>
                     <label for="item-image-upload" class="block text-sm font-medium text-gray-700">Reference Image</label>
                     <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                         <div class="space-y-1 text-center">
@@ -401,6 +573,11 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
+         <!-- Profile content will be injected here -->
+    </div>
+
     <script>
         // Initialize Lucide Icons
         lucide.createIcons();
@@ -412,6 +589,8 @@
         let isoData = [
           {
             id: 1,
+            seekers: 1,
+            joined: false,
             name: "Jordan 1 Retro High 'Chicago'",
             category: "Sneakers",
             details: "Size 10, New/Unworn",
@@ -423,9 +602,13 @@
             fundsVerified: true,
             privateBids: 0,
             duration: 30,
+            createdAt: Date.now() - (2 * 24 * 60 * 60 * 1000), // Created 2 days ago
+            finder: null
           },
           {
             id: 6,
+            seekers: 1,
+            joined: false,
             name: "Raf Simons 'Riot' Bomber Jacket",
             category: "Archival Fashion",
             details: "AW 2001, Size 50, Good condition",
@@ -437,9 +620,13 @@
             fundsVerified: true,
             privateBids: 1,
             duration: 14,
+            createdAt: Date.now() - (1 * 24 * 60 * 60 * 1000),
+            finder: { name: '@TheCurator', specialty: 'Archival Fashion Expert', avatar: 'https://i.pravatar.cc/40?u=curator', rating: 5.0 }
           },
           {
             id: 3,
+            seekers: 1,
+            joined: false,
             name: "Margaret Keane: 'Big Eyes' Painting",
             category: "Collectibles",
             details: "1960, 'The Crying Girl'",
@@ -451,9 +638,13 @@
             fundsVerified: false,
             privateBids: 0,
             duration: 14,
+            createdAt: Date.now() - (4 * 24 * 60 * 60 * 1000),
+            finder: null
           },
           {
             id: 4,
+            seekers: 1,
+            joined: false,
             name: "Travis Scott Jordan 1 Low",
             category: "Sneakers",
             details: "Size 9.5, Olive",
@@ -465,9 +656,13 @@
             fundsVerified: true,
             privateBids: 3,
             duration: 7,
+            createdAt: Date.now() - (6 * 24 * 60 * 60 * 1000),
+            finder: null
           },
           {
             id: 5,
+            seekers: 1,
+            joined: false,
             name: "Rolex Daytona 'Panda'",
             category: "Watches",
             details: "116500LN, White Dial",
@@ -479,15 +674,28 @@
             fundsVerified: false,
             privateBids: 0,
             duration: 30,
+            createdAt: Date.now() - (10 * 24 * 60 * 60 * 1000),
+            finder: null
           }
         ];
 
         const aiInsightsData = {
             "Jordan 1 Retro High 'Chicago'": "The Air Jordan 1 'Chicago' is arguably the most iconic sneaker ever created. Originally released in 1985, its 'Chicago' colorway is a cornerstone of sneaker culture, synonymous with Michael Jordan's rookie season. The 2022 'Reimagined' version added a vintage, aged look that was met with massive commercial success. For collectors, condition and originality are key; a true 1985 pair is a museum piece, while the Reimagined version offers a more accessible entry into its legacy. The market for this shoe is consistently strong, making it a true blue-chip collectible.",
+            "Raf Simons 'Riot' Bomber Jacket": "The Autumn/Winter 2001 'Riot, Riot, Riot' bomber from Raf Simons is a seminal piece of modern menswear. Its oversized silhouette, collage of patches (including iconic Richey Edwards and Manic Street Preachers references), and military surplus aesthetic defined a generation of fashion. It is considered a holy grail item for fashion archivists. Due to its age and rarity, finding one in good condition is exceptionally difficult. Its value is not just in its material, but its immense cultural significance and influence on subsequent designers. A true museum-quality piece.",
             "Margaret Keane: 'Big Eyes' Painting": "Margaret Keane's Big Eyes paintings are defined by their signature, disproportionately large, doe-like eyes that dominate the canvas. The artworks typically feature women, children, and animals in styles ranging from melancholy and dark to joyful and bright, reflecting different periods of the artist's life.",
-            "Kaws: 'Companion' Figure": "Brian Donnelly, known as Kaws, is a pivotal artist bridging the worlds of street art, fine art, and collectibles. His 'Companion' figure, with its signature 'X' eyes, is his most famous creation. Originally produced in Japan in 1999, the Companion has been released in various forms and collaborations. The 2016 Open Edition made the figure more accessible but still highly sought after. It represents a significant moment in the 'art toy' movement, where collectibles are treated with the seriousness of fine art sculptures. Its value is stable and has a global collector base.",
             "Travis Scott Jordan 1 Low": "Travis Scott's collaborations with Nike are among the most influential of the modern era. His take on the Air Jordan 1, characterized by the reversed Swoosh, is his signature design element. These releases create a frenzy in the market due to Scott's cultural influence and the limited production numbers. The 'Olive' and 'Fragment' colorways are particularly coveted. Owning a pair signifies being in-the-know with current sneaker culture. The resale market is highly volatile but consistently high, reflecting its status as a modern classic.",
             "Rolex Daytona 'Panda'": "The Rolex Daytona Ref. 116500LN with a white dial, nicknamed the 'Panda,' is one of the most sought-after luxury watches in the world. Its scarcity is manufactured; authorized dealers have notoriously long waitlists, often spanning years. This drives a hyper-inflated secondary market where the watch trades for more than double its retail price. The watch's appeal comes from its perfect proportions, ceramic bezel, racing heritage, and the status associated with the Rolex brand. It's considered a benchmark 'investment' watch by many collectors due to its strong and consistent value retention."
+        };
+        
+        const privateBidsData = {
+            4: [ // Travis Scott Jordan 1 Low
+                { user: '@resell_king', avatar: 'https://i.pravatar.cc/40?u=resell', price: 710, condition: 'Deadstock with original box. Can ship today.', rating: 4.9, findersNote: null },
+                { user: '@sneakerVault', avatar: 'https://i.pravatar.cc/40?u=vault', price: 680, condition: 'VNDS, worn once indoors. Includes extra laces.', rating: 5.0, findersNote: null },
+                { user: '@kickzCircle', avatar: 'https://i.pravatar.cc/40?u=kickz', price: 725, condition: 'Perfect condition, OG all. Includes receipt.', rating: 4.7, findersNote: null },
+            ],
+            6: [ // Raf Simons 'Riot' Bomber Jacket
+                { user: '@archive_dealer', avatar: 'https://i.pravatar.cc/40?u=archive', price: 4400, condition: 'Excellent condition for its age, minor fading. From my personal collection.', rating: 5.0, findersNote: "Sourced from a trusted private collector in Japan. I've personally verified the condition and authenticity. This is a clean example of a notoriously fragile piece." }
+            ]
         };
         
         // =================================================================================
@@ -501,6 +709,9 @@
         const detailView = document.getElementById('detail-view');
         const howItWorksView = document.getElementById('how-it-works-view');
         const leaderboardView = document.getElementById('leaderboard-view');
+        const myIsoView = document.getElementById('my-iso-view');
+        const finderHubView = document.getElementById('finder-hub-view');
+        const sellerPortalView = document.getElementById('seller-portal-view');
         const leaderboardList = document.getElementById('leaderboard-list');
         const filterBar = document.getElementById('filter-bar');
 
@@ -514,6 +725,7 @@
         const aiModalContent = document.getElementById('ai-modal-content');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const closeIsoModalBtn = document.getElementById('close-iso-modal');
+        const profileModal = document.getElementById('profile-modal');
         
         // New ISO Modal elements
         const tabChat = document.getElementById('tab-chat');
@@ -529,36 +741,80 @@
         const imageUploadInput = document.getElementById('item-image-upload-input');
         const imagePreview = document.getElementById('image-preview');
         const imageUploadIcon = document.getElementById('image-upload-icon');
+        const searchBar = document.getElementById('search-bar');
 
         // =================================================================================
-        // CORE FUNCTIONS
+        // HELPER FUNCTIONS
+        // =================================================================================
+
+        function getDaysRemaining(createdAt, duration) {
+            const now = Date.now();
+            const expirationDate = createdAt + (duration * 24 * 60 * 60 * 1000);
+            const remainingTime = expirationDate - now;
+            
+            if (remainingTime <= 0) {
+                return '<span class="text-red-500 font-semibold">Expired</span>';
+            }
+            
+            const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
+            return `<span class="text-gray-500">Expires in ${remainingDays} day${remainingDays > 1 ? 's' : ''}</span>`;
+        }
+
+        // =================================================================================
+        // CORE RENDER FUNCTIONS
         // =================================================================================
 
         /**
          * Renders the main feed of "In Search Of" cards.
          */
-        function renderFeed(filterCategory = 'All') {
-            const filteredData = filterCategory === 'All'
-                ? isoData
-                : isoData.filter(item => item.category === filterCategory);
+        function renderFeed(filterCategory = 'All', searchTerm = '') {
+            let filteredData = isoData;
+
+            if (filterCategory !== 'All') {
+                filteredData = filteredData.filter(item => item.category === filterCategory);
+            }
+
+            if (searchTerm) {
+                const lowercasedTerm = searchTerm.toLowerCase();
+                filteredData = filteredData.filter(item => 
+                    item.name.toLowerCase().includes(lowercasedTerm) ||
+                    item.user.name.toLowerCase().includes(lowercasedTerm)
+                );
+            }
 
             isoFeed.innerHTML = '';
-            filteredData.sort((a, b) => b.upvotes - a.upvotes).forEach(item => {
+
+            if (filteredData.length === 0) {
+                isoFeed.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
+                        <i data-lucide="search-x" class="w-12 h-12 mx-auto text-gray-400"></i>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-800">No Hunts Found</h3>
+                        <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filteredData.sort((a, b) => b.createdAt - a.createdAt).forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden';
                 const fundsVerifiedBadge = item.fundsVerified 
                     ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full flex items-center space-x-1"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Funds Verified</span></span>` 
                     : '';
                 const ratingHtml = item.user.rating ? `<span class="text-xs text-gray-500 flex items-center"><i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.user.rating}</span>` : '';
+                const daysRemainingHtml = getDaysRemaining(item.createdAt, item.duration);
 
                 card.innerHTML = `
                     <div class="p-4 flex justify-between items-start border-b border-gray-100">
                         <div class="flex items-center space-x-3">
                             <img src="${item.user.avatar}" class="w-10 h-10 rounded-full bg-gray-200"/>
                             <div>
-                                <p class="font-semibold text-sm text-gray-800">${item.user.name}</p>
-                                <div class="flex items-center space-x-2">
+                                <button class="font-semibold text-sm text-gray-800 hover:underline user-profile-link" data-username="${item.user.name}">${item.user.name}</button>
+                                <div class="flex items-center space-x-2 mt-1">
                                      ${ratingHtml}
+                                     <span class="text-gray-300">|</span>
+                                     <span class="text-xs">${daysRemainingHtml}</span>
                                 </div>
                             </div>
                         </div>
@@ -624,6 +880,10 @@
             trendingData.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'flex flex-col space-y-2';
+
+                const buttonText = item.joined ? '✓ Joined' : 'Join Hunt';
+                const buttonClasses = item.joined ? 'text-indigo-700 font-bold' : 'text-indigo-600';
+
                 div.innerHTML = `
                     <div class="flex items-center space-x-3">
                         <div class="w-16 h-12 bg-gray-100 rounded-md bg-cover bg-center" style="background-image: url('${item.imageUrl}')"></div>
@@ -632,7 +892,7 @@
                             <p class="text-xs text-gray-500">${item.upvotes} upvotes</p>
                         </div>
                     </div>
-                    <button class="start-similar-btn text-xs font-semibold text-indigo-600 hover:underline text-left">Start a similar hunt</button>
+                    <button class="join-hunt-sidebar-btn text-xs font-semibold hover:underline text-left ${buttonClasses}" data-id="${item.id}">${buttonText}</button>
                 `;
                 trendingHuntsContainer.appendChild(div);
             });
@@ -646,9 +906,7 @@
             const item = isoData.find(i => i.id === parseInt(itemId));
             if (!item) return;
 
-            mainContent.classList.remove('active');
-            howItWorksView.classList.remove('active');
-            leaderboardView.classList.remove('active');
+            document.querySelectorAll('.main-content, .my-iso-view, .finder-hub-view, .seller-portal-view, .how-it-works-view, .leaderboard-view').forEach(v => v.classList.remove('active'));
             
             const ratingHtml = item.user.rating ? `<span class="text-sm text-gray-500 flex items-center"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.user.rating} | 5 Successful Hunts</span>` : '';
 
@@ -657,25 +915,22 @@
                 ? `<span class="bg-green-100 text-green-800 text-xs font-bold px-2.5 py-1 rounded-full flex items-center space-x-1"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Funds Verified</span></span>` 
                 : `<span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-1 rounded-full">Funds Unverified</span>`;
             
-            const syndicationModule = item.fundsVerified ? `
-                <div class="mt-8">
-                    <h3 class="text-lg font-bold text-gray-900 mb-1">Syndication Engine</h3>
-                    <p class="text-sm text-gray-500 mb-4">Broadcasting your demand to verified seller networks.</p>
-                    <div id="syndication-channels" class="space-y-3 bg-gray-50 p-4 rounded-lg border">
-                        <!-- Syndication channels will be injected here -->
-                    </div>
+            const finderModuleHtml = `
+                <div id="finder-module" class="mt-8 transition-opacity duration-500 opacity-0">
+                    <!-- Content will be injected by simulation -->
                 </div>
-            ` : '';
+            `;
             
             let actionButtons;
             if (item.privateBids > 0) {
-                actionButtons = `<button data-item-id="${item.id}" id="view-bids-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"><i data-lucide="gavel" class="w-5 h-5"></i><span>Review ${item.privateBids} Private Offers</span></button>`;
+                 actionButtons = `<button data-item-id="${item.id}" id="view-bids-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"><i data-lucide="gavel" class="w-5 h-5"></i><span>Review ${item.privateBids > 1 ? `${item.privateBids} Options` : '1 Option'} from Finder</span></button>`;
             } else {
-                actionButtons = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <button data-item-id="${item.id}" class="join-hunt-btn w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2"><i data-lucide="user-plus" class="w-5 h-5"></i><span>Join Hunt & Offer</span></button>
-                                <button data-item-id="${item.id}" class="sell-item-btn w-full bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"><i data-lucide="tag" class="w-5 h-5"></i><span>I Have This - Sell</span></button>
-                             </div>`;
+                 actionButtons = `<button data-item-id="${item.id}" class="sell-item-btn w-full bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2" disabled><i data-lucide="tag" class="w-5 h-5"></i><span>Awaiting Finder...</span></button>`;
             }
+
+            const joinButtonText = item.joined ? `<i data-lucide="check" class="w-5 h-5"></i><span>Joined!</span>` : `<i data-lucide="users" class="w-5 h-5"></i><span>Join this Hunt</span>`;
+            const joinButtonClasses = item.joined ? 'bg-indigo-200 text-indigo-800' : 'bg-indigo-100 text-indigo-700';
+            const daysRemainingHtml = getDaysRemaining(item.createdAt, item.duration);
 
             detailView.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
@@ -691,7 +946,7 @@
                         <div class="flex items-center space-x-3 mb-3">
                             <img src="${item.user.avatar}" class="w-12 h-12 rounded-full"/>
                             <div>
-                                <p class="font-semibold text-gray-800">${item.user.name}</p>
+                                <button class="font-semibold text-gray-800 hover:underline user-profile-link" data-username="${item.user.name}">${item.user.name}</button>
                                 ${ratingHtml}
                             </div>
                         </div>
@@ -708,21 +963,31 @@
                                     <p class="text-sm text-gray-500">Community Interest</p>
                                     <p class="text-3xl font-bold text-indigo-600 flex items-center gap-2"><i data-lucide="arrow-up-circle" class="w-7 h-7"></i>${item.upvotes}</p>
                                 </div>
+                                <div class="text-right">
+                                    <p class="text-sm text-gray-500">Seekers</p>
+                                    <p class="text-3xl font-bold text-indigo-600 flex items-center gap-2"><i data-lucide="users" class="w-7 h-7"></i><span id="seeker-count">${item.seekers}</span></p>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="mt-6 flex items-center space-x-4">${fundsVerifiedBadge}</div>
+                        <div class="mt-6 flex items-center space-x-4">
+                            ${fundsVerifiedBadge}
+                            <span class="text-sm font-semibold">${daysRemainingHtml}</span>
+                        </div>
+                        
+                        ${finderModuleHtml}
 
                         <div class="mt-6 grid grid-cols-1 gap-4">
                              ${actionButtons}
+                             <button data-id="${item.id}" id="join-hunt-btn-detail" class="w-full ${joinButtonClasses} font-semibold py-3 rounded-lg hover:bg-indigo-200 transition-colors flex items-center justify-center space-x-2">
+                                ${joinButtonText}
+                             </button>
                              <button data-item-name="${item.name}" id="get-ai-insights-btn" class="w-full bg-white border-2 border-indigo-500 text-indigo-600 font-semibold py-3 rounded-lg hover:bg-indigo-50 transition-colors flex items-center justify-center space-x-2">
                                 <i data-lucide="sparkles" class="w-5 h-5"></i><span>Get AI Market Insights</span>
                              </button>
                         </div>
                     </div>
                 </div>
-
-                ${syndicationModule}
 
                 <!-- Simulated Comments Section -->
                 <div class="mt-12">
@@ -735,13 +1000,6 @@
                                 <p class="text-gray-700">Absolute grail piece. I've been looking for one in this condition for ages. Upvoted!</p>
                             </div>
                         </div>
-                        <div class="flex items-start space-x-3">
-                            <img src="https://i.pravatar.cc/40?u=commenter2" class="w-10 h-10 rounded-full"/>
-                            <div class="bg-white p-3 rounded-lg border border-gray-200 comment-bubble">
-                                <p class="text-sm font-semibold">@resell_king</p>
-                                <p class="text-gray-700">Good luck with the hunt. The market for these is crazy right now. The top offer is fair but might need to go higher to find one.</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             `;
@@ -749,17 +1007,17 @@
             lucide.createIcons();
 
             if (item.fundsVerified) {
-                startSyndicationAnimation();
+                simulateFinderAssignment(item);
             }
 
             document.getElementById('back-to-feed').addEventListener('click', () => {
                 detailView.classList.remove('active');
-                mainContent.classList.add('active');
-                renderFeed();
+                switchView('main-content')
             });
             document.getElementById('delete-iso-btn').addEventListener('click', handleDeleteIso);
-             document.getElementById('edit-iso-btn').addEventListener('click', handleEditIso);
+            document.getElementById('edit-iso-btn').addEventListener('click', handleEditIso);
             document.getElementById('get-ai-insights-btn').addEventListener('click', handleGetAiInsights);
+            document.getElementById('join-hunt-btn-detail').addEventListener('click', handleJoinHunt);
             
             const sellBtn = document.querySelector('.sell-item-btn');
             if (sellBtn) sellBtn.addEventListener('click', handleSellItemClick);
@@ -768,29 +1026,110 @@
             if (viewBidsBtn) viewBidsBtn.addEventListener('click', handleViewBids);
         }
         
+        // =================================================================================
+        // NEW DASHBOARD RENDER FUNCTIONS
+        // =================================================================================
+        
+        function renderMyIsoView() {
+            const actionContainer = document.getElementById('my-iso-action-required');
+            const activeContainer = document.getElementById('my-iso-active-hunts');
+            const collectionContainer = document.getElementById('my-iso-collection');
+
+            // For demo, we are hardcoding the content. A real app would filter isoData by current user.
+            const hasAction = true; // Simulates having new offers
+            const hasActiveHunts = true;
+            const hasCollection = true;
+
+            if (hasAction) {
+                actionContainer.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-indigo-300">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-gray-100 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=2070&auto=format&fit=crop')"></div>
+                            <div class="flex-1">
+                                <p class="font-bold text-gray-900">Raf Simons 'Riot' Bomber Jacket</p>
+                                <p class="text-sm text-gray-600"><span class="font-semibold text-green-600">1 New Option</span> from your Finder is ready for review.</p>
+                            </div>
+                            <button class="view-details-btn bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg" data-id="6">Review Now</button>
+                        </div>
+                    </div>`;
+            } else {
+                 actionContainer.innerHTML = `<div class="text-center py-6 bg-white rounded-lg border border-gray-200"><p class="text-sm text-gray-500">No actions required right now.</p></div>`;
+            }
+
+            if (hasActiveHunts) {
+                activeContainer.innerHTML = `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gray-100 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1516478177764-9fe567e9777d?q=80&w=2070&auto=format&fit=crop')"></div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-800">Jordan 1 Retro High 'Chicago'</p>
+                            <p class="text-sm text-gray-500">Status: Syndicating to seller network</p>
+                        </div>
+                        <div class="text-right">
+                             <p class="text-sm font-semibold text-gray-800">$550</p>
+                             <p class="text-xs text-gray-500">Top Offer</p>
+                        </div>
+                        <button class="view-details-btn text-indigo-600 font-semibold" data-id="1">View</button>
+                    </div>`;
+            } else {
+                activeContainer.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
+                        <i data-lucide="search" class="w-12 h-12 mx-auto text-gray-400"></i>
+                        <h3 class="mt-4 text-lg font-semibold text-gray-800">You haven't started any hunts yet.</h3>
+                        <p class="mt-1 text-sm text-gray-500">Let's find what you're searching for.</p>
+                        <button id="my-iso-create-btn" class="mt-4 bg-indigo-600 text-white font-semibold px-5 py-2 rounded-lg">Create Your First ISO</button>
+                    </div>`;
+            }
+
+            if(hasCollection) {
+                collectionContainer.innerHTML = `
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200">
+                        <div class="h-40 bg-gray-100 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=400&auto=format&fit=crop')"></div>
+                        <p class="text-sm font-semibold mt-2 truncate">Margaret Keane Painting</p>
+                        <p class="text-xs text-gray-500">Acquired for $850</p>
+                    </div>`;
+            } else {
+                 collectionContainer.innerHTML = `<p class="text-sm text-gray-500 col-span-full text-center">Your collection will appear here after your first successful hunt.</p>`;
+            }
+
+            lucide.createIcons();
+        }
+
+        function renderFinderHubView() {
+            const finderActiveHunts = document.getElementById('finder-active-hunts');
+            // Empty state for demo
+            finderActiveHunts.innerHTML = `
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                    <p class="text-xs text-gray-500">Archival Fashion | Claimed 1 day ago</p>
+                    <p class="font-bold text-gray-900 mt-1">Raf Simons 'Riot' Bomber Jacket</p>
+                    <div class="flex justify-between items-center mt-2">
+                         <p class="text-sm text-green-600 font-semibold">1 Option Presented to Buyer</p>
+                        <button class="manage-hunt-btn bg-white border border-gray-300 font-semibold px-4 py-2 rounded-lg" data-id="6">Manage</button>
+                    </div>
+                </div>`;
+        }
+
+        // =================================================================================
+        // MODAL & FORM HANDLING FUNCTIONS
+        // =================================================================================
+        
         /**
          * Switches between the main application views.
          */
         function switchView(viewId) {
-            document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .leaderboard-view').forEach(view => {
+            document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .leaderboard-view, .my-iso-view, .finder-hub-view, .seller-portal-view').forEach(view => {
                 view.classList.remove('active');
             });
-            document.getElementById(viewId).classList.add('active');
+            const targetView = document.getElementById(viewId);
+            if(targetView) targetView.classList.add('active');
+
 
             document.querySelectorAll('.nav-link, .nav-link-mobile').forEach(link => {
-                link.classList.remove('active', 'text-gray-800', 'text-indigo-600', 'border-indigo-600');
+                link.classList.remove('active');
                 if (link.dataset.view === viewId) {
                     link.classList.add('active');
-                    if(link.classList.contains('nav-link-mobile')){
-                       link.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
-                    } else {
-                       link.classList.add('text-gray-800');
-                    }
-                } else {
-                    link.classList.add('text-gray-500');
                 }
             });
-             if(viewId === 'how-it-works-view' || viewId === 'leaderboard-view'){
+             if(['how-it-works-view', 'leaderboard-view', 'my-iso-view', 'finder-hub-view', 'seller-portal-view'].includes(viewId)){
                  lucide.createIcons();
             }
         }
@@ -818,6 +1157,8 @@
             const imageUrl = imagePreview.src && imagePreview.src.startsWith('data:') ? imagePreview.src : "https://placehold.co/700x500/e2e8f0/4a5568?text=New+Request";
             const newItem = { 
                 id: Date.now(), 
+                seekers: 1,
+                joined: true, // Creator auto-joins their hunt
                 name: document.getElementById('item-name').value, 
                 category: document.getElementById('item-category').value, 
                 details: document.getElementById('item-details').value, 
@@ -828,7 +1169,9 @@
                 user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}`, rating: 5.0 },
                 fundsVerified: false,
                 privateBids: 0,
-                duration: 30
+                duration: parseInt(document.getElementById('item-duration-form').value),
+                createdAt: Date.now(),
+                finder: null
             }; 
             isoData.unshift(newItem);
             renderFeed();
@@ -852,7 +1195,8 @@
         async function getAiInsights(itemName) {
             console.log(`Simulating Gemini API call for: ${itemName}`);
             await new Promise(resolve => setTimeout(resolve, 1500));
-            return aiInsightsData[itemName] || "No specific insights available for this item. It is considered a rare collectible within its community.";
+            const insight = aiInsightsData[itemName] || "No specific insights available for this item. It is considered a rare collectible within its community.";
+            return insight;
         }
         
         /**
@@ -868,7 +1212,7 @@
                     <button id="close-sell-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
                 </div>
                 <div class="p-6">
-                    <p class="text-gray-600 mb-4">You are making a private offer for the <span class="font-bold">${item.name}</span>. Only the buyer will see this.</p>
+                    <p class="text-gray-600 mb-4">You are making a private offer for the <span class="font-bold">${item.name}</span>. The assigned Finder will verify your item and present it to the buyer.</p>
                     <form id="offer-form" class="space-y-4">
                         <div>
                             <label for="offer-price" class="block text-sm font-medium text-gray-700">Your Offer Price ($)</label>
@@ -879,7 +1223,7 @@
                             <textarea id="offer-condition" placeholder="e.g., Deadstock, with original box and receipt." required rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                         </div>
                         <div class="pt-4 flex justify-end">
-                            <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Send Private Offer</button>
+                            <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Send Private Offer to Finder</button>
                         </div>
                     </form>
                 </div>`;
@@ -888,7 +1232,7 @@
             document.getElementById('close-sell-modal').addEventListener('click', () => toggleModal(sellModal, false));
             document.getElementById('offer-form').addEventListener('submit', (e) => {
                 e.preventDefault();
-                alert(`Your private offer for "${item.name}" has been sent!`);
+                alert(`Your private offer for "${item.name}" has been sent to the Finder for verification!`);
                 toggleModal(sellModal, false);
             });
         }
@@ -897,33 +1241,41 @@
          * Opens the modal to view private bids.
          */
         function handleViewBids(event) {
-            const itemId = event.currentTarget.dataset.itemId;
-            const item = isoData.find(i => i.id === parseInt(itemId));
-            if (!item) return;
+            const itemId = parseInt(event.currentTarget.dataset.itemId);
+            const item = isoData.find(i => i.id === itemId);
+            if (!item || !item.finder) return;
 
-            // Simulated bids
-            const bids = [
-                { user: '@resell_king', avatar: 'https://i.pravatar.cc/40?u=resell', price: 710, condition: 'Deadstock with original box. Can ship today.', rating: 4.9 },
-                { user: '@sneakerVault', avatar: 'https://i.pravatar.cc/40?u=vault', price: 680, condition: 'VNDS, worn once indoors. Includes extra laces.', rating: 5.0 },
-                { user: '@kickzCircle', avatar: 'https://i.pravatar.cc/40?u=kickz', price: 725, condition: 'Perfect condition, OG all. Includes receipt.', rating: 4.7 },
-            ];
+            const bids = privateBidsData[itemId] || [];
 
             const bidsHtml = bids.map(bid => `
-                <div class="p-4 border rounded-lg flex items-start space-x-4 hover:bg-gray-50">
-                    <img src="${bid.avatar}" class="w-10 h-10 rounded-full mt-1"/>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-2">
-                                <p class="font-semibold text-gray-800">${bid.user}</p>
-                                <span class="text-xs text-gray-500 flex items-center"><i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1"></i> ${bid.rating}</span>
+                <div class="p-4 border rounded-lg bg-white">
+                    <div class="flex items-start space-x-4">
+                        <img src="${bid.avatar}" class="w-10 h-10 rounded-full mt-1"/>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-2">
+                                    <p class="font-semibold text-gray-800">${bid.user}</p>
+                                    <span class="text-xs text-gray-500 flex items-center"><i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1"></i> ${bid.rating}</span>
+                                </div>
+                                <p class="text-2xl font-bold text-green-600">$${bid.price.toLocaleString()}</p>
                             </div>
-                            <p class="text-2xl font-bold text-green-600">$${bid.price}</p>
+                            <p class="text-sm text-gray-600 mt-1">${bid.condition}</p>
                         </div>
-                        <p class="text-sm text-gray-600 mt-1">${bid.condition}</p>
                     </div>
-                    <div class="flex flex-col space-y-2">
-                        <button data-price="${bid.price}" class="accept-offer-btn bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-indigo-700">Accept Offer</button>
-                        <button class="bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-4 py-2 rounded-md hover:bg-gray-100">Counter-offer</button>
+                     ${bid.findersNote ? `
+                        <div class="mt-3 pt-3 border-t border-gray-200">
+                           <div class="flex items-start space-x-3">
+                               <img src="${item.finder.avatar}" class="w-8 h-8 rounded-full"/>
+                               <div>
+                                    <p class="text-xs font-semibold text-indigo-700">Finder's Verification Note:</p>
+                                    <p class="text-xs text-gray-600 italic">"${bid.findersNote}"</p>
+                               </div>
+                           </div>
+                        </div>
+                    ` : ''}
+                    <div class="mt-4 flex space-x-2">
+                        <button data-price="${bid.price}" class="accept-offer-btn flex-1 bg-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-md hover:bg-indigo-700">Accept Offer</button>
+                        <button class="flex-1 bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-4 py-2 rounded-md hover:bg-gray-100">Counter-offer</button>
                     </div>
                 </div>
             `).join('');
@@ -931,12 +1283,12 @@
             bidsModal.innerHTML = `
                  <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <div>
-                        <h3 class="text-xl font-bold">Private Offers Received</h3>
+                        <h3 class="text-xl font-bold">Options Presented by Your Finder</h3>
                         <p class="text-sm text-gray-500">for ${item.name}</p>
                     </div>
                     <button id="close-bids-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
                 </div>
-                <div id="bids-content" class="p-6 bg-gray-50">
+                <div id="bids-content" class="p-6 bg-gray-50 max-h-[60vh] overflow-y-auto">
                     <div class="space-y-4">${bidsHtml}</div>
                 </div>
             `;
@@ -953,8 +1305,7 @@
          */
         function handleAcceptOffer(item, price) {
             const bidsContent = document.getElementById('bids-content');
-            const total = parseInt(price) + 15 + 25; // price + shipping + fee
-
+            
             bidsContent.innerHTML = `
                 <h4 class="text-lg font-bold text-gray-900">Complete Your Purchase</h4>
                 <div class="mt-4 space-y-4">
@@ -964,8 +1315,12 @@
                             <span class="font-semibold">$${parseInt(price).toLocaleString()}</span>
                         </div>
                         <div class="flex justify-between items-center mt-2">
-                            <span class="text-gray-600">ISO Service Fee (5%)</span>
-                            <span class="font-semibold">$${(price * 0.05).toLocaleString()}</span>
+                            <span class="text-gray-600">ISO Service Fee (7%)</span>
+                            <span class="font-semibold">$${(price * 0.07).toLocaleString()}</span>
+                        </div>
+                         <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-600">Finder's Fee (10%)</span>
+                            <span class="font-semibold">$${(price * 0.10).toLocaleString()}</span>
                         </div>
                          <div class="pt-4 mt-4 border-t">
                             <p class="font-medium mb-2">Shipping Options</p>
@@ -984,7 +1339,7 @@
                         </div>
                         <div class="flex justify-between items-center mt-4 pt-4 border-t-2 border-dashed">
                             <span class="text-lg font-bold">Total</span>
-                            <span id="total-price" class="text-lg font-bold">$${(parseInt(price) + (price*0.05) + 15).toLocaleString()}</span>
+                            <span id="total-price" class="text-lg font-bold">$${(parseInt(price) + (price*0.07) + (price * 0.10) + 15).toLocaleString()}</span>
                         </div>
                     </div>
                     <button id="confirm-purchase-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700">Confirm Purchase</button>
@@ -994,7 +1349,7 @@
             bidsContent.querySelectorAll('input[name="shipping"]').forEach(radio => {
                 radio.addEventListener('change', (e) => {
                     const shippingCost = parseInt(e.target.value);
-                    const newTotal = parseInt(price) + (price * 0.05) + shippingCost;
+                    const newTotal = parseInt(price) + (price * 0.07) + (price * 0.10) + shippingCost;
                     document.getElementById('total-price').textContent = `$${newTotal.toLocaleString()}`;
                 });
             });
@@ -1045,11 +1400,55 @@
                     isoData[itemIndex].topOffer = parseInt(document.getElementById('edit-item-bid').value);
                     isoData[itemIndex].duration = parseInt(document.getElementById('edit-item-duration').value);
                     renderDetailView(itemId); // Re-render the detail view to show changes
+                    renderFeed(filterBar.querySelector('.active').dataset.category, searchBar.value);
                 }
                 toggleModal(editModal, false);
             });
         }
         
+        /**
+         * Renders the profile modal for a user.
+         */
+        function renderProfileModal(username) {
+            // In a real app, you'd fetch this data. Here we'll find a user from our mock data.
+            const user = Object.values(isoData).map(d => d.user).find(u => u.name === username) || 
+                         Object.values(privateBidsData).flat().map(b => b.user).find(u => u.name === username) ||
+                         { name: username, avatar: 'https://i.pravatar.cc/80', rating: 4.5, specialty: 'Collector' };
+            
+            const isFinder = user.name === '@TheCurator'; // Demo logic
+
+            profileModal.innerHTML = `
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-xl font-bold">User Profile</h3>
+                    <button id="close-profile-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center space-x-4">
+                        <img src="${user.avatar}" class="w-20 h-20 rounded-full"/>
+                        <div>
+                            <h4 class="text-lg font-bold">${user.name}</h4>
+                            <p class="text-sm text-indigo-600 font-semibold">${isFinder ? 'Vetted Finder' : 'Collector'}</p>
+                            <div class="flex items-center mt-1">
+                                <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1"></i>
+                                <span class="font-bold">${user.rating || 5.0}</span>
+                                <span class="text-sm text-gray-500 ml-1">(23 reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h5 class="font-semibold mb-2">Recent Activity</h5>
+                        <div class="space-y-3">
+                            <div class="text-sm text-gray-600"><span class="font-semibold text-green-600">SUCCESS:</span> Found a Rolex Daytona for @watchguy.</div>
+                            <div class="text-sm text-gray-600"><span class="font-semibold text-blue-600">ACTIVE:</span> Sourcing a Raf Simons Bomber for @archive_fiend.</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            toggleModal(profileModal, true);
+            lucide.createIcons();
+            document.getElementById('close-profile-modal').addEventListener('click', () => toggleModal(profileModal, false));
+        }
+
         /**
          * Starts various timers and leaderboards.
          */
@@ -1084,7 +1483,7 @@
         }
 
         // =================================================================================
-        // NEW CHAT & SYNDICATION LOGIC
+        // NEW CHAT & FINDER LOGIC
         // =================================================================================
         let currentChatStep = 0;
         let isoInProgress = {};
@@ -1094,8 +1493,9 @@
             { bot: "Which category does this fall under?", action: 'category' },
             { bot: "What's the top offer you'd like to make for this item?", key: 'topOffer', placeholder: "$550" },
             { bot: "A picture is worth a thousand words! Please upload a reference image for your hunt.", action: 'image' },
+            { bot: "How long should this hunt be active for?", action: 'duration' },
             { bot: "Great. To ensure sellers know you're serious, we'll simulate a fund verification. This signals you're a ready buyer.", action: 'verify' },
-            { bot: "Perfect! Your funds are verified. We are now syndicating your ISO to our network of sellers.", action: 'syndicate' }
+            { bot: "Perfect! Your funds are verified. We are now matching your ISO with a vetted expert Finder.", action: 'syndicate' }
         ];
 
         function startChat() {
@@ -1165,11 +1565,11 @@
                      const categories = ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'];
                      const categoryButtonsHTML = `
                         <div class="flex flex-wrap gap-2 mt-2">
-                            ${categories.map(cat => `<button class="chat-category-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${cat}</button>`).join('')}
+                            ${categories.map(cat => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${cat}</button>`).join('')}
                         </div>
                      `;
                      addMessage(categoryButtonsHTML, false);
-                     document.querySelectorAll('.chat-category-btn').forEach(btn => {
+                     document.querySelectorAll('.chat-action-btn').forEach(btn => {
                         btn.addEventListener('click', () => {
                             const category = btn.textContent;
                             isoInProgress.category = category;
@@ -1178,6 +1578,23 @@
                             processNextChatStep();
                         });
                      });
+                } else if (nextStep.action === 'duration') {
+                    const durations = [7, 14, 30];
+                    const durationButtonsHTML = `
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            ${durations.map(dur => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100" data-duration="${dur}">${dur} Days</button>`).join('')}
+                        </div>
+                    `;
+                    addMessage(durationButtonsHTML, false);
+                    document.querySelectorAll('.chat-action-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const duration = btn.dataset.duration;
+                            isoInProgress.duration = parseInt(duration);
+                            addUserMessage(`${duration} Days`);
+                            currentChatStep++;
+                            processNextChatStep();
+                        });
+                    });
                 } else if (nextStep.action === 'image') {
                     const imageUploaderHTML = `
                         <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -1222,6 +1639,8 @@
         function createNewIsoFromChat() {
             const newItem = {
                 id: Date.now(),
+                seekers: 1,
+                joined: true, // Creator auto-joins their hunt
                 name: isoInProgress.name,
                 details: isoInProgress.details,
                 topOffer: parseInt(isoInProgress.topOffer.replace(/\D/g,'')) || 0,
@@ -1232,7 +1651,9 @@
                 user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}`, rating: 5.0 },
                 fundsVerified: true,
                 privateBids: 0,
-                duration: 30
+                duration: isoInProgress.duration || 30,
+                createdAt: Date.now(),
+                finder: null
             };
             isoData.unshift(newItem);
             renderFeed();
@@ -1255,62 +1676,123 @@
                 }
                 if (icon) icon.style.display = 'none';
 
+                addUserMessage('<em>Image successfully uploaded.</em>');
                 currentChatStep++;
                 processNextChatStep();
             };
             reader.readAsDataURL(file);
         }
 
-        function startSyndicationAnimation() {
-            const container = document.getElementById('syndication-channels');
-            if (!container) return;
-            
-            const channels = [
-                { name: 'Instagram Dealer Network', count: '47 dealers' },
-                { name: 'Discord Collector Groups', count: '8 communities' },
-                { name: 'Facebook Collector Groups', count: '15 groups' },
-                { name: 'Verified Email Network', count: '1,200+ sellers' }
-            ];
-            
-            container.innerHTML = ''; 
-            
-            channels.forEach((channel, index) => {
-                setTimeout(() => {
-                    const channelDiv = document.createElement('div');
-                    channelDiv.className = 'flex items-center justify-between text-sm opacity-0 transition-opacity duration-500';
-                    channelDiv.innerHTML = `
-                        <div class="flex items-center space-x-3">
-                            <div class="loader !w-4 !h-4 !border-2"></div>
-                            <span class="font-medium text-gray-700">${channel.name}</span>
-                        </div>
-                        <span class="text-gray-500" id="status-${index}">Broadcasting...</span>`;
-                    container.appendChild(channelDiv);
-                    setTimeout(() => channelDiv.classList.remove('opacity-0'), 10);
+        function simulateFinderAssignment(item) {
+            const finderModule = document.getElementById('finder-module');
+            if (!finderModule) return;
+
+            // Initial status: searching for a finder
+            finderModule.innerHTML = `
+                <h3 class="text-lg font-bold text-gray-900 mb-1">Hunt Status</h3>
+                <div class="p-4 bg-gray-50 border rounded-lg flex items-center space-x-3">
+                    <div class="loader !w-5 !h-5 !border-2"></div>
+                    <p class="text-sm font-medium text-gray-700">Matching your hunt with a vetted expert Finder...</p>
+                </div>
+            `;
+            finderModule.classList.remove('opacity-0');
+
+            // Simulate a delay for finding and assigning a Finder
+            setTimeout(() => {
+                if (item.finder) {
+                    showNotification(`Expert Finder '@TheCurator' has claimed the hunt for the ${item.name}.`, 'They will now source and verify options for you.');
                     
-                    setTimeout(() => {
-                        const statusEl = document.getElementById(`status-${index}`);
-                        const loaderEl = channelDiv.querySelector('.loader');
-                        if (loaderEl) loaderEl.style.display = 'none';
-                        channelDiv.querySelector('.flex').insertAdjacentHTML('afterbegin', `<i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>`);
-                        if (statusEl) {
-                           statusEl.textContent = `✓ Syndicated (${channel.count})`;
-                           statusEl.classList.add('font-semibold', 'text-green-600');
-                        }
-                        lucide.createIcons();
-                    }, 1500 + (index * 500));
-                }, index * 1000);
-            });
+                    finderModule.innerHTML = `
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">Your Hunt Manager</h3>
+                        <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <img src="${item.finder.avatar}" class="w-12 h-12 rounded-full"/>
+                                <div class="flex-1">
+                                    <button class="font-bold text-gray-900 hover:underline user-profile-link" data-username="${item.finder.name}">${item.finder.name}</button>
+                                    <p class="text-sm text-indigo-700 font-medium">${item.finder.specialty}</p>
+                                </div>
+                                <span class="text-sm text-gray-500 flex items-center"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.finder.rating}</span>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-3 italic">
+                                "@TheCurator is now sourcing items from our private seller network. You'll be notified as soon as verified options are ready to review."
+                            </p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                } else {
+                     finderModule.innerHTML = `
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">Hunt Status</h3>
+                        <div class="p-4 bg-gray-50 border rounded-lg flex items-center space-x-3">
+                            <i data-lucide="send" class="w-5 h-5 text-gray-700"></i>
+                            <p class="text-sm font-medium text-gray-700">Syndicating your hunt directly to the seller network.</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
+            }, 3000); // 3-second delay for simulation
         }
 
         function handleDeleteIso(event) {
             const itemId = parseInt(event.currentTarget.dataset.id);
-            const itemIndex = isoData.findIndex(item => item.id === itemId);
-            if (itemIndex > -1) {
-                isoData.splice(itemIndex, 1);
-                switchView('main-content');
-                renderFeed();
-                renderTrendingHunts();
+            if (confirm('Are you sure you want to delete this hunt? This action cannot be undone.')) {
+                const itemIndex = isoData.findIndex(item => item.id === itemId);
+                if (itemIndex > -1) {
+                    isoData.splice(itemIndex, 1);
+                    switchView('main-content');
+                    renderFeed();
+                    renderTrendingHunts();
+                }
             }
+        }
+        
+        function handleJoinHunt(event) {
+            const itemId = parseInt(event.currentTarget.dataset.id);
+            const item = isoData.find(i => i.id === itemId);
+            if (!item) return;
+
+            item.joined = !item.joined;
+
+            if (item.joined) {
+                item.seekers++;
+                showNotification('You have joined the hunt!', 'You will be notified of all private offers for this item.');
+            } else {
+                item.seekers--;
+                showNotification('You have left the hunt.', 'You will no longer receive private offers.');
+            }
+
+            if (detailView.classList.contains('active')) {
+                const detailButton = document.getElementById('join-hunt-btn-detail');
+                 if (detailButton && parseInt(detailButton.dataset.id) === itemId) {
+                    renderDetailView(itemId);
+                }
+            }
+            
+            renderTrendingHunts();
+        }
+        
+        function showNotification(title, message, icon='check-circle', color='green') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = 'bg-white rounded-xl shadow-lg p-4 border border-gray-200 animate-fade-in';
+            notification.innerHTML = `
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i data-lucide="${icon}" class="h-6 w-6 text-${color}-500"></i>
+                    </div>
+                    <div class="ml-3 w-0 flex-1 pt-0.5">
+                        <p class="text-sm font-medium text-gray-900">${title}</p>
+                        <p class="mt-1 text-sm text-gray-500">${message}</p>
+                    </div>
+                </div>
+            `;
+            container.appendChild(notification);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s ease';
+                notification.style.opacity = '0';
+                setTimeout(() => container.removeChild(notification), 500);
+            }, 5000);
         }
 
         // =================================================================================
@@ -1329,6 +1811,7 @@
             toggleModal(aiModal, false);
             toggleModal(bidsModal, false);
             toggleModal(editModal, false);
+            toggleModal(profileModal, false);
         });
         document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
         
@@ -1374,6 +1857,7 @@
             const viewBtn = event.target.closest('.view-details-btn');
             const cardBody = event.target.closest('.cursor-pointer');
             const upvoteBtn = event.target.closest('.upvote-btn');
+            const profileLink = event.target.closest('.user-profile-link');
 
             if (viewBtn || cardBody) {
                 const id = viewBtn ? viewBtn.dataset.id : cardBody.dataset.id;
@@ -1393,14 +1877,20 @@
                     }
                     upvoteBtn.querySelector('.upvote-count').textContent = item.upvotes;
                 }
+            } else if (profileLink) {
+                renderProfileModal(profileLink.dataset.username);
             }
         });
         
         detailView.addEventListener('click', (event) => {
             const sellBtn = event.target.closest('.sell-item-btn');
             const viewBidsBtn = event.target.closest('#view-bids-btn');
+            const profileLink = event.target.closest('.user-profile-link');
             if (sellBtn) handleSellItemClick(event);
             if (viewBidsBtn) handleViewBids(event);
+            if (profileLink) {
+                renderProfileModal(profileLink.dataset.username);
+            }
         });
 
         app.addEventListener('click', (e) => {
@@ -1409,10 +1899,34 @@
                  e.preventDefault();
                  switchView(navLink.dataset.view);
              }
-             const similarBtn = e.target.closest('.start-similar-btn');
-             if(similarBtn) {
+             const joinHuntBtn = e.target.closest('.join-hunt-sidebar-btn');
+             if(joinHuntBtn) {
+                handleJoinHunt({ currentTarget: joinHuntBtn });
+             }
+             const createIsoBtn = e.target.closest('#my-iso-create-btn');
+             if (createIsoBtn) {
                 toggleModal(isoModal, true);
                 startChat();
+             }
+             const viewDetailsBtn = e.target.closest('.view-details-btn');
+             if (viewDetailsBtn) {
+                renderDetailView(viewDetailsBtn.dataset.id);
+             }
+             const claimHuntBtn = e.target.closest('.claim-hunt-btn');
+             if (claimHuntBtn) {
+                claimHuntBtn.textContent = 'Claimed ✓';
+                claimHuntBtn.disabled = true;
+                claimHuntBtn.classList.remove('bg-indigo-600', 'text-white');
+                claimHuntBtn.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
+                showNotification('Hunt Claimed!', 'You are now the Hunt Manager for this ISO.');
+             }
+             const manageHuntBtn = e.target.closest('.manage-hunt-btn');
+             if(manageHuntBtn) {
+                renderDetailView(manageHuntBtn.dataset.id);
+             }
+             const userProfileLink = e.target.closest('.user-profile-link');
+             if (userProfileLink) {
+                renderProfileModal(userProfileLink.dataset.username);
              }
         });
         
@@ -1425,18 +1939,25 @@
             if (e.target.classList.contains('filter-btn')) {
                 document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
-                renderFeed(e.target.dataset.category);
+                renderFeed(e.target.dataset.category, searchBar.value);
             }
+        });
+
+        searchBar.addEventListener('input', () => {
+             renderFeed(filterBar.querySelector('.active').dataset.category, searchBar.value);
         });
 
         // --- INITIAL RENDER ---
         function initializeApp() {
+            switchView('main-content');
             renderFeed();
             renderRecentlyFound();
             renderTrendingHunts();
             renderLeaderboard();
             startCountdown();
-            mainContent.classList.add('active');
+            // Render dashboards with mock data
+            renderMyIsoView();
+            renderFinderHubView();
         }
 
         initializeApp();

@@ -30,7 +30,7 @@
         }
         .main-content, .detail-view, .how-it-works-view, .leaderboard-view, .my-iso-view, .finder-hub-view, .seller-portal-view { display: none; }
         .main-content.active, .detail-view.active, .how-it-works-view.active, .leaderboard-view.active, .my-iso-view.active, .finder-hub-view.active, .seller-portal-view.active { display: block; }
-        .upvote-btn.upvoted { background-color: #4f46e5; color: white; }
+        .upvote-btn.upvoted { background-color: #4f4-e5; color: white; }
         .comment-bubble, .chat-bubble {
             max-width: 80%;
             word-wrap: break-word;
@@ -313,50 +313,57 @@
         <!-- How It Works View -->
         <div id="how-it-works-view" class="how-it-works-view">
              <div class="py-12 text-center">
-                <h2 class="text-3xl font-bold text-gray-900">The Triangulation Marketplace</h2>
-                <p class="text-lg text-gray-500 mt-2 max-w-3xl mx-auto">We connect Buyers, Sellers, and expert Finders to create the most trusted and efficient marketplace for high-value collectibles.</p>
+                <h2 class="text-3xl font-bold text-gray-900">The Triangulation Marketplace: A Marketplace Built on Demand</h2>
+                <p class="text-lg text-gray-500 mt-2 max-w-3xl mx-auto">We flip the traditional e-commerce model. Instead of sellers listing items, our community of seekers posts exactly what they’re looking for first.</p>
+            </div>
+
+            <div class="my-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-4xl mx-auto">
+                <h3 class="text-2xl font-bold text-center text-indigo-600 mb-4">Community vs. Commodity</h3>
+                <p class="text-center text-gray-600 leading-relaxed">
+                    Traditional marketplaces are built for sellers to list inventory. <strong class="text-indigo-600">We are a platform built for communities to express demand.</strong> We believe that for the most passionate collectors, the joy of discovery is just as important as the purchase. Our entire model is designed to make the hunt more efficient, trustworthy, and ultimately, more rewarding by connecting you with a dedicated expert who manages the search for you.
+                </p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-start my-12 max-w-6xl mx-auto">
                 <!-- Step 1 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col h-full">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="message-circle" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">1. Post Your ISO</h3>
-                    <p class="text-sm text-gray-600">A buyer starts a hunt by telling our Chat Assistant exactly what they're looking for and verifying their funds.</p>
+                    <p class="text-sm text-gray-600 mt-auto">A buyer starts a hunt by telling our Chat Assistant exactly what they're looking for, adding a reference photo, and verifying their funds.</p>
                 </div>
                 <!-- Step 2 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col h-full">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="user-check" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">2. Match with a Finder</h3>
-                    <p class="text-sm text-gray-600">We match the hunt with a vetted expert (a "Finder") in that category who acts as the buyer's trusted Hunt Manager.</p>
+                    <p class="text-sm text-gray-600 mt-auto">We match the hunt with a vetted expert (a "Finder") in that category who acts as the buyer's trusted, personal Hunt Manager.</p>
                 </div>
                 <!-- Step 3 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col h-full">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="search" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">3. Finder Sources Items</h3>
-                    <p class="text-sm text-gray-600">The Finder uses our Syndication Engine and their private network to source options from trusted sellers.</p>
+                    <p class="text-sm text-gray-600 mt-auto">The Finder uses our Syndication Engine and their private network to source options from trusted sellers across the market.</p>
                 </div>
                 <!-- Step 4 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col h-full">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="shield-check" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">4. Verify & Present</h3>
-                    <p class="text-sm text-gray-600">The Finder verifies the items, provides expert context, and presents the curated options to the buyer.</p>
+                    <p class="text-sm text-gray-600 mt-auto">The Finder verifies the items, provides expert context, and presents a curated list of the best options back to the buyer.</p>
                 </div>
                  <!-- Step 5 -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col h-full">
                     <div class="mx-auto bg-indigo-100 text-indigo-600 w-12 h-12 flex items-center justify-center rounded-full mb-4 flex-shrink-0">
                         <i data-lucide="handshake" class="w-6 h-6"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">5. Secure the Deal</h3>
-                    <p class="text-sm text-gray-600">The buyer accepts the best offer. We handle the secure escrow payment and insured shipping to complete the deal.</p>
+                    <p class="text-sm text-gray-600 mt-auto">The buyer accepts the best offer. We handle the secure escrow payment and insured shipping to complete the deal.</p>
                 </div>
             </div>
 
@@ -590,7 +597,7 @@
           {
             id: 6,
             seekers: 1,
-            joined: false,
+            joined: true, // Let's pretend the user created this one.
             name: "Raf Simons 'Riot' Bomber Jacket",
             category: "Archival Fashion",
             details: "AW 2001, Size 50, Good condition",
@@ -1039,8 +1046,8 @@
                  actionContainer.innerHTML = `<div class="text-center py-6 bg-white rounded-lg border border-gray-200"><p class="text-sm text-gray-500">No actions required right now.</p></div>`;
             }
 
-            if (otherHunts.length > 0) {
-                activeContainer.innerHTML = otherHunts.map(item => `
+            if (myHunts.length > 0) {
+                activeContainer.innerHTML = myHunts.map(item => `
                     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center space-x-4">
                         <div class="w-16 h-16 bg-gray-100 rounded-lg bg-cover bg-center" style="background-image: url('${item.imageUrl}')"></div>
                         <div class="flex-1">

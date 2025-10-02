@@ -30,7 +30,7 @@
         }
         .main-content, .detail-view, .how-it-works-view, .leaderboard-view, .my-iso-view, .finder-hub-view, .seller-portal-view { display: none; }
         .main-content.active, .detail-view.active, .how-it-works-view.active, .leaderboard-view.active, .my-iso-view.active, .finder-hub-view.active, .seller-portal-view.active { display: block; }
-        .upvote-btn.upvoted { background-color: #4f4-e5; color: white; }
+        .upvote-btn.upvoted { background-color: #4f46e5; color: white; }
         .comment-bubble, .chat-bubble {
             max-width: 80%;
             word-wrap: break-word;
@@ -316,14 +316,14 @@
                 <h2 class="text-3xl font-bold text-gray-900">The Triangulation Marketplace: A Marketplace Built on Demand</h2>
                 <p class="text-lg text-gray-500 mt-2 max-w-3xl mx-auto">We flip the traditional e-commerce model. Instead of sellers listing items, our community of seekers posts exactly what they’re looking for first.</p>
             </div>
-
+            
             <div class="my-12 bg-white p-8 rounded-xl shadow-sm border border-gray-200 max-w-4xl mx-auto">
                 <h3 class="text-2xl font-bold text-center text-indigo-600 mb-4">Community vs. Commodity</h3>
                 <p class="text-center text-gray-600 leading-relaxed">
                     Traditional marketplaces are built for sellers to list inventory. <strong class="text-indigo-600">We are a platform built for communities to express demand.</strong> We believe that for the most passionate collectors, the joy of discovery is just as important as the purchase. Our entire model is designed to make the hunt more efficient, trustworthy, and ultimately, more rewarding by connecting you with a dedicated expert who manages the search for you.
                 </p>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-start my-12 max-w-6xl mx-auto">
                 <!-- Step 1 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-center flex flex-col h-full">
@@ -567,10 +567,32 @@
          <!-- Profile content will be injected here -->
     </div>
 
-    <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
+    <!-- Buyback Modal -->
+    <div id="buyback-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
+         <!-- Buyback content will be injected here -->
+    </div>
 
+    <script>
+        // Use a self-executing function to ensure lucide is available before it's called
+        (function() {
+            function onDocumentReady(fn) {
+                if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                    setTimeout(fn, 1);
+                } else {
+                    document.addEventListener('DOMContentLoaded', fn);
+                }
+            }
+
+            onDocumentReady(function() {
+                // Now we are sure the DOM is ready and scripts are loaded.
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                    initializeApp();
+                } else {
+                    console.error('Lucide library not found.');
+                }
+            });
+        
         // =================================================================================
         // FAKE DATA STORE
         // =================================================================================
@@ -628,7 +650,8 @@
             privateBids: 0,
             duration: 14,
             createdAt: Date.now() - (4 * 24 * 60 * 60 * 1000),
-            finder: null
+            finder: null,
+            acquired: { price: 850, hasBuyback: true, buybackPrice: 595 }
           },
           {
             id: 4,
@@ -679,11 +702,11 @@
         const privateBidsData = {
             4: [ // Travis Scott Jordan 1 Low
                 { user: '@resell_king', avatar: 'https://i.pravatar.cc/40?u=resell', price: 710, condition: 'Deadstock with original box. Can ship today.', rating: 4.9, findersNote: null },
-                { user: '@sneakerVault', avatar: 'https://i.pravatar.cc/40?u=vault', price: 680, condition: 'VNDS, worn once indoors. Includes extra laces.', rating: 5.0, findersNote: null },
+                { user: '@sneakerVault', avatar: 'https://i.pravatar.cc/40?u=vault', price: 680, condition: 'VNDS, worn once indoors. Includes extra laces.', rating: 5.0, findersNote: null, hasBuyback: true },
                 { user: '@kickzCircle', avatar: 'https://i.pravatar.cc/40?u=kickz', price: 725, condition: 'Perfect condition, OG all. Includes receipt.', rating: 4.7, findersNote: null },
             ],
             6: [ // Raf Simons 'Riot' Bomber Jacket
-                { user: '@archive_dealer', avatar: 'https://i.pravatar.cc/40?u=archive', price: 4400, condition: 'Excellent condition for its age, minor fading. From my personal collection.', rating: 5.0, findersNote: "Sourced from a trusted private collector in Japan. I've personally verified the condition and authenticity. This is a clean example of a notoriously fragile piece." }
+                { user: '@archive_dealer', avatar: 'https://i.pravatar.cc/40?u=archive', price: 4400, condition: 'Excellent condition for its age, minor fading. From my personal collection.', rating: 5.0, findersNote: "Sourced from a trusted private collector in Japan. I've personally verified the condition and authenticity. This is a clean example of a notoriously fragile piece.", hasBuyback: true }
             ]
         };
         
@@ -715,6 +738,7 @@
         const modalBackdrop = document.getElementById('modal-backdrop');
         const closeIsoModalBtn = document.getElementById('close-iso-modal');
         const profileModal = document.getElementById('profile-modal');
+        const buybackModal = document.getElementById('buyback-modal');
         
         // New ISO Modal elements
         const tabChat = document.getElementById('tab-chat');
@@ -811,7 +835,7 @@
                            ${fundsVerifiedBadge}
                         </div>
                     </div>
-                    <div class="p-4 cursor-pointer" data-id="${item.id}">
+                    <div class="p-4 cursor-pointer view-details-btn" data-id="${item.id}">
                         <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center mb-4 bg-center bg-cover" style="background-image: url('${item.imageUrl}')">
                         </div>
                         <h3 class="font-bold text-lg truncate text-gray-900">${item.name}</h3>
@@ -914,7 +938,7 @@
             if (item.privateBids > 0) {
                  actionButtons = `<button data-item-id="${item.id}" id="view-bids-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2"><i data-lucide="gavel" class="w-5 h-5"></i><span>Review ${item.privateBids > 1 ? `${item.privateBids} Options` : '1 Option'} from Finder</span></button>`;
             } else {
-                 actionButtons = `<button data-item-id="${item.id}" class="sell-item-btn w-full bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2" disabled><i data-lucide="tag" class="w-5 h-5"></i><span>Awaiting Finder...</span></button>`;
+                 actionButtons = `<button data-item-id="${item.id}" class="sell-item-btn w-full bg-gray-900 text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"><i data-lucide="tag" class="w-5 h-5"></i><span>I Have This - Sell to Finder</span></button>`;
             }
 
             const joinButtonText = item.joined ? `<i data-lucide="check" class="w-5 h-5"></i><span>Joined!</span>` : `<i data-lucide="users" class="w-5 h-5"></i><span>Join this Hunt</span>`;
@@ -923,7 +947,7 @@
 
             detailView.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
-                    <button id="back-to-feed" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold"><i data-lucide="arrow-left" class="w-5 h-5"></i><span>Back to Feed</span></button>
+                    <button id="back-to-feed" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-semibold"><i data-lucide="arrow-left" class="w-5 h-5"></i><span>Back</span></button>
                     <div class="flex items-center space-x-4">
                         <button id="edit-iso-btn" data-id="${item.id}" class="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 font-semibold"><i data-lucide="edit" class="w-4 h-4"></i><span>Edit Hunt</span></button>
                         <button id="delete-iso-btn" data-id="${item.id}" class="flex items-center space-x-2 text-sm text-red-500 hover:text-red-700 font-semibold"><i data-lucide="trash-2" class="w-4 h-4"></i><span>Delete ISO (Demo)</span></button>
@@ -1024,11 +1048,10 @@
             const activeContainer = document.getElementById('my-iso-active-hunts');
             const collectionContainer = document.getElementById('my-iso-collection');
 
-            // Find hunts that the user has "created" or joined. For demo, we'll use a hardcoded username + the joined flag.
-            const myHunts = isoData.filter(item => item.user.name === '@archive_fiend' || item.joined);
+            // Find hunts that the user has "created" or joined.
+            const myHunts = isoData.filter(item => item.joined);
             
             const actionHunt = myHunts.find(h => h.id === 6 && h.privateBids > 0);
-            const otherHunts = myHunts.filter(h => h.id !== 6);
 
             if (actionHunt) {
                 actionContainer.innerHTML = `
@@ -1058,7 +1081,10 @@
                              <p class="text-sm font-semibold text-gray-800">$${item.topOffer.toLocaleString()}</p>
                              <p class="text-xs text-gray-500">Top Offer</p>
                         </div>
-                        <button class="view-details-btn text-indigo-600 font-semibold" data-id="${item.id}">View</button>
+                        <div class="flex items-center space-x-4">
+                             <button class="remove-hunt-btn text-xs text-red-500 hover:underline font-semibold" data-id="${item.id}">Leave</button>
+                             <button class="view-details-btn text-indigo-600 font-semibold" data-id="${item.id}">View</button>
+                        </div>
                     </div>
                 `).join('');
             } else {
@@ -1070,14 +1096,25 @@
                         <button id="my-iso-create-btn" class="mt-4 bg-indigo-600 text-white font-semibold px-5 py-2 rounded-lg">Create Your First ISO</button>
                     </div>`;
             }
+            
+            // For demo purposes, we will always show one collection item.
+            const collectionItem = isoData.find(i => i.acquired);
+            if(collectionItem) {
+                const buybackHtml = collectionItem.acquired.hasBuyback 
+                ? ` <div class="absolute top-2 right-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full">Buyback Guarantee</span>
+                    </div>
+                    <div class="absolute bottom-2 left-2 right-2">
+                        <button class="initiate-buyback-btn w-full bg-white text-blue-700 text-xs font-bold py-1 rounded-md border border-blue-200 hover:bg-blue-50" data-id="${collectionItem.id}">Initiate Buyback</button>
+                    </div>`
+                : '';
 
-            const hasCollection = true;
-            if(hasCollection) {
                 collectionContainer.innerHTML = `
-                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200">
-                        <div class="h-40 bg-gray-100 rounded-lg bg-cover bg-center" style="background-image: url('images/margret.jpg')"></div>
-                        <p class="text-sm font-semibold mt-2 truncate">Margaret Keane Painting</p>
-                        <p class="text-xs text-gray-500">Acquired for $850</p>
+                    <div class="relative bg-white p-3 rounded-xl shadow-sm border border-gray-200">
+                        <div class="h-40 bg-gray-100 rounded-lg bg-cover bg-center" style="background-image: url('${collectionItem.imageUrl}')"></div>
+                        <p class="text-sm font-semibold mt-2 truncate">${collectionItem.name}</p>
+                        <p class="text-xs text-gray-500">Acquired for $${collectionItem.acquired.price.toLocaleString()}</p>
+                        ${buybackHtml}
                     </div>`;
             } else {
                  collectionContainer.innerHTML = `<p class="text-sm text-gray-500 col-span-full text-center">Your collection will appear here after your first successful hunt.</p>`;
@@ -1095,6 +1132,11 @@
             const hasActiveHunts = true;
             
             if(hasPoolItems) {
+                 // Simulate a claimed state for the demo
+                const isClaimed = finderHubView.dataset.claimed === 'true';
+                const buttonText = isClaimed ? 'Unclaim' : 'Claim Hunt';
+                const buttonClasses = isClaimed ? 'bg-gray-200 text-gray-500' : 'bg-indigo-600 text-white';
+
                 huntPoolContainer.innerHTML = `
                      <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                         <p class="text-xs text-gray-500">Sneakers | Posted 2 hours ago</p>
@@ -1104,7 +1146,7 @@
                                 <p class="text-sm font-semibold text-green-600">$720</p>
                                 <p class="text-xs text-gray-500">Buyer's Offer</p>
                             </div>
-                            <button class="claim-hunt-btn bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Claim Hunt</button>
+                            <button class="claim-hunt-btn ${buttonClasses} font-semibold px-4 py-2 rounded-lg">${buttonText}</button>
                         </div>
                     </div>`;
             } else {
@@ -1283,6 +1325,15 @@
                             <label for="offer-condition" class="block text-sm font-medium text-gray-700">Condition & Details</label>
                             <textarea id="offer-condition" placeholder="e.g., Deadstock, with original box and receipt." required rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                         </div>
+                        <div class="relative flex items-start">
+                            <div class="flex h-6 items-center">
+                                <input id="buyback-offer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                            </div>
+                            <div class="ml-3 text-sm leading-6">
+                                <label for="buyback-offer" class="font-medium text-gray-900">Offer 12-Month Buyback Guarantee</label>
+                                <p class="text-gray-500">Offer to buy back the item for 70% of the sale price if the buyer wants to sell within 12 months.</p>
+                            </div>
+                        </div>
                         <div class="pt-4 flex justify-end">
                             <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Send Private Offer to Finder</button>
                         </div>
@@ -1308,19 +1359,29 @@
 
             const bids = privateBidsData[itemId] || [];
 
-            const bidsHtml = bids.map(bid => `
+            const bidsHtml = bids.map(bid => {
+                const buybackHtml = bid.hasBuyback ? `
+                    <div class="mt-3 flex items-center space-x-2">
+                         <div class="flex-shrink-0 bg-blue-100 text-blue-800 p-1 rounded-full">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-xs text-blue-700 font-semibold">Includes 12-Month Buyback Guarantee at $${(bid.price * 0.7).toLocaleString()}</p>
+                    </div>` : '';
+
+                return `
                 <div class="p-4 border rounded-lg bg-white">
                     <div class="flex items-start space-x-4">
                         <img src="${bid.avatar}" class="w-10 h-10 rounded-full mt-1"/>
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center space-x-2">
-                                    <p class="font-semibold text-gray-800">${bid.user}</p>
+                                    <button class="font-semibold text-gray-800 hover:underline user-profile-link" data-username="${bid.user}">${bid.user}</button>
                                     <span class="text-xs text-gray-500 flex items-center"><i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1"></i> ${bid.rating}</span>
                                 </div>
                                 <p class="text-2xl font-bold text-green-600">$${bid.price.toLocaleString()}</p>
                             </div>
                             <p class="text-sm text-gray-600 mt-1">${bid.condition}</p>
+                            ${buybackHtml}
                         </div>
                     </div>
                      ${bid.findersNote ? `
@@ -1339,7 +1400,7 @@
                         <button class="flex-1 bg-white border border-gray-300 text-gray-700 text-sm font-semibold px-4 py-2 rounded-md hover:bg-gray-100">Counter-offer</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             bidsModal.innerHTML = `
                  <div class="p-6 border-b border-gray-200 flex justify-between items-center">
@@ -1509,6 +1570,36 @@
             toggleModal(profileModal, true);
             lucide.createIcons();
             document.getElementById('close-profile-modal').addEventListener('click', () => toggleModal(profileModal, false));
+        }
+
+        /**
+         * Simulates initiating a buyback.
+         */
+        function handleInitiateBuyback(event) {
+            const itemId = parseInt(event.currentTarget.dataset.id);
+            const item = isoData.find(i => i.id === itemId);
+            if (!item || !item.acquired || !item.acquired.hasBuyback) return;
+
+            buybackModal.innerHTML = `
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-xl font-bold">Initiate Buyback</h3>
+                    <button id="close-buyback-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">You are initiating the 12-month buyback guarantee for the <span class="font-bold">${item.name}</span>.</p>
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md mb-6">
+                        <p class="font-bold text-blue-800">Guaranteed Buyback Price</p>
+                        <p class="text-3xl font-bold text-blue-900">$${item.acquired.buybackPrice.toLocaleString()}</p>
+                        <p class="text-sm text-blue-700">The original seller has been notified and is obligated to repurchase the item at this price upon verification of its condition.</p>
+                    </div>
+                    <div class="pt-4 flex justify-end">
+                        <button class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-blue-700">Confirm & Start Process</button>
+                    </div>
+                </div>
+            `;
+            toggleModal(buybackModal, true);
+            lucide.createIcons();
+            document.getElementById('close-buyback-modal').addEventListener('click', () => toggleModal(buybackModal, false));
         }
 
         /**
@@ -1875,6 +1966,7 @@
             toggleModal(bidsModal, false);
             toggleModal(editModal, false);
             toggleModal(profileModal, false);
+            toggleModal(buybackModal, false);
         });
         document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
         
@@ -1918,13 +2010,11 @@
 
         isoFeed.addEventListener('click', (event) => {
             const viewBtn = event.target.closest('.view-details-btn');
-            const cardBody = event.target.closest('.cursor-pointer');
             const upvoteBtn = event.target.closest('.upvote-btn');
             const profileLink = event.target.closest('.user-profile-link');
 
-            if (viewBtn || cardBody) {
-                const id = viewBtn ? viewBtn.dataset.id : cardBody.dataset.id;
-                renderDetailView(id);
+            if (viewBtn) {
+                renderDetailView(viewBtn.dataset.id);
             } else if (upvoteBtn) {
                 upvoteBtn.classList.add('upvote-blink');
                 setTimeout(() => upvoteBtn.classList.remove('upvote-blink'), 500);
@@ -1981,11 +2071,13 @@
              }
              const claimHuntBtn = e.target.closest('.claim-hunt-btn');
              if (claimHuntBtn) {
-                claimHuntBtn.textContent = 'Claimed ✓';
-                claimHuntBtn.disabled = true;
-                claimHuntBtn.classList.remove('bg-indigo-600', 'text-white');
-                claimHuntBtn.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
-                showNotification('Hunt Claimed!', 'You are now the Hunt Manager for this ISO.');
+                finderHubView.dataset.claimed = finderHubView.dataset.claimed === 'true' ? 'false' : 'true';
+                if(finderHubView.dataset.claimed === 'true') {
+                    showNotification('Hunt Claimed!', 'You are now the Hunt Manager for this ISO.');
+                } else {
+                    showNotification('Hunt Unclaimed', 'The hunt has been returned to the pool.', 'x-circle', 'yellow');
+                }
+                renderFinderHubView();
              }
              const manageHuntBtn = e.target.closest('.manage-hunt-btn');
              if(manageHuntBtn) {
@@ -1994,6 +2086,14 @@
              const userProfileLink = e.target.closest('.user-profile-link');
              if (userProfileLink) {
                 renderProfileModal(userProfileLink.dataset.username);
+             }
+             const removeHuntBtn = e.target.closest('.remove-hunt-btn');
+             if (removeHuntBtn) {
+                 handleJoinHunt({ currentTarget: removeHuntBtn }); // Reuse the join/leave logic
+             }
+             const initiateBuybackBtn = e.target.closest('.initiate-buyback-btn');
+             if (initiateBuybackBtn) {
+                 handleInitiateBuyback({ currentTarget: initiateBuybackBtn });
              }
         });
         
@@ -2027,8 +2127,7 @@
             renderFinderHubView();
             renderSellerPortalView();
         }
-
-        initializeApp();
+    })(); // End of self-executing function
     </script>
 </body>
 </html>

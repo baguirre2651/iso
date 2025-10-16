@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>In Search Of - The Social Marketplace</title>
+    <title>🔍 In Search Of - The Social Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -94,6 +94,30 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .celebration-overlay {
+            animation: celebration-fade-in 0.5s ease-out forwards;
+        }
+        @keyframes celebration-fade-in {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(8px); }
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 28px;
+            bottom: -4px;
+            width: 2px;
+            background-color: #e5e7eb;
+        }
+        .timeline-item:last-child::before {
+            display: none;
+        }
+        .interest-card.selected {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+            color: #4338ca;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -120,11 +144,16 @@
                 <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="leaderboard-view">Leaderboard</a>
                 <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="how-it-works-view">How It Works</a>
             </nav>
-            <button id="post-iso-btn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors flex items-center space-x-2">
-                <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                <span class="hidden md:inline">Create ISO</span>
-                <span class="md:hidden">Post</span>
-            </button>
+            <div class="flex items-center space-x-3">
+                <button id="messages-btn" class="text-gray-500 hover:text-indigo-600">
+                    <i data-lucide="message-square" class="w-6 h-6"></i>
+                </button>
+                <button id="post-iso-btn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors flex items-center space-x-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    <span class="hidden md:inline">Create ISO</span>
+                    <span class="md:hidden">Post</span>
+                </button>
+            </div>
         </header>
         
         <!-- Mobile Nav -->
@@ -572,6 +601,24 @@
          <!-- Buyback content will be injected here -->
     </div>
 
+    <!-- Welcome Modal -->
+    <div id="welcome-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+         <!-- Welcome content will be injected here -->
+    </div>
+
+    <!-- Messages Modal -->
+    <div id="messages-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
+         <!-- Messages content will be injected here -->
+    </div>
+
+    <!-- Purchase Confirmation Modals -->
+    <div id="celebration-overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4 celebration-overlay">
+        <!-- Celebration content -->
+    </div>
+     <div id="next-steps-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
+        <!-- Next steps content -->
+    </div>
+
     <script>
         // Use a self-executing function to ensure lucide is available before it's called
         (function() {
@@ -586,9 +633,9 @@
             onDocumentReady(function() {
                 // Now we are sure the DOM is ready and scripts are loaded.
                 if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
                     initializeApp();
                 } else {
+                    // Fallback in case the script fails to load, though it's unlikely with a CDN.
                     console.error('Lucide library not found.');
                 }
             });
@@ -739,6 +786,11 @@
         const closeIsoModalBtn = document.getElementById('close-iso-modal');
         const profileModal = document.getElementById('profile-modal');
         const buybackModal = document.getElementById('buyback-modal');
+        const welcomeModal = document.getElementById('welcome-modal');
+        const messagesBtn = document.getElementById('messages-btn');
+        const messagesModal = document.getElementById('messages-modal');
+        const celebrationOverlay = document.getElementById('celebration-overlay');
+        const nextStepsModal = document.getElementById('next-steps-modal');
         
         // New ISO Modal elements
         const tabChat = document.getElementById('tab-chat');
@@ -771,6 +823,31 @@
             
             const remainingDays = Math.ceil(remainingTime / (1000 * 60 * 60 * 24));
             return `<span class="text-gray-500">Expires in ${remainingDays} day${remainingDays > 1 ? 's' : ''}</span>`;
+        }
+
+        /**
+         * A simulated Gemini API call function.
+         */
+        async function callGeminiAPI(userQuery, systemPrompt = "") {
+            console.log("Simulating Gemini API call with query:", userQuery);
+            const apiKey = ""; // API key is handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // For the prototype, we return a mock response based on the query.
+            if (userQuery.includes("Generate a compelling description")) {
+                return "Seeking this iconic piece for a personal collection. Highly interested in items with good condition and provenance. Looking for a serious seller for a straightforward, secure transaction.";
+            }
+            if (userQuery.includes("difference between the 1985 and 2022 versions")) {
+                return "The original 1985 Air Jordan 1 'Chicago' features a different shape, higher-quality leather, and the original Nike Air branding. The 2022 'Reimagined' version is a tribute that uses artificially aged materials, a different box, and a shape closer to the '85 model than other retros, but it is distinctly a modern interpretation, not a 1-to-1 copy.";
+            }
+            if (aiInsightsData[userQuery]) {
+                return aiInsightsData[userQuery];
+            }
+
+            return "I can provide insights on specific collectibles, their history, and market standing. What would you like to know?";
         }
 
         // =================================================================================
@@ -867,7 +944,7 @@
         function renderRecentlyFound() {
             const recentlyFoundData = [
               { name: "Jordan 1 'Chicago'", price: 520, user: "@sneakerhead23", imageUrl: "images/jordan1.png" },
-              { name: "Kaws: 'Companion'", user: "@artcollectorjane", imageUrl: "images/kaws.png" }
+              { name: "Kaws: 'Companion'", user: "@artcollectorjane", imageUrl: "images/margret.jpg" }
             ];
             recentlyFoundContainer.innerHTML = '';
             recentlyFoundData.forEach(item => {
@@ -1049,7 +1126,7 @@
             const collectionContainer = document.getElementById('my-iso-collection');
 
             // Find hunts that the user has "created" or joined.
-            const myHunts = isoData.filter(item => item.joined);
+            const myHunts = isoData.filter(hunt => hunt.joined);
             
             const actionHunt = myHunts.find(h => h.id === 6 && h.privateBids > 0);
 
@@ -1291,15 +1368,36 @@
             const itemName = event.currentTarget.dataset.itemName;
             toggleModal(aiModal, true);
             aiModalContent.innerHTML = `<div class="flex flex-col items-center justify-center h-48"><div class="loader"></div><p class="mt-4 text-gray-600 font-semibold">Contacting Gemini for insights...</p></div>`;
-            const insights = await getAiInsights(itemName);
-            aiModalContent.innerHTML = `<div class="space-y-4"><p class="text-gray-700 leading-relaxed">${insights}</p><p class="text-xs text-gray-400 pt-2 border-t border-gray-200">✨ Powered by Gemini. Insights are for informational purposes and are not financial advice.</p></div>`;
-        }
+            
+            const systemPrompt = "You are a world-class collectibles expert. Provide a concise, single-paragraph summary of the requested item's history, cultural significance, and general market standing. Speak with authority and insight.";
+            const insights = await callGeminiAPI(itemName, systemPrompt);
+            
+            aiModalContent.innerHTML = `
+                <div class="space-y-4">
+                    <p class="text-gray-700 leading-relaxed">${insights}</p>
+                    <p class="text-xs text-gray-400 pt-2 border-t border-gray-200">✨ Powered by Gemini. Insights are for informational purposes only.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t">
+                     <label for="ai-question" class="block text-sm font-medium text-gray-700 mb-2">Ask a follow-up question</label>
+                     <div class="flex space-x-2">
+                        <input type="text" id="ai-question-input" class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., How does this compare to...?">
+                        <button id="ai-ask-btn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Ask</button>
+                     </div>
+                     <div id="ai-answer" class="mt-4 text-sm"></div>
+                </div>
+            `;
+            document.getElementById('ai-ask-btn').addEventListener('click', async () => {
+                const questionInput = document.getElementById('ai-question-input');
+                const question = questionInput.value;
+                if (!question) return;
 
-        async function getAiInsights(itemName) {
-            console.log(`Simulating Gemini API call for: ${itemName}`);
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            const insight = aiInsightsData[itemName] || "No specific insights available for this item. It is considered a rare collectible within its community.";
-            return insight;
+                const answerDiv = document.getElementById('ai-answer');
+                answerDiv.innerHTML = `<div class="flex items-center space-x-2 text-gray-500"><div class="loader !w-4 !h-4 !border-2"></div><span>Getting answer...</span></div>`;
+
+                const followUpPrompt = `In the context of the ${itemName}, the user asks: "${question}". Provide a concise, expert answer.`;
+                const answer = await callGeminiAPI(followUpPrompt);
+                answerDiv.innerHTML = `<p class="bg-gray-100 p-3 rounded-md">${answer}</p>`;
+            });
         }
         
         /**
@@ -1423,62 +1521,72 @@
         }
         
         /**
-         * Simulates accepting an offer and shows shipping options.
+         * Simulates accepting an offer and shows the celebration/next steps.
          */
         function handleAcceptOffer(item, price) {
-            const bidsContent = document.getElementById('bids-content');
+            toggleModal(bidsModal, false);
             
-            bidsContent.innerHTML = `
-                <h4 class="text-lg font-bold text-gray-900">Complete Your Purchase</h4>
-                <div class="mt-4 space-y-4">
-                    <div class="p-4 border rounded-lg bg-white">
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Item Price</span>
-                            <span class="font-semibold">$${parseInt(price).toLocaleString()}</span>
-                        </div>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-gray-600">ISO Service Fee (7%)</span>
-                            <span class="font-semibold">$${(price * 0.07).toLocaleString()}</span>
-                        </div>
-                         <div class="flex justify-between items-center mt-2">
-                            <span class="text-gray-600">Finder's Fee (10%)</span>
-                            <span class="font-semibold">$${(price * 0.10).toLocaleString()}</span>
-                        </div>
-                         <div class="pt-4 mt-4 border-t">
-                            <p class="font-medium mb-2">Shipping Options</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center p-3 border rounded-md has-[:checked]:bg-indigo-50 has-[:checked]:border-indigo-500">
-                                    <input type="radio" name="shipping" value="15" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
-                                    <span class="ml-3 text-sm flex-1">Standard Shipping</span>
-                                    <span class="font-semibold">$15.00</span>
-                                </label>
-                                <label class="flex items-center p-3 border rounded-md has-[:checked]:bg-indigo-50 has-[:checked]:border-indigo-500">
-                                    <input type="radio" name="shipping" value="150" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
-                                    <span class="ml-3 text-sm flex-1">Worldnet Secure (Insured)</span>
-                                    <span class="font-semibold">$150.00</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="flex justify-between items-center mt-4 pt-4 border-t-2 border-dashed">
-                            <span class="text-lg font-bold">Total</span>
-                            <span id="total-price" class="text-lg font-bold">$${(parseInt(price) + (price*0.07) + (price * 0.10) + 15).toLocaleString()}</span>
-                        </div>
-                    </div>
-                    <button id="confirm-purchase-btn" class="w-full bg-green-600 text-white font-semibold py-3 rounded-lg hover:bg-green-700">Confirm Purchase</button>
+            celebrationOverlay.innerHTML = `
+                <div class="text-center text-white">
+                    <h2 class="text-4xl font-bold">Congratulations!</h2>
+                    <p class="text-xl mt-2">The ${item.name} is yours.</p>
                 </div>
             `;
-            
-            bidsContent.querySelectorAll('input[name="shipping"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    const shippingCost = parseInt(e.target.value);
-                    const newTotal = parseInt(price) + (price * 0.07) + (price * 0.10) + shippingCost;
-                    document.getElementById('total-price').textContent = `$${newTotal.toLocaleString()}`;
-                });
-            });
+            celebrationOverlay.style.display = 'flex';
 
-            document.getElementById('confirm-purchase-btn').addEventListener('click', () => {
-                alert('Purchase confirmed! Funds will be held in escrow until you receive and verify the item.');
-                toggleModal(bidsModal, false);
+            setTimeout(() => {
+                celebrationOverlay.style.display = 'none';
+                showNextStepsModal(item, price);
+            }, 2500);
+        }
+
+        function showNextStepsModal(item, price) {
+            nextStepsModal.innerHTML = `
+                <div class="p-6 border-b border-gray-200">
+                    <h3 class="text-xl font-bold">What Happens Next?</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-6">Your purchase is confirmed. Here's a summary of the next steps to get your item securely.</p>
+                    <div class="space-y-4">
+                        <div class="timeline-item relative pl-8 pb-4">
+                            <div class="absolute left-0 top-0 flex items-center justify-center bg-green-500 rounded-full w-6 h-6 text-white">
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                            </div>
+                            <h4 class="font-semibold">Payment Secured</h4>
+                            <p class="text-sm text-gray-500">Your payment of $${(parseInt(price) + (price*0.07) + (price * 0.10) + 15).toLocaleString()} is held securely in escrow.</p>
+                        </div>
+                         <div class="timeline-item relative pl-8 pb-4">
+                            <div class="absolute left-0 top-0 flex items-center justify-center bg-gray-300 rounded-full w-6 h-6">
+                               <i data-lucide="ship" class="w-4 h-4 text-gray-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-500">Seller Ships to Finder</h4>
+                            <p class="text-sm text-gray-500">The seller will now ship the item to your expert Finder for verification.</p>
+                        </div>
+                        <div class="timeline-item relative pl-8 pb-4">
+                            <div class="absolute left-0 top-0 flex items-center justify-center bg-gray-300 rounded-full w-6 h-6">
+                                <i data-lucide="shield-check" class="w-4 h-4 text-gray-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-500">Item Verification</h4>
+                            <p class="text-sm text-gray-500">Your Finder will verify the item's authenticity and condition and send you a digital report.</p>
+                        </div>
+                        <div class="relative pl-8">
+                             <div class="absolute left-0 top-0 flex items-center justify-center bg-gray-300 rounded-full w-6 h-6">
+                               <i data-lucide="package-check" class="w-4 h-4 text-gray-600"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-500">Final Delivery</h4>
+                            <p class="text-sm text-gray-500">After your approval, the Finder will ship the item directly to you.</p>
+                        </div>
+                    </div>
+                    <div class="pt-6 mt-6 border-t">
+                        <button id="close-next-steps" class="w-full bg-indigo-600 text-white font-semibold py-2 rounded-lg">View My ISO Hub</button>
+                    </div>
+                </div>
+            `;
+            toggleModal(nextStepsModal, true);
+            lucide.createIcons();
+            document.getElementById('close-next-steps').addEventListener('click', () => {
+                toggleModal(nextStepsModal, false);
+                switchView('my-iso-view');
             });
         }
         
@@ -1643,6 +1751,7 @@
         const chatFlow = [
             { bot: "Hey! I'll help create your ISO. What are you searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
             { bot: "Got it. Any specific details? (Size, condition, etc.)", key: 'details', placeholder: "e.g., Size 10, New" },
+            { bot: "Great. Now, let's craft a compelling description to attract the best Finders and Sellers.", action: 'generate_description' },
             { bot: "Which category does this fall under?", action: 'category' },
             { bot: "What's the top offer you'd like to make for this item?", key: 'topOffer', placeholder: "$550" },
             { bot: "A picture is worth a thousand words! Please upload a reference image for your hunt.", action: 'image' },
@@ -1710,11 +1819,28 @@
             chatLog.innerHTML += typingIndicator;
             chatLog.scrollTop = chatLog.scrollHeight;
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 chatLog.removeChild(chatLog.lastChild);
                 addBotMessage(nextStep.bot);
                 
-                if (nextStep.action === 'category') {
+                if (nextStep.action === 'generate_description') {
+                    const generateBtnHTML = `
+                        <button id="generate-desc-btn" class="mt-2 w-full flex items-center justify-center space-x-2 bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-purple-700">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>Generate Description with AI</span>
+                        </button>`;
+                    addMessage(generateBtnHTML, false);
+                    lucide.createIcons();
+                    document.getElementById('generate-desc-btn').addEventListener('click', async (e) => {
+                        e.target.closest('button').innerHTML = `<div class="loader !w-5 !h-5 !border-2"></div>`;
+                        const prompt = `Generate a compelling, one-sentence marketplace description for an ISO (In Search Of) post. The item is a "${isoInProgress.name}" with these details: "${isoInProgress.details}".`;
+                        const generatedDesc = await callGeminiAPI(prompt);
+                        isoInProgress.details = generatedDesc; // Overwrite details with AI version
+                        addUserMessage(`<em>Used AI to generate a new description: "${generatedDesc}"</em>`);
+                        currentChatStep++;
+                        processNextChatStep();
+                    });
+                } else if (nextStep.action === 'category') {
                      const categories = ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'];
                      const categoryButtonsHTML = `
                         <div class="flex flex-wrap gap-2 mt-2">
@@ -1949,6 +2075,100 @@
             }, 5000);
         }
 
+        function showWelcomeModal() {
+            if (localStorage.getItem('iso-visited')) return;
+
+            welcomeModal.innerHTML = `
+                <div class="p-8">
+                     <div class="mx-auto bg-indigo-600 text-white w-16 h-16 flex items-center justify-center rounded-lg shadow-md mb-5">
+                        <i data-lucide="search-check" class="w-8 h-8"></i>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-2xl font-bold">Welcome to In Search Of!</h3>
+                        <p class="text-gray-600 mt-2 max-w-md mx-auto">The marketplace where expert finders secure the items you're searching for.</p>
+                    </div>
+                    <div class="mt-8">
+                        <p class="font-semibold text-center mb-4">To get started, what are you most interested in?</p>
+                        <div id="interest-tags" class="grid grid-cols-2 gap-4">
+                            <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
+                                <i data-lucide="footprints" class="w-6 h-6 text-indigo-500"></i>
+                                <span class="font-semibold">Sneakers</span>
+                            </button>
+                             <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
+                                <i data-lucide="shirt" class="w-6 h-6 text-indigo-500"></i>
+                                <span class="font-semibold">Archival Fashion</span>
+                            </button>
+                             <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
+                                <i data-lucide="gem" class="w-6 h-6 text-indigo-500"></i>
+                                <span class="font-semibold">Collectibles</span>
+                            </button>
+                             <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
+                                <i data-lucide="watch" class="w-6 h-6 text-indigo-500"></i>
+                                <span class="font-semibold">Watches</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button id="welcome-continue-btn" class="bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg opacity-50 cursor-not-allowed" disabled>Continue</button>
+                    </div>
+                </div>
+            `;
+            toggleModal(welcomeModal, true);
+            lucide.createIcons();
+
+            const continueBtn = document.getElementById('welcome-continue-btn');
+            document.querySelectorAll('.interest-card').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.classList.toggle('selected');
+                    const anySelected = document.querySelector('.interest-card.selected');
+                    if(anySelected) {
+                        continueBtn.disabled = false;
+                        continueBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        continueBtn.disabled = true;
+                        continueBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                });
+            });
+
+            continueBtn.addEventListener('click', () => {
+                toggleModal(welcomeModal, false);
+                localStorage.setItem('iso-visited', 'true');
+            });
+        }
+
+        function showMessagesModal() {
+            messagesModal.innerHTML = `
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-xl font-bold">Messages</h3>
+                    <button id="close-messages-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <div class="p-6 h-96 overflow-y-auto space-y-4 bg-gray-50">
+                    <div class="text-center text-xs text-gray-400">September 14, 2025</div>
+                    <div class="chat-message flex justify-start">
+                        <div class="chat-bubble p-3 rounded-2xl text-sm bg-white border border-gray-200 rounded-bl-none">
+                            <p class="font-semibold text-indigo-600">From @TheCurator (Your Finder)</p>
+                            <p>Hey, just an update: I've contacted a trusted seller in my network who might have the jacket. Waiting to hear back on condition and price. Will keep you posted!</p>
+                        </div>
+                    </div>
+                     <div class="chat-message flex justify-end">
+                        <div class="chat-bubble p-3 rounded-2xl text-sm bg-indigo-600 text-white rounded-br-none">
+                           <p>Thanks for the update!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-gray-200">
+                    <div class="flex items-center space-x-2">
+                        <input type="text" placeholder="Type a message..." class="flex-1 w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Send</button>
+                    </div>
+                </div>
+            `;
+            toggleModal(messagesModal, true);
+            lucide.createIcons();
+            document.getElementById('close-messages-modal').addEventListener('click', () => toggleModal(messagesModal, false));
+        }
+
         // =================================================================================
         // EVENT LISTENERS
         // =================================================================================
@@ -1967,8 +2187,13 @@
             toggleModal(editModal, false);
             toggleModal(profileModal, false);
             toggleModal(buybackModal, false);
+            toggleModal(welcomeModal, false);
+            toggleModal(messagesModal, false);
+            toggleModal(nextStepsModal, false);
+            celebrationOverlay.style.display = 'none';
         });
         document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
+        messagesBtn.addEventListener('click', showMessagesModal);
         
         tabChat.addEventListener('click', () => {
             tabChat.classList.add('text-indigo-600', 'border-indigo-500');
@@ -2116,6 +2341,7 @@
 
         // --- INITIAL RENDER ---
         function initializeApp() {
+            lucide.createIcons();
             switchView('main-content');
             renderFeed();
             renderRecentlyFound();
@@ -2126,6 +2352,7 @@
             renderMyIsoView();
             renderFinderHubView();
             renderSellerPortalView();
+            showWelcomeModal();
         }
     })(); // End of self-executing function
     </script>

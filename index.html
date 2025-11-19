@@ -28,8 +28,8 @@
             from { opacity: 0; transform: translate(-50%, -48%) scale(0.95); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-        .main-content, .detail-view, .how-it-works-view, .my-iso-view, .finder-hub-view, .seller-portal-view { display: none; }
-        .main-content.active, .detail-view.active, .how-it-works-view.active, .my-iso-view.active, .finder-hub-view.active, .seller-portal-view.active { display: block; }
+        .main-content, .detail-view, .how-it-works-view, .my-iso-view, .finder-hub-view, .seller-portal-view, .landing-view, .profile-view { display: none; }
+        .main-content.active, .detail-view.active, .how-it-works-view.active, .my-iso-view.active, .finder-hub-view.active, .seller-portal-view.active, .landing-view.active, .profile-view.active { display: block; }
         .upvote-btn.upvoted { background-color: #4f46e5; color: white; }
         .comment-bubble, .chat-bubble {
             max-width: 80%;
@@ -144,11 +144,27 @@
                 <button id="messages-btn" class="text-gray-500 hover:text-indigo-600">
                     <i data-lucide="message-square" class="w-6 h-6"></i>
                 </button>
-                <button id="post-iso-btn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors flex items-center space-x-2">
+                <button id="post-iso-btn" class="hidden md:flex bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors items-center space-x-2">
                     <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                    <span class="hidden md:inline">Create ISO</span>
-                    <span class="md:hidden">Post</span>
+                    <span>Create ISO</span>
                 </button>
+                <!-- Profile Dropdown -->
+                <div class="relative">
+                    <button id="profile-dropdown-btn" class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden focus:outline-none ring-2 ring-offset-2 ring-transparent focus:ring-indigo-500">
+                        <img src="https://i.pravatar.cc/150?u=me" alt="Profile" class="w-full h-full object-cover">
+                    </button>
+                    <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 py-2">
+                        <div class="px-4 py-3 border-b border-gray-100 mb-1">
+                            <p class="text-sm font-bold text-gray-900">@newSeeker</p>
+                            <p class="text-xs text-gray-500">Collector</p>
+                        </div>
+                        <a href="#" data-view="my-iso-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="search" class="w-4 h-4"></i> My ISO</a>
+                        <a href="#" data-view="finder-hub-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="scan-eye" class="w-4 h-4"></i> Finder Hub</a>
+                        <a href="#" data-view="seller-portal-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="store" class="w-4 h-4"></i> Seller Portal</a>
+                        <div class="h-px bg-gray-100 my-1"></div>
+                        <a href="#" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> Sign Out</a>
+                    </div>
+                </div>
             </div>
         </header>
         
@@ -163,54 +179,112 @@
             </nav>
         </div>
 
+        <!-- Landing Page View -->
+        <div id="landing-view" class="landing-view">
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden bg-white border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8">
+                <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-50"></div>
+                <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-32 flex flex-col items-center text-center">
+                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wide mb-6">
+                        The Future of Collecting
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 max-w-4xl">
+                        Post what you're hunting for, <br><span class="text-indigo-600">expert Finders source it.</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
+                        Stop refreshing listing pages. Create an ISO (In Search Of) post, verify your funds, and let our network of vetted experts bring the grail to you.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                        <button id="landing-post-hunt-btn" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl text-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                            Post a Hunt
+                        </button>
+                        <button id="landing-become-finder-btn" class="px-8 py-4 bg-white text-gray-900 border-2 border-gray-200 font-bold rounded-xl text-lg hover:border-indigo-600 hover:text-indigo-600 transition-colors">
+                            Become a Finder
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works Summary -->
+            <div class="bg-white py-24 border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8">
+                <div class="max-w-7xl mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl font-bold text-gray-900">How It Works</h2>
+                        <p class="text-gray-500 mt-2">A frictionless journey for everyone in the ecosystem.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                        <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 text-center">
+                            <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="shopping-bag" class="w-7 h-7"></i></div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">For Buyers</h3>
+                            <ul class="space-y-3 text-gray-600 text-left text-sm">
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Post your ISO &amp; verify funds</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Get matched with an expert Finder</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Review vetted, verified offers</li>
+                            </ul>
+                        </div>
+                        <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 text-center">
+                            <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="scan-eye" class="w-7 h-7"></i></div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">For Finders</h3>
+                            <ul class="space-y-3 text-gray-600 text-left text-sm">
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Apply to be a vetted expert</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Claim active Hunts in your niche</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Earn commission on success</li>
+                            </ul>
+                        </div>
+                        <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 text-center">
+                            <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="store" class="w-7 h-7"></i></div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">For Sellers</h3>
+                            <ul class="space-y-3 text-gray-600 text-left text-sm">
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0"></i> Receive private requests</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0"></i> Submit offers securely</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0"></i> Instant liquidity</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Showcase -->
+            <div class="max-w-7xl mx-auto px-6 py-20">
+                <div class="flex justify-between items-end mb-10">
+                    <div><h2 class="text-3xl font-bold text-gray-900 mb-2">Explore Categories</h2><p class="text-gray-500">Browse active hunts by what collectors are looking for.</p></div>
+                    <button id="landing-view-all-btn" class="text-indigo-600 font-semibold hover:text-indigo-800 flex items-center">View All <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i></button>
+                </div>
+                <div id="landing-categories" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Category cards will be injected by JS -->
+                </div>
+            </div>
+        </div>
 
         <!-- Main Content View (Feed) -->
         <div id="main-content" class="main-content">
-            <div class="py-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900">Community Wanted Board</h2>
-                        <p class="text-gray-500 mt-1">Discover what the community is hunting for. Upvote requests you're also interested in!</p>
+            <div class="py-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">Hunts</h1>
+                <p class="mt-2 text-lg text-gray-500">Browse what collectors are searching for.</p>
+
+                <!-- Control Bar -->
+                <div class="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <!-- Search Bar -->
+                    <div class="relative flex-grow md:flex-grow-0 md:w-80">
+                        <input type="search" id="search-bar" placeholder="Search for items, brands, or users..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                        </div>
                     </div>
-                </div>
-                <!-- Search Bar -->
-                <div class="mt-6 relative">
-                    <input type="search" id="search-bar" placeholder="Search for items, brands, or users..." class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                    <!-- Filters -->
+                    <div id="filter-bar" class="flex space-x-2 overflow-x-auto pb-2 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+                        <button class="filter-btn active flex-shrink-0 bg-indigo-600 text-white font-semibold py-2 px-4 rounded-full shadow-sm transition-colors" data-category="All">All</button>
+                        <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-300 hover:bg-gray-100 transition-colors" data-category="Sneakers">Sneakers</button>
+                        <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-300 hover:bg-gray-100 transition-colors" data-category="Archival Fashion">Archival Fashion</button>
+                        <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-300 hover:bg-gray-100 transition-colors" data-category="Collectibles">Collectibles</button>
+                        <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-300 hover:bg-gray-100 transition-colors" data-category="Watches">Watches</button>
                     </div>
-                </div>
-                 <!-- Filters -->
-                <div id="filter-bar" class="mt-4 flex space-x-2 overflow-x-auto pb-2">
-                    <button class="filter-btn active flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="All">All</button>
-                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Sneakers">Sneakers</button>
-                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Archival Fashion">Archival Fashion</button>
-                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Collectibles">Collectibles</button>
-                    <button class="filter-btn flex-shrink-0 bg-white text-gray-700 font-semibold py-2 px-4 rounded-full shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors" data-category="Watches">Watches</button>
                 </div>
             </div>
     
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
-                <!-- ISO Feed Column -->
-                <div id="iso-feed" class="lg:col-span-3 space-y-6">
-                    <!-- ISO cards will be injected here -->
-                </div>
-                
-                <!-- Sidebar / Community Hub -->
-                <aside class="space-y-6">
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-                        <h3 class="font-bold text-lg mb-4 text-gray-900">Trending Hunts</h3>
-                        <div id="trending-hunts" class="space-y-4">
-                            <!-- Trending hunts will be injected here -->
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-                        <h3 class="font-bold text-lg mb-4 text-gray-900">Recently Found</h3>
-                        <div id="recently-found" class="space-y-4">
-                            <!-- Recently found items will be injected here -->
-                        </div>
-                    </div>
-                </aside>
+            <!-- ISO Feed Grid -->
+            <div id="iso-feed" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- ISO cards will be injected here -->
             </div>
         </div>
 
@@ -532,11 +606,6 @@
          <!-- Buyback content will be injected here -->
     </div>
 
-    <!-- Welcome Modal -->
-    <div id="welcome-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-2xl">
-         <!-- Welcome content will be injected here -->
-    </div>
-
     <!-- Messages Modal -->
     <div id="messages-modal" class="modal bg-white rounded-xl shadow-2xl w-full max-w-lg">
          <!-- Messages content will be injected here -->
@@ -628,8 +697,7 @@
             privateBids: 0,
             duration: 14,
             createdAt: Date.now() - (4 * 24 * 60 * 60 * 1000),
-            finder: null,
-            acquired: { price: 850, hasBuyback: true, buybackPrice: 595 }
+            finder: null
           },
           {
             id: 4,
@@ -671,7 +739,7 @@
 
         const aiInsightsData = {
             "Jordan 1 Retro High 'Chicago'": "The Air Jordan 1 'Chicago' is arguably the most iconic sneaker ever created. Originally released in 1985, its 'Chicago' colorway is a cornerstone of sneaker culture, synonymous with Michael Jordan's rookie season. The 2022 'Reimagined' version added a vintage, aged look that was met with massive commercial success. For collectors, condition and originality are key; a true 1985 pair is a museum piece, while the Reimagined version offers a more accessible entry into its legacy. The market for this shoe is consistently strong, making it a true blue-chip collectible.",
-            "Raf Simons 'Riot' Bomber Jacket": "The Autumn/Winter 2001 'Riot, Riot, Riot' bomber from Raf Simons is a seminal piece of modern menswear. Its oversized silhouette, collage of patches (including iconic Richey Edwards and Manic Street Preachers references), and military surplus aesthetic defined a generation of fashion. It is considered a holy grail item for fashion archivists. Due to its age and rarity, finding one in good condition is exceptionally difficult. Its value is not just in its material, but its immense cultural significance and influence on subsequent designers. A true museum-quality piece.",
+            "Raf Simons 'Riot' Bomber Jacket": "The Autumn/Winter 2001 'Riot, Riot, Riot' bomber from Raf Simons is a seminal piece of modern menswear. Its oversized silhouette, a collage of patches (including iconic Richey Edwards and Manic Street Preachers references), and military surplus aesthetic defined a generation of fashion. It is considered a holy grail item for fashion archivists. Due to its age and rarity, finding one in good condition is exceptionally difficult. Its value is not just in its material, but its immense cultural significance and influence on subsequent designers. A true museum-quality piece.",
             "Margaret Keane: 'Big Eyes' Painting": "Margaret Keane's Big Eyes paintings are defined by their signature, disproportionately large, doe-like eyes that dominate the canvas. The artworks typically feature women, children, and animals in styles ranging from melancholy and dark to joyful and bright, reflecting different periods of the artist's life.",
             "Travis Scott Jordan 1 Low": "Travis Scott's collaborations with Nike are among the most influential of the modern era. His take on the Air Jordan 1, characterized by the reversed Swoosh, is his signature design element. These releases create a frenzy in the market due to Scott's cultural influence and the limited production numbers. The 'Olive' and 'Fragment' colorways are particularly coveted. Owning a pair signifies being in-the-know with current sneaker culture. The resale market is highly volatile but consistently high, reflecting its status as a modern classic.",
             "Rolex Daytona 'Panda'": "The Rolex Daytona Ref. 116500LN with a white dial, nicknamed the 'Panda,' is one of the most sought-after luxury watches in the world. Its scarcity is manufactured; authorized dealers have notoriously long waitlists, often spanning years. This drives a hyper-inflated secondary market where the watch trades for more than double its retail price. The watch's appeal comes from its perfect proportions, ceramic bezel, racing heritage, and the status associated with the Rolex brand. It's considered a benchmark 'investment' watch by many collectors due to its strong and consistent value retention."
@@ -684,7 +752,7 @@
                 { user: '@kickzCircle', avatar: 'https://i.pravatar.cc/40?u=kickz', price: 725, condition: 'Perfect condition, OG all. Includes receipt.', rating: 4.7, findersNote: null },
             ],
             6: [ // Raf Simons 'Riot' Bomber Jacket
-                { user: '@archive_dealer', avatar: 'https://i.pravatar.cc/40?u=archive', price: 4400, condition: 'Excellent condition for its age, minor fading. From my personal collection.', rating: 5.0, findersNote: "Sourced from a trusted private collector in Japan. I've personally verified the condition and authenticity. This is a clean example of a notoriously fragile piece.", hasBuyback: true }
+                { user: '@archive_dealer', avatar: 'https://i.pravatar.cc/40?u=archive', price: 4400, condition: 'Excellent condition for its age, minor fading. From my personal collection.', rating: 5.0, findersNote: "Sourced from a trusted private collector in Japan. I've personally verified the condition and authenticity. This is a clean example of a notoriously fragile piece." }
             ]
         };
         
@@ -693,8 +761,6 @@
         // =================================================================================
         const app = document.getElementById('app');
         const isoFeed = document.getElementById('iso-feed');
-        const recentlyFoundContainer = document.getElementById('recently-found');
-        const trendingHuntsContainer = document.getElementById('trending-hunts');
         const mainContent = document.getElementById('main-content');
         const detailView = document.getElementById('detail-view');
         const howItWorksView = document.getElementById('how-it-works-view');
@@ -715,7 +781,6 @@
         const closeIsoModalBtn = document.getElementById('close-iso-modal');
         const profileModal = document.getElementById('profile-modal');
         const buybackModal = document.getElementById('buyback-modal');
-        const welcomeModal = document.getElementById('welcome-modal');
         const messagesBtn = document.getElementById('messages-btn');
         const messagesModal = document.getElementById('messages-modal');
         const celebrationOverlay = document.getElementById('celebration-overlay');
@@ -736,6 +801,10 @@
         const imagePreview = document.getElementById('image-preview');
         const imageUploadIcon = document.getElementById('image-upload-icon');
         const searchBar = document.getElementById('search-bar');
+
+        // Profile Dropdown
+        const profileDropdownBtn = document.getElementById('profile-dropdown-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
 
         // =================================================================================
         // HELPER FUNCTIONS
@@ -784,6 +853,50 @@
         // =================================================================================
 
         /**
+         * Creates and returns a DOM element for a single Hunt Card.
+         * This centralizes the card creation logic.
+         * @param {object} item - The ISO data object for the card.
+         * @returns {HTMLElement} The card element.
+         */
+        function createHuntCardElement(item) {
+            const card = document.createElement('div');
+            card.className = 'group view-details-btn flex flex-col rounded-2xl p-3 transition-all hover:shadow-xl cursor-pointer';
+            card.dataset.id = item.id;
+
+            const fundsVerifiedBadge = item.fundsVerified 
+                ? `<div class="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm px-2 py-1 text-xs font-bold text-green-700">
+                       <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                       <span>Verified</span>
+                   </div>`
+                : '';
+            
+            const seekersHtml = item.seekers > 1 ? `<span class="text-xs font-bold text-gray-500">+${item.seekers - 1} seeker${item.seekers > 2 ? 's' : ''}</span>` : '';
+
+            card.innerHTML = `
+                <div class="relative aspect-square w-full overflow-hidden rounded-xl mb-4">
+                    <img src="${item.imageUrl}" alt="${item.name}" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                    ${fundsVerifiedBadge}
+                </div>
+                <div class="flex flex-col flex-grow">
+                    <h3 class="font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">${item.name}</h3>
+                    <p class="text-sm text-gray-500 truncate">${item.details}</p>
+                    <div class="mt-3 flex items-end justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Top Offer</p>
+                            <p class="text-xl font-bold text-gray-900">$${item.topOffer.toLocaleString()}</p>
+                        </div>
+                        ${seekersHtml}
+                    </div>
+                    <div class="mt-3 pt-3 border-t border-gray-100 flex items-center space-x-4 text-gray-400">
+                        <span class="flex items-center text-sm font-bold"><i data-lucide="arrow-up-circle" class="w-4 h-4 mr-1.5"></i> ${item.upvotes}</span>
+                        <span class="flex items-center text-sm font-bold"><i data-lucide="message-square" class="w-4 h-4 mr-1.5"></i> ${item.comments}</span>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        /**
          * Renders the main feed of "In Search Of" cards.
          */
         function renderFeed(filterCategory = 'All', searchTerm = '') {
@@ -803,118 +916,11 @@
 
             isoFeed.innerHTML = '';
 
-            if (filteredData.length === 0) {
-                isoFeed.innerHTML = `
-                    <div class="text-center py-12 bg-white rounded-xl border border-gray-200">
-                        <i data-lucide="search-x" class="w-12 h-12 mx-auto text-gray-400"></i>
-                        <h3 class="mt-4 text-lg font-semibold text-gray-800">No Hunts Found</h3>
-                        <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter criteria.</p>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
-            }
-
             filteredData.sort((a, b) => b.createdAt - a.createdAt).forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden';
-                const fundsVerifiedBadge = item.fundsVerified 
-                    ? `<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full flex items-center space-x-1"><i data-lucide="check-circle" class="w-3 h-3"></i><span>Funds Verified</span></span>` 
-                    : '';
-                const ratingHtml = item.user.rating ? `<span class="text-xs text-gray-500 flex items-center"><i data-lucide="star" class="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.user.rating}</span>` : '';
-                const daysRemainingHtml = getDaysRemaining(item.createdAt, item.duration);
-
-                card.innerHTML = `
-                    <div class="p-4 flex justify-between items-start border-b border-gray-100">
-                        <div class="flex items-center space-x-3">
-                            <img src="${item.user.avatar}" class="w-10 h-10 rounded-full bg-gray-200"/>
-                            <div>
-                                <button class="font-semibold text-sm text-gray-800 hover:underline user-profile-link" data-username="${item.user.name}">${item.user.name}</button>
-                                <div class="flex items-center space-x-2 mt-1">
-                                     ${ratingHtml}
-                                     <span class="text-gray-300">|</span>
-                                     <span class="text-xs">${daysRemainingHtml}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                           ${fundsVerifiedBadge}
-                        </div>
-                    </div>
-                    <div class="p-4 cursor-pointer view-details-btn" data-id="${item.id}">
-                        <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center mb-4 bg-center bg-cover" style="background-image: url('${item.imageUrl}')">
-                        </div>
-                        <h3 class="font-bold text-lg truncate text-gray-900">${item.name}</h3>
-                        <p class="text-sm text-gray-600 truncate">${item.details}</p>
-                        <p class="text-sm font-semibold text-gray-800 mt-2">Top Offer: <span class="text-green-600">$${item.topOffer.toLocaleString()}</span></p>
-                    </div>
-                    <div class="p-4 border-t border-gray-100 flex justify-between items-center">
-                        <div class="flex space-x-4">
-                            <button data-id="${item.id}" class="upvote-btn flex items-center space-x-2 text-gray-500 hover:text-indigo-600 transition-colors">
-                                <i data-lucide="arrow-up-circle" class="w-5 h-5"></i>
-                                <span class="font-semibold text-sm upvote-count">${item.upvotes}</span>
-                            </button>
-                            <button data-id="${item.id}" class="flex items-center space-x-2 text-gray-500 hover:text-indigo-600 transition-colors">
-                                <i data-lucide="message-square" class="w-5 h-5"></i>
-                                <span class="font-semibold text-sm">${item.comments}</span>
-                            </button>
-                        </div>
-                        <button data-id="${item.id}" class="view-details-btn text-sm font-semibold text-indigo-600 hover:underline">View Hunt</button>
-                    </div>
-                `;
+                const card = createHuntCardElement(item);
                 isoFeed.appendChild(card);
             });
             lucide.createIcons();
-        }
-
-        /**
-         * Renders the "Recently Found" items in the sidebar.
-         */
-        function renderRecentlyFound() {
-            const recentlyFoundData = [
-              { name: "Jordan 1 'Chicago'", price: 520, user: "@sneakerhead23", imageUrl: "images/jordan1.png" },
-              { name: "Kaws: 'Companion'", user: "@artcollectorjane", imageUrl: "images/kaws.png" }
-            ];
-            recentlyFoundContainer.innerHTML = '';
-            recentlyFoundData.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex items-center space-x-3';
-                div.innerHTML = `
-                    <div class="w-16 h-12 bg-gray-100 rounded-md bg-cover bg-center" style="background-image: url('${item.imageUrl}')"></div>
-                    <div>
-                        <p class="text-sm font-semibold text-gray-800">${item.name}</p>
-                        <p class="text-xs text-gray-500">${item.price ? `Found for <span class="font-bold text-green-600">$${item.price}</span> by ${item.user}` : `Sourced for ${item.user}`}</p>
-                    </div>
-                `;
-                recentlyFoundContainer.appendChild(div);
-            });
-        }
-
-        /**
-         * Renders the "Trending Hunts" items in the sidebar.
-         */
-        function renderTrendingHunts() {
-            const trendingData = [...isoData].sort((a, b) => b.upvotes - a.upvotes).slice(0, 3);
-            trendingHuntsContainer.innerHTML = '';
-            trendingData.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'flex flex-col space-y-2';
-
-                const buttonText = item.joined ? '✓ Joined' : 'Join Hunt';
-                const buttonClasses = item.joined ? 'text-indigo-700 font-bold' : 'text-indigo-600';
-
-                div.innerHTML = `
-                    <div class="trending-hunt-item flex items-center space-x-3 cursor-pointer" data-id="${item.id}">
-                        <div class="w-16 h-12 bg-gray-100 rounded-md bg-cover bg-center pointer-events-none" style="background-image: url('${item.imageUrl}')"></div>
-                        <div class="pointer-events-none">
-                            <p class="text-sm font-semibold text-gray-800">${item.name}</p>
-                            <p class="text-xs text-gray-500">${item.upvotes} upvotes</p>
-                        </div>
-                    </div>
-                    <button class="join-hunt-sidebar-btn text-xs font-semibold hover:underline text-left ${buttonClasses}" data-id="${item.id}">${buttonText}</button>
-                `;
-                trendingHuntsContainer.appendChild(div);
-            });
         }
 
         /**
@@ -925,7 +931,7 @@
             const item = isoData.find(i => i.id === parseInt(itemId));
             if (!item) return;
 
-            document.querySelectorAll('.main-content, .my-iso-view, .finder-hub-view, .seller-portal-view, .how-it-works-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.main-content, .my-iso-view, .finder-hub-view, .seller-portal-view, .how-it-works-view, .landing-view').forEach(v => v.classList.remove('active'));
             
             const ratingHtml = item.user.rating ? `<span class="text-sm text-gray-500 flex items-center"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.user.rating} | 5 Successful Hunts</span>` : '';
 
@@ -1224,13 +1230,13 @@
         /**
          * Switches between the main application views.
          */
-        function switchView(viewId) {
-            document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .my-iso-view, .finder-hub-view, .seller-portal-view').forEach(view => {
+        function switchView(viewId, options = {}) {
+            document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .my-iso-view, .finder-hub-view, .seller-portal-view, .landing-view').forEach(view => {
                 view.classList.remove('active');
             });
             const targetView = document.getElementById(viewId);
             if(targetView) targetView.classList.add('active');
-
+            window.scrollTo(0, 0);
 
             document.querySelectorAll('.nav-link, .nav-link-mobile').forEach(link => {
                 link.classList.remove('active');
@@ -1238,8 +1244,15 @@
                     link.classList.add('active');
                 }
             });
-             if(['how-it-works-view', 'my-iso-view', 'finder-hub-view', 'seller-portal-view'].includes(viewId)){
+             if(['how-it-works-view', 'my-iso-view', 'finder-hub-view', 'seller-portal-view', 'landing-view'].includes(viewId)){
                  lucide.createIcons();
+            }
+
+            if (viewId === 'main-content' && options.category) {
+                const filterBtn = filterBar.querySelector(`[data-category="${options.category}"]`);
+                if (filterBtn) {
+                    filterBtn.click();
+                }
             }
         }
         
@@ -1283,8 +1296,6 @@
                 finder: null
             }; 
             isoData.unshift(newItem);
-            renderFeed();
-            renderTrendingHunts();
             resetIsoForm();
             toggleModal(isoModal, false); 
             switchView('main-content');
@@ -1352,15 +1363,6 @@
                             <label for="offer-condition" class="block text-sm font-medium text-gray-700">Condition & Details</label>
                             <textarea id="offer-condition" placeholder="e.g., Deadstock, with original box and receipt." required rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
                         </div>
-                        <div class="relative flex items-start">
-                            <div class="flex h-6 items-center">
-                                <input id="buyback-offer" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
-                            </div>
-                            <div class="ml-3 text-sm leading-6">
-                                <label for="buyback-offer" class="font-medium text-gray-900">Offer 12-Month Buyback Guarantee</label>
-                                <p class="text-gray-500">Offer to buy back the item for 70% of the sale price if the buyer wants to sell within 12 months.</p>
-                            </div>
-                        </div>
                         <div class="pt-4 flex justify-end">
                             <button type="submit" class="bg-indigo-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors">Send Private Offer to Finder</button>
                         </div>
@@ -1387,14 +1389,6 @@
             const bids = privateBidsData[itemId] || [];
 
             const bidsHtml = bids.map(bid => {
-                const buybackHtml = bid.hasBuyback ? `
-                    <div class="mt-3 flex items-center space-x-2">
-                         <div class="flex-shrink-0 bg-blue-100 text-blue-800 p-1 rounded-full">
-                            <i data-lucide="shield-check" class="w-4 h-4"></i>
-                        </div>
-                        <p class="text-xs text-blue-700 font-semibold">Includes 12-Month Buyback Guarantee at $${(bid.price * 0.7).toLocaleString()}</p>
-                    </div>` : '';
-
                 return `
                 <div class="p-4 border rounded-lg bg-white">
                     <div class="flex items-start space-x-4">
@@ -1408,7 +1402,6 @@
                                 <p class="text-2xl font-bold text-green-600">$${bid.price.toLocaleString()}</p>
                             </div>
                             <p class="text-sm text-gray-600 mt-1">${bid.condition}</p>
-                            ${buybackHtml}
                         </div>
                     </div>
                      ${bid.findersNote ? `
@@ -1609,36 +1602,6 @@
             document.getElementById('close-profile-modal').addEventListener('click', () => toggleModal(profileModal, false));
         }
 
-        /**
-         * Simulates initiating a buyback.
-         */
-        function handleInitiateBuyback(event) {
-            const itemId = parseInt(event.currentTarget.dataset.id);
-            const item = isoData.find(i => i.id === itemId);
-            if (!item || !item.acquired || !item.acquired.hasBuyback) return;
-
-            buybackModal.innerHTML = `
-                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-xl font-bold">Initiate Buyback</h3>
-                    <button id="close-buyback-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
-                </div>
-                <div class="p-6">
-                    <p class="text-gray-600 mb-4">You are initiating the 12-month buyback guarantee for the <span class="font-bold">${item.name}</span>.</p>
-                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md mb-6">
-                        <p class="font-bold text-blue-800">Guaranteed Buyback Price</p>
-                        <p class="text-3xl font-bold text-blue-900">$${item.acquired.buybackPrice.toLocaleString()}</p>
-                        <p class="text-sm text-blue-700">The original seller has been notified and is obligated to repurchase the item at this price upon verification of its condition.</p>
-                    </div>
-                    <div class="pt-4 flex justify-end">
-                        <button class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-blue-700">Confirm & Start Process</button>
-                    </div>
-                </div>
-            `;
-            toggleModal(buybackModal, true);
-            lucide.createIcons();
-            document.getElementById('close-buyback-modal').addEventListener('click', () => toggleModal(buybackModal, false));
-        }
-
         // =================================================================================
         // NEW CHAT & FINDER LOGIC
         // =================================================================================
@@ -1831,8 +1794,6 @@
                 finder: null
             };
             isoData.unshift(newItem);
-            renderFeed();
-            renderTrendingHunts();
             switchView('main-content');
         }
 
@@ -1915,7 +1876,6 @@
                     isoData.splice(itemIndex, 1);
                     switchView('main-content');
                     renderFeed();
-                    renderTrendingHunts();
                 }
             }
         }
@@ -1942,7 +1902,6 @@
                 }
             }
             
-            renderTrendingHunts();
             renderMyIsoView(); // Re-render the dashboard to reflect the change
         }
         
@@ -1971,92 +1930,28 @@
             }, 5000);
         }
 
-        function showWelcomeModal() {
-            if (localStorage.getItem('iso-visited')) return;
-
-            welcomeModal.innerHTML = `
-                <div class="p-8">
-                     <div class="mx-auto bg-indigo-600 text-white w-16 h-16 flex items-center justify-center rounded-lg shadow-md mb-5">
-                        <i data-lucide="search-check" class="w-8 h-8"></i>
-                    </div>
-                    <div class="text-center">
-                        <h3 class="text-2xl font-bold">Welcome to In Search Of!</h3>
-                        <p class="text-gray-600 mt-2 max-w-md mx-auto">The reverse marketplace where expert finders secure the items you're searching for.</p>
-                    </div>
-                    <div class="mt-8">
-                        <p class="font-semibold text-center mb-4">To get started, what are you most interested in?</p>
-                        <div id="interest-tags" class="grid grid-cols-2 gap-4">
-                            <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
-                                <i data-lucide="footprints" class="w-6 h-6 text-indigo-500"></i>
-                                <span class="font-semibold">Sneakers</span>
-                            </button>
-                             <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
-                                <i data-lucide="shirt" class="w-6 h-6 text-indigo-500"></i>
-                                <span class="font-semibold">Archival Fashion</span>
-                            </button>
-                             <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
-                                <i data-lucide="gem" class="w-6 h-6 text-indigo-500"></i>
-                                <span class="font-semibold">Collectibles</span>
-                            </button>
-                             <button class="interest-card flex items-center space-x-3 p-4 border-2 border-gray-200 rounded-lg text-left hover:border-indigo-500 transition-all">
-                                <i data-lucide="watch" class="w-6 h-6 text-indigo-500"></i>
-                                <span class="font-semibold">Watches</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="mt-8 text-center">
-                        <button id="welcome-continue-btn" class="bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg opacity-50 cursor-not-allowed" disabled>Continue</button>
-                    </div>
-                </div>
-            `;
-            toggleModal(welcomeModal, true);
-            lucide.createIcons();
-
-            const continueBtn = document.getElementById('welcome-continue-btn');
-            document.querySelectorAll('.interest-card').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    btn.classList.toggle('selected');
-                    const anySelected = document.querySelector('.interest-card.selected');
-                    if(anySelected) {
-                        continueBtn.disabled = false;
-                        continueBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    } else {
-                        continueBtn.disabled = true;
-                        continueBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                    }
-                });
-            });
-
-            continueBtn.addEventListener('click', () => {
-                toggleModal(welcomeModal, false);
-                localStorage.setItem('iso-visited', 'true');
-            });
-        }
-
-        function showMessagesModal() {
+        function renderMessagesModal() {
             messagesModal.innerHTML = `
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-xl font-bold">Messages</h3>
                     <button id="close-messages-modal" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-6 h-6"></i></button>
                 </div>
-                <div class="p-6 h-96 overflow-y-auto space-y-4 bg-gray-50">
-                    <div class="text-center text-xs text-gray-400">September 14, 2025</div>
-                    <div class="chat-message flex justify-start">
-                        <div class="chat-bubble p-3 rounded-2xl text-sm bg-white border border-gray-200 rounded-bl-none">
-                            <p class="font-semibold text-indigo-600">From @TheCurator (Your Finder)</p>
-                            <p>Hey, just an update: I've contacted a trusted seller in my network who might have the jacket. Waiting to hear back on condition and price. Will keep you posted!</p>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3 p-3 bg-indigo-50 rounded-lg cursor-pointer">
+                            <img src="https://i.pravatar.cc/40?u=curator" class="w-10 h-10 rounded-full"/>
+                            <div>
+                                <p class="font-bold">@TheCurator</p>
+                                <p class="text-sm text-gray-600">I've found a great option for the Raf Simons jacket...</p>
+                            </div>
                         </div>
-                    </div>
-                     <div class="chat-message flex justify-end">
-                        <div class="chat-bubble p-3 rounded-2xl text-sm bg-indigo-600 text-white rounded-br-none">
-                           <p>Thanks for the update!</p>
+                         <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                            <img src="https://i.pravatar.cc/40?u=user1" class="w-10 h-10 rounded-full"/>
+                            <div>
+                                <p class="font-bold">@grailHunter</p>
+                                <p class="text-sm text-gray-500">Can you find me the Olive colorway?</p>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="p-4 border-t border-gray-200">
-                    <div class="flex items-center space-x-2">
-                        <input type="text" placeholder="Type a message..." class="flex-1 w-full px-4 py-2 border border-gray-300 rounded-lg">
-                        <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Send</button>
                     </div>
                 </div>
             `;
@@ -2065,188 +1960,185 @@
             document.getElementById('close-messages-modal').addEventListener('click', () => toggleModal(messagesModal, false));
         }
 
+        function renderLandingPage() {
+            const categories = [
+                { name: "Sneakers", img: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=800", count: "1.2k" },
+                { name: "Archival Fashion", img: "https://images.unsplash.com/photo-1550614000-4b9519e02c06?auto=format&fit=crop&q=80&w=800", count: "850" },
+                { name: "Watches", img: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&q=80&w=800", count: "420" },
+                { name: "Collectibles", img: "https://images.unsplash.com/photo-1608346128025-1896b97a6fa7?auto=format&fit=crop&q=80&w=800", count: "310" }
+            ];
+
+            const container = document.getElementById('landing-categories');
+            container.innerHTML = categories.map(cat => `
+                <div data-category="${cat.name}" class="landing-category-card group cursor-pointer relative overflow-hidden rounded-xl aspect-[4/5]">
+                    <img src="${cat.img}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-6 text-white">
+                        <h3 class="text-2xl font-bold">${cat.name}</h3>
+                        <div class="h-0.5 w-12 bg-white/50 mt-2 group-hover:w-full transition-all duration-500"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.landing-category-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const category = e.currentTarget.dataset.category;
+                    switchView('main-content', { category: category });
+                });
+            });
+        }
+
         // =================================================================================
-        // EVENT LISTENERS
+        // INITIALIZATION & EVENT LISTENERS
         // =================================================================================
-
-        postIsoBtn.addEventListener('click', () => {
-            toggleModal(isoModal, true);
-            startChat();
-        });
-
-        closeIsoModalBtn.addEventListener('click', () => toggleModal(isoModal, false));
-        modalBackdrop.addEventListener('click', () => {
-            toggleModal(isoModal, false);
-            toggleModal(sellModal, false);
-            toggleModal(aiModal, false);
-            toggleModal(bidsModal, false);
-            toggleModal(profileModal, false);
-            toggleModal(buybackModal, false);
-            toggleModal(welcomeModal, false);
-            toggleModal(messagesModal, false);
-            toggleModal(nextStepsModal, false);
-            celebrationOverlay.style.display = 'none';
-        });
-        document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
-        messagesBtn.addEventListener('click', showMessagesModal);
-        
-        tabChat.addEventListener('click', () => {
-            tabChat.classList.add('text-indigo-600', 'border-indigo-500');
-            tabChat.classList.remove('text-gray-500');
-            tabForm.classList.remove('text-indigo-600', 'border-indigo-500');
-            tabForm.classList.add('text-gray-500');
-            chatView.classList.remove('hidden');
-            formView.classList.add('hidden');
-        });
-
-        tabForm.addEventListener('click', () => {
-            tabForm.classList.add('text-indigo-600', 'border-indigo-500');
-            tabForm.classList.remove('text-gray-500');
-            tabChat.classList.remove('text-indigo-600', 'border-indigo-500');
-            tabChat.classList.add('text-gray-500');
-            formView.classList.remove('hidden');
-            chatView.classList.add('hidden');
-        });
-        
-        chatSubmit.addEventListener('click', handleChatSubmission);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleChatSubmission();
-        });
-
-        isoForm.addEventListener('submit', handleIsoSubmit);
-
-        imageUploadInput.addEventListener('change', () => {
-            const file = imageUploadInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
-                    imageUploadIcon.style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        isoFeed.addEventListener('click', (event) => {
-            const viewBtn = event.target.closest('.view-details-btn');
-            const upvoteBtn = event.target.closest('.upvote-btn');
-            const profileLink = event.target.closest('.user-profile-link');
-
-            if (viewBtn) {
-                renderDetailView(viewBtn.dataset.id);
-            } else if (upvoteBtn) {
-                upvoteBtn.classList.add('upvote-blink');
-                setTimeout(() => upvoteBtn.classList.remove('upvote-blink'), 500);
-                const itemId = parseInt(upvoteBtn.dataset.id);
-                const item = isoData.find(i => i.id === itemId);
-                if (item) {
-                    if (!upvoteBtn.classList.contains('upvoted')) {
-                        item.upvotes++;
-                        upvoteBtn.classList.add('upvoted');
-                    } else {
-                        item.upvotes--;
-                        upvoteBtn.classList.remove('upvoted');
-                    }
-                    upvoteBtn.querySelector('.upvote-count').textContent = item.upvotes;
-                }
-            } else if (profileLink) {
-                renderProfileModal(profileLink.dataset.username);
-            }
-        });
-        
-        detailView.addEventListener('click', (event) => {
-            const sellBtn = event.target.closest('.sell-item-btn');
-            const viewBidsBtn = event.target.closest('#view-bids-btn');
-            const profileLink = event.target.closest('.user-profile-link');
-            if (sellBtn) handleSellItemClick(event);
-            if (viewBidsBtn) handleViewBids(event);
-            if (profileLink) {
-                renderProfileModal(profileLink.dataset.username);
-            }
-        });
-
-        app.addEventListener('click', (e) => {
-             const navLink = e.target.closest('.nav-link, .nav-link-mobile');
-             if(navLink) {
-                 e.preventDefault();
-                 switchView(navLink.dataset.view);
-             }
-             const joinHuntBtn = e.target.closest('.join-hunt-sidebar-btn');
-             if(joinHuntBtn) {
-                handleJoinHunt({ currentTarget: joinHuntBtn });
-             }
-             const trendingHuntItem = e.target.closest('.trending-hunt-item');
-             if(trendingHuntItem) {
-                 renderDetailView(trendingHuntItem.dataset.id);
-             }
-             const createIsoBtn = e.target.closest('#my-iso-create-btn');
-             if (createIsoBtn) {
-                toggleModal(isoModal, true);
-                startChat();
-             }
-             const viewDetailsBtn = e.target.closest('.view-details-btn');
-             if (viewDetailsBtn) {
-                renderDetailView(viewDetailsBtn.dataset.id);
-             }
-             const claimHuntBtn = e.target.closest('.claim-hunt-btn');
-             if (claimHuntBtn) {
-                finderHubView.dataset.claimed = finderHubView.dataset.claimed === 'true' ? 'false' : 'true';
-                if(finderHubView.dataset.claimed === 'true') {
-                    showNotification('Hunt Claimed!', 'You are now the Hunt Manager for this ISO.');
-                } else {
-                    showNotification('Hunt Unclaimed', 'The hunt has been returned to the pool.', 'x-circle', 'yellow');
-                }
-                renderFinderHubView();
-             }
-             const manageHuntBtn = e.target.closest('.manage-hunt-btn');
-             if(manageHuntBtn) {
-                renderDetailView(manageHuntBtn.dataset.id);
-             }
-             const userProfileLink = e.target.closest('.user-profile-link');
-             if (userProfileLink) {
-                renderProfileModal(userProfileLink.dataset.username);
-             }
-             const removeHuntBtn = e.target.closest('.remove-hunt-btn');
-             if (removeHuntBtn) {
-                 handleJoinHunt({ currentTarget: removeHuntBtn }); // Reuse the join/leave logic
-             }
-             const initiateBuybackBtn = e.target.closest('.initiate-buyback-btn');
-             if (initiateBuybackBtn) {
-                 handleInitiateBuyback({ currentTarget: initiateBuybackBtn });
-             }
-        });
-        
-        document.getElementById('logo-link').addEventListener('click', (e) => {
-            e.preventDefault();
-            switchView('main-content');
-        });
-
-        filterBar.addEventListener('click', (e) => {
-            if (e.target.classList.contains('filter-btn')) {
-                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-                e.target.classList.add('active');
-                renderFeed(e.target.dataset.category, searchBar.value);
-            }
-        });
-
-        searchBar.addEventListener('input', () => {
-             renderFeed(filterBar.querySelector('.active').dataset.category, searchBar.value);
-        });
-
-        // --- INITIAL RENDER ---
         function initializeApp() {
             lucide.createIcons();
-            switchView('main-content');
+            
+            // Initial render
             renderFeed();
-            renderRecentlyFound();
-            // Render dashboards with mock data
             renderMyIsoView();
             renderFinderHubView();
             renderSellerPortalView();
-            showWelcomeModal();
+            renderLandingPage();
+            switchView('landing-view'); // Start on the landing page
+
+            // Event Listeners
+            postIsoBtn.addEventListener('click', () => { 
+                toggleModal(isoModal, true);
+                resetIsoForm();
+                startChat(); // Start the chat by default
+                chatView.style.display = 'block';
+                formView.style.display = 'none';
+                tabChat.classList.add('text-indigo-600', 'border-indigo-500');
+                tabForm.classList.remove('text-indigo-600', 'border-indigo-500');
+            });
+            closeIsoModalBtn.addEventListener('click', () => toggleModal(isoModal, false));
+            isoForm.addEventListener('submit', handleIsoSubmit);
+            
+            // Chat vs Form tabs
+            tabChat.addEventListener('click', () => {
+                chatView.style.display = 'block';
+                formView.style.display = 'none';
+                tabChat.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-500');
+                tabForm.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-500');
+                startChat();
+            });
+            tabForm.addEventListener('click', () => {
+                chatView.style.display = 'none';
+                formView.style.display = 'block';
+                tabForm.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-500');
+                tabChat.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-500');
+            });
+            
+            // Chat submission
+            chatSubmit.addEventListener('click', handleChatSubmission);
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !chatSubmit.disabled) {
+                    handleChatSubmission();
+                }
+            });
+
+            // Image upload preview
+            imageUploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        imagePreview.src = event.target.result;
+                        imagePreview.classList.remove('hidden');
+                        imageUploadIcon.style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Search and filter
+            searchBar.addEventListener('input', (e) => {
+                const searchTerm = e.target.value;
+                const activeFilter = filterBar.querySelector('.active').dataset.category;
+                renderFeed(activeFilter, searchTerm);
+            });
+
+            filterBar.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-btn')) {
+                    filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('active', 'bg-indigo-600', 'text-white');
+                        btn.classList.add('bg-white', 'text-gray-700', 'border', 'border-gray-300');
+                    });
+                    e.target.classList.add('active', 'bg-indigo-600', 'text-white');
+                    e.target.classList.remove('bg-white', 'text-gray-700', 'border', 'border-gray-300');
+                    renderFeed(e.target.dataset.category, searchBar.value);
+                }
+            });
+            
+            // View switching
+            document.querySelectorAll('.nav-link, .nav-link-mobile, #logo-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const viewId = e.currentTarget.dataset.view || 'landing-view';
+                    switchView(viewId);
+                });
+            });
+            
+            document.querySelectorAll('.profile-dropdown-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchView(e.currentTarget.dataset.view);
+                });
+            });
+
+            // Dynamic event listeners for cards, etc.
+            app.addEventListener('click', (e) => {
+                const viewDetailsBtn = e.target.closest('.view-details-btn, .manage-hunt-btn');
+                if (viewDetailsBtn) {
+                    renderDetailView(viewDetailsBtn.dataset.id);
+                }
+                
+                const initiateBuybackBtn = e.target.closest('.initiate-buyback-btn');
+                if (initiateBuybackBtn) {
+                    handleInitiateBuyback(initiateBuybackBtn);
+                }
+                
+                const myIsoCreateBtn = e.target.closest('#my-iso-create-btn');
+                if (myIsoCreateBtn) {
+                    postIsoBtn.click();
+                }
+
+                const claimHuntBtn = e.target.closest('.claim-hunt-btn');
+                if (claimHuntBtn) {
+                    const isClaimed = finderHubView.dataset.claimed === 'true';
+                    finderHubView.dataset.claimed = !isClaimed;
+                    renderFinderHubView();
+                }
+                
+                const removeHuntBtn = e.target.closest('.remove-hunt-btn');
+                if (removeHuntBtn) {
+                    handleJoinHunt(removeHuntBtn); // Same logic as joining/leaving
+                }
+            });
+            
+            // Modal closing
+            document.getElementById('close-ai-modal').addEventListener('click', () => toggleModal(aiModal, false));
+            messagesBtn.addEventListener('click', renderMessagesModal);
+            
+            // Landing page buttons
+            document.getElementById('landing-post-hunt-btn').addEventListener('click', () => postIsoBtn.click());
+            document.getElementById('landing-become-finder-btn').addEventListener('click', () => switchView('finder-hub-view'));
+            document.getElementById('landing-view-all-btn').addEventListener('click', () => switchView('main-content'));
+
+            // Profile Dropdown Logic
+            profileDropdownBtn.addEventListener('click', () => {
+                profileDropdown.classList.toggle('hidden');
+            });
+
+            // Close dropdown if clicking outside
+            window.addEventListener('click', (e) => {
+                if (!profileDropdownBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.add('hidden');
+                }
+            });
         }
-    })(); // End of self-executing function
+    })();
     </script>
 </body>
 </html>

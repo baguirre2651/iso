@@ -129,6 +129,16 @@
             opacity: 1;
             transform: translateY(0) scale(1);
         }
+        .blinking-cursor {
+            font-weight: 300; /* A thinner cursor */
+            color: #4f46e5; /* Match the accent color */
+            animation: blink-caret 0.8s step-end 4; /* Blinks 4 times, then disappears */
+        }
+
+        @keyframes blink-caret {
+            from, to { opacity: 0; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -199,44 +209,50 @@
             <div class="relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8" style="background: radial-gradient(circle at top left, #e0e7ff, transparent 40%), radial-gradient(circle at bottom right, #fef3c7, transparent 30%), #ffffff;">
                 <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-40 flex flex-col items-center text-center">
                     <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 max-w-4xl leading-tight">
-                        Post your hunt. <br><span class="text-indigo-600">Our experts find it.</span>
+                        Post your hunt.<span class="blinking-cursor">|</span> <br><span class="text-indigo-600">Our experts find it.</span>
                     </h1>
                     <p class="text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
-                        Stop refreshing listing pages. Create an ISO (In Search Of) post, verify your funds, and let our network of vetted experts bring the grail to you.
+                        Stop refreshing listing pages. Create an ISO (In Search Of) post, name your price, and let sellers bring the items directly to you.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                        <button id="landing-post-hunt-btn" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl shadow-indigo-200">
-                            Post a Hunt
-                        </button>
-                        <button id="landing-become-finder-btn" class="px-8 py-4 bg-white text-gray-900 border-2 border-gray-200 font-bold rounded-xl text-lg hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-lg">
-                            Become a Finder
-                        </button>
+                    <div class="flex flex-col sm:flex-row items-center justify-center w-full sm:w-auto">
+                        <div class="p-2">
+                            <button id="landing-post-hunt-btn" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg text-base hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl shadow-indigo-200">
+                                Post a Hunt
+                            </button>
+                        </div>
+                        <div class="p-2">
+                            <button id="landing-become-finder-btn" class="px-6 py-3 bg-white text-gray-900 border-2 border-gray-200 font-semibold rounded-lg text-base hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-lg">
+                                Browse Hunts
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Why Choose Us Section -->
             <div class="bg-white py-24 -mx-4 sm:-mx-6 lg:-mx-8 animate-on-scroll fade-in-up">
-                <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100 flex items-start space-x-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-1">Vetted Experts</h3>
-                            <p class="text-gray-600 text-sm">Your hunt is managed by a specialist in your category, ensuring quality and authenticity.</p>
+                <div class="max-w-4xl mx-auto px-6">
+                    <div class="space-y-12">
+                        <div class="flex items-start gap-8 border-b border-gray-100 pb-12">
+                            <div class="text-5xl font-bold text-gray-200">01</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Broadcast Your Demand</h3>
+                                <p class="text-gray-600 leading-relaxed">Instead of searching, you announce. Post what you're looking for once and let our network of sellers and collectors find it for you.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100 flex items-start space-x-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center"><i data-lucide="lock" class="w-7 h-7"></i></div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-1">Secure Transactions</h3>
-                            <p class="text-gray-600 text-sm">All payments are held in secure escrow until your item is verified and delivered.</p>
+                        <div class="flex items-start gap-8 border-b border-gray-100 pb-12">
+                            <div class="text-5xl font-bold text-gray-200">02</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Discover Hidden Inventory</h3>
+                                <p class="text-gray-600 leading-relaxed">Tap into a market of items that aren't publicly listed. Many sellers have the perfect item in their collection, waiting for the right buyer to ask.</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100 flex items-start space-x-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center"><i data-lucide="gem" class="w-7 h-7"></i></div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-1">Unlock Rare Items</h3>
-                            <p class="text-gray-600 text-sm">Access a hidden market of private sellers and unlisted inventory.</p>
+                        <div class="flex items-start gap-8">
+                            <div class="text-5xl font-bold text-gray-200">03</div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Name Your Price</h3>
+                                <p class="text-gray-600 leading-relaxed">You're in control. Post your top offer to attract serious sellers and streamline the negotiation process from the very beginning.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -246,17 +262,17 @@
             <div class="bg-gray-50 py-24 border-y border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8 animate-on-scroll fade-in-up">
                 <div class="max-w-7xl mx-auto px-6">
                     <div class="text-center mb-16">
-                        <h2 class="text-3xl font-bold text-gray-900">A Frictionless Journey</h2>
-                        <p class="text-gray-500 mt-2">Our platform is designed for everyone in the ecosystem.</p>
+                        <h2 class="text-3xl font-bold text-gray-900">A Simple, Powerful Flow</h2>
+                        <p class="text-gray-500 mt-2">Connecting buyers and sellers has never been more direct.</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                         <div class="p-8 rounded-2xl bg-white border border-gray-100 text-center animate-on-scroll fade-in-up shadow-sm" style="transition-delay: 100ms;">
                             <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="shopping-bag" class="w-7 h-7"></i></div>
                             <h3 class="text-xl font-bold text-gray-900 mb-4">For Buyers</h3>
                             <ul class="space-y-3 text-gray-600 text-left text-sm">
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Post your ISO &amp; verify funds</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Get matched with an expert Finder</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Review verified offers</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Post exactly what you want</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Name your top offer price</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Receive offers from sellers</li>
                             </ul>
                         </div>
                         <div class="p-8 rounded-2xl bg-white border border-gray-100 text-center animate-on-scroll fade-in-up shadow-sm" style="transition-delay: 200ms;">
@@ -264,7 +280,7 @@
                             <h3 class="text-xl font-bold text-gray-900 mb-4">For Finders</h3>
                             <ul class="space-y-3 text-gray-600 text-left text-sm">
                                 <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Apply to be a vetted expert</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Claim active Hunts in your niche</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Claim active hunts in your niche</li>
                                 <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Earn commission on success</li>
                             </ul>
                         </div>
@@ -272,9 +288,9 @@
                             <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="store" class="w-7 h-7"></i></div>
                             <h3 class="text-xl font-bold text-gray-900 mb-4">For Sellers</h3>
                             <ul class="space-y-3 text-gray-600 text-left text-sm">
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Receive private requests</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Submit offers securely</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Get instant liquidity</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Browse active hunts from buyers</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Find a match for your inventory</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Make a direct offer to the buyer</li>
                             </ul>
                         </div>
                     </div>
@@ -2210,7 +2226,7 @@
             
             // Landing page buttons
             document.getElementById('landing-post-hunt-btn').addEventListener('click', openCreateModal);
-            document.getElementById('landing-become-finder-btn').addEventListener('click', () => switchView('finder-hub-view'));
+            document.getElementById('landing-become-finder-btn').addEventListener('click', () => switchView('main-content'));
             document.getElementById('landing-view-all-btn').addEventListener('click', () => switchView('main-content'));
 
             // Profile Dropdown Logic

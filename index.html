@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>In Search Of - The Social Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
@@ -13,7 +13,7 @@
             background-color: #f7f7f9;
         }
         h1, h2, h3, h4 {
-            font-family: 'Manrope', sans-serif;
+            font-family: 'DM Serif Display', serif;
         }
         .modal-backdrop {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -115,6 +115,20 @@
             background-color: #eef2ff;
             color: #4338ca;
         }
+        .animate-on-scroll {
+            opacity: 0;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up {
+            transform: translateY(30px);
+        }
+        .fade-in {
+            transform: scale(0.95);
+        }
+        .is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -182,47 +196,70 @@
         <!-- Landing Page View -->
         <div id="landing-view" class="landing-view">
             <!-- Hero Section -->
-            <div class="relative overflow-hidden bg-white border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8">
-                <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-50"></div>
-                <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-32 flex flex-col items-center text-center">
-                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-wide mb-6">
-                        The Future of Collecting
-                    </div>
-                    <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 max-w-4xl">
-                        Post what you're hunting for, <br><span class="text-indigo-600">expert Finders source it.</span>
+            <div class="relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8" style="background: radial-gradient(circle at top left, #e0e7ff, transparent 40%), radial-gradient(circle at bottom right, #fef3c7, transparent 30%), #ffffff;">
+                <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-40 flex flex-col items-center text-center">
+                    <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 max-w-4xl leading-tight">
+                        Post your hunt. <br><span class="text-indigo-600">Our experts find it.</span>
                     </h1>
                     <p class="text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
                         Stop refreshing listing pages. Create an ISO (In Search Of) post, verify your funds, and let our network of vetted experts bring the grail to you.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                        <button id="landing-post-hunt-btn" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl text-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                        <button id="landing-post-hunt-btn" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl shadow-indigo-200">
                             Post a Hunt
                         </button>
-                        <button id="landing-become-finder-btn" class="px-8 py-4 bg-white text-gray-900 border-2 border-gray-200 font-bold rounded-xl text-lg hover:border-indigo-600 hover:text-indigo-600 transition-colors">
+                        <button id="landing-become-finder-btn" class="px-8 py-4 bg-white text-gray-900 border-2 border-gray-200 font-bold rounded-xl text-lg hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-lg">
                             Become a Finder
                         </button>
                     </div>
                 </div>
             </div>
 
+            <!-- Why Choose Us Section -->
+            <div class="bg-white py-24 -mx-4 sm:-mx-6 lg:-mx-8 animate-on-scroll fade-in-up">
+                <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100 flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1">Vetted Experts</h3>
+                            <p class="text-gray-600 text-sm">Your hunt is managed by a specialist in your category, ensuring quality and authenticity.</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100 flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center"><i data-lucide="lock" class="w-7 h-7"></i></div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1">Secure Transactions</h3>
+                            <p class="text-gray-600 text-sm">All payments are held in secure escrow until your item is verified and delivered.</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50/50 p-6 rounded-xl border border-gray-100 flex items-start space-x-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center"><i data-lucide="gem" class="w-7 h-7"></i></div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1">Unlock Rare Items</h3>
+                            <p class="text-gray-600 text-sm">Access a hidden market of private sellers and unlisted inventory.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- How It Works Summary -->
-            <div class="bg-white py-24 border-b border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8">
+            <div class="bg-gray-50 py-24 border-y border-gray-200 -mx-4 sm:-mx-6 lg:-mx-8 animate-on-scroll fade-in-up">
                 <div class="max-w-7xl mx-auto px-6">
                     <div class="text-center mb-16">
-                        <h2 class="text-3xl font-bold text-gray-900">How It Works</h2>
-                        <p class="text-gray-500 mt-2">A frictionless journey for everyone in the ecosystem.</p>
+                        <h2 class="text-3xl font-bold text-gray-900">A Frictionless Journey</h2>
+                        <p class="text-gray-500 mt-2">Our platform is designed for everyone in the ecosystem.</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                        <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 text-center">
+                        <div class="p-8 rounded-2xl bg-white border border-gray-100 text-center animate-on-scroll fade-in-up shadow-sm" style="transition-delay: 100ms;">
                             <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="shopping-bag" class="w-7 h-7"></i></div>
                             <h3 class="text-xl font-bold text-gray-900 mb-4">For Buyers</h3>
                             <ul class="space-y-3 text-gray-600 text-left text-sm">
                                 <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Post your ISO &amp; verify funds</li>
                                 <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Get matched with an expert Finder</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Review vetted, verified offers</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-indigo-600 mr-2 mt-0.5 flex-shrink-0"></i> Review verified offers</li>
                             </ul>
                         </div>
-                        <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 text-center">
+                        <div class="p-8 rounded-2xl bg-white border border-gray-100 text-center animate-on-scroll fade-in-up shadow-sm" style="transition-delay: 200ms;">
                             <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="scan-eye" class="w-7 h-7"></i></div>
                             <h3 class="text-xl font-bold text-gray-900 mb-4">For Finders</h3>
                             <ul class="space-y-3 text-gray-600 text-left text-sm">
@@ -231,13 +268,13 @@
                                 <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i> Earn commission on success</li>
                             </ul>
                         </div>
-                        <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 text-center">
-                            <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="store" class="w-7 h-7"></i></div>
+                        <div class="p-8 rounded-2xl bg-white border border-gray-100 text-center animate-on-scroll fade-in-up shadow-sm" style="transition-delay: 300ms;">
+                            <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-6 mx-auto"><i data-lucide="store" class="w-7 h-7"></i></div>
                             <h3 class="text-xl font-bold text-gray-900 mb-4">For Sellers</h3>
                             <ul class="space-y-3 text-gray-600 text-left text-sm">
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0"></i> Receive private requests</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0"></i> Submit offers securely</li>
-                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-green-600 mr-2 mt-0.5 flex-shrink-0"></i> Instant liquidity</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Receive private requests</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Submit offers securely</li>
+                                <li class="flex items-start"><i data-lucide="check" class="w-4 h-4 text-amber-600 mr-2 mt-0.5 flex-shrink-0"></i> Get instant liquidity</li>
                             </ul>
                         </div>
                     </div>
@@ -245,7 +282,7 @@
             </div>
 
             <!-- Category Showcase -->
-            <div class="max-w-7xl mx-auto px-6 py-20">
+            <div class="max-w-7xl mx-auto px-6 py-20 animate-on-scroll fade-in">
                 <div class="flex justify-between items-end mb-10">
                     <div><h2 class="text-3xl font-bold text-gray-900 mb-2">Explore Categories</h2><p class="text-gray-500">Browse active hunts by what collectors are looking for.</p></div>
                     <button id="landing-view-all-btn" class="text-indigo-600 font-semibold hover:text-indigo-800 flex items-center">View All <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i></button>
@@ -859,12 +896,12 @@
          * @returns {HTMLElement} The card element.
          */
         function createHuntCardElement(item) {
-            const card = document.createElement('div');
-            card.className = 'group view-details-btn flex flex-col rounded-2xl p-3 transition-all hover:shadow-xl cursor-pointer';
+            const card = document.createElement('div'); // bg-white dark:bg-gray-800
+            card.className = 'group view-details-btn flex flex-col bg-white dark:bg-gray-800 rounded-2xl p-3 transition-all hover:shadow-xl cursor-pointer border border-transparent dark:hover:border-indigo-500/30 hover:border-indigo-500/20';
             card.dataset.id = item.id;
 
             const fundsVerifiedBadge = item.fundsVerified 
-                ? `<div class="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm px-2 py-1 text-xs font-bold text-green-700">
+                ? `<div class="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-white/90 dark:bg-gray-900/70 backdrop-blur-sm px-2 py-1 text-xs font-bold text-green-700 dark:text-green-400">
                        <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
                        <span>Verified</span>
                    </div>`
@@ -1253,6 +1290,13 @@
                 if (filterBtn) {
                     filterBtn.click();
                 }
+            }
+
+            // Reset landing page animations when switching to it
+            if (viewId === 'landing-view') {
+                document.querySelectorAll('.animate-on-scroll').forEach(el => {
+                    el.classList.remove('is-visible');
+                });
             }
         }
         
@@ -1839,17 +1883,17 @@
                     showNotification(`Expert Finder '${item.finder.name}' has claimed the hunt for the ${item.name}.`, 'They will now source and verify options for you.');
                     
                     finderModule.innerHTML = `
-                        <h3 class="text-lg font-bold text-gray-900 mb-1">Your Hunt Manager</h3>
-                        <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Your Hunt Manager</h3>
+                        <div class="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg">
                             <div class="flex items-center space-x-4">
                                 <img src="${item.finder.avatar}" class="w-12 h-12 rounded-full"/>
                                 <div class="flex-1">
-                                    <button class="font-bold text-gray-900 hover:underline user-profile-link" data-username="${item.finder.name}">${item.finder.name}</button>
-                                    <p class="text-sm text-indigo-700 font-medium">${item.finder.specialty}</p>
+                                    <button class="font-bold text-gray-900 dark:text-white hover:underline user-profile-link" data-username="${item.finder.name}">${item.finder.name}</button>
+                                    <p class="text-sm text-indigo-700 dark:text-indigo-400 font-medium">${item.finder.specialty}</p>
                                 </div>
-                                <span class="text-sm text-gray-500 flex items-center"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.finder.rating}</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center"><i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1"></i> ${item.finder.rating}</span>
                             </div>
-                            <p class="text-xs text-gray-600 mt-3 italic">
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-3 italic">
                                 "'${item.finder.name}' is now sourcing items from our private seller network. You'll be notified as soon as verified options are ready to review."
                             </p>
                         </div>
@@ -1857,10 +1901,10 @@
                     lucide.createIcons();
                 } else {
                      finderModule.innerHTML = `
-                        <h3 class="text-lg font-bold text-gray-900 mb-1">Hunt Status</h3>
-                        <div class="p-4 bg-gray-50 border rounded-lg flex items-center space-x-3">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Hunt Status</h3>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-gray-700 rounded-lg flex items-center space-x-3">
                             <i data-lucide="send" class="w-5 h-5 text-gray-700"></i>
-                            <p class="text-sm font-medium text-gray-700">Syndicating your hunt directly to the seller network.</p>
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Syndicating your hunt directly to the seller network.</p>
                         </div>
                     `;
                     lucide.createIcons();
@@ -1963,13 +2007,13 @@
         function renderLandingPage() {
             const categories = [
                 { name: "Sneakers", img: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=800", count: "1.2k" },
-                { name: "Archival Fashion", img: "https://images.unsplash.com/photo-1550614000-4b9519e02c06?auto=format&fit=crop&q=80&w=800", count: "850" },
+                { name: "Archival Fashion", img: "images/tobias-tullius-Fg15LdqpWrs-unsplash.jpg", count: "850" },
                 { name: "Watches", img: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&q=80&w=800", count: "420" },
                 { name: "Collectibles", img: "https://images.unsplash.com/photo-1608346128025-1896b97a6fa7?auto=format&fit=crop&q=80&w=800", count: "310" }
             ];
 
             const container = document.getElementById('landing-categories');
-            container.innerHTML = categories.map(cat => `
+            container.innerHTML = categories.map((cat, index) => `
                 <div data-category="${cat.name}" class="landing-category-card group cursor-pointer relative overflow-hidden rounded-xl aspect-[4/5]">
                     <img src="${cat.img}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -1985,6 +2029,46 @@
                     const category = e.currentTarget.dataset.category;
                     switchView('main-content', { category: category });
                 });
+            });
+
+            // Animated Counter
+            const counterElement = document.getElementById('post-counter');
+            const targetCount = 1337; // A more impressive number for demo
+            
+            const animateCounter = (el, target) => {
+                let current = 0;
+                const step = Math.max(1, Math.ceil(target / 100));
+                const interval = setInterval(() => {
+                    current += step;
+                    if (current >= target) {
+                        clearInterval(interval);
+                        if (target > 9999) {
+                            el.textContent = '9999+';
+                        } else {
+                            el.textContent = target.toLocaleString();
+                        }
+                    } else {
+                        el.textContent = current.toLocaleString();
+                    }
+                }, 20);
+            };
+            animateCounter(counterElement, targetCount);
+
+            // Scroll Animations
+            const scrollElements = document.querySelectorAll('.animate-on-scroll');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        // Optional: remove class when it scrolls out of view to re-trigger on scroll up
+                        // entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            scrollElements.forEach(el => {
+                observer.observe(el);
             });
         }
 
@@ -2003,7 +2087,7 @@
             switchView('landing-view'); // Start on the landing page
 
             // Event Listeners
-            postIsoBtn.addEventListener('click', () => { 
+            const openCreateModal = () => {
                 toggleModal(isoModal, true);
                 resetIsoForm();
                 startChat(); // Start the chat by default
@@ -2011,7 +2095,9 @@
                 formView.style.display = 'none';
                 tabChat.classList.add('text-indigo-600', 'border-indigo-500');
                 tabForm.classList.remove('text-indigo-600', 'border-indigo-500');
-            });
+            };
+
+            postIsoBtn.addEventListener('click', openCreateModal);
             closeIsoModalBtn.addEventListener('click', () => toggleModal(isoModal, false));
             isoForm.addEventListener('submit', handleIsoSubmit);
             
@@ -2084,6 +2170,7 @@
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     switchView(e.currentTarget.dataset.view);
+                    profileDropdown.classList.add('hidden');
                 });
             });
 
@@ -2122,7 +2209,7 @@
             messagesBtn.addEventListener('click', renderMessagesModal);
             
             // Landing page buttons
-            document.getElementById('landing-post-hunt-btn').addEventListener('click', () => postIsoBtn.click());
+            document.getElementById('landing-post-hunt-btn').addEventListener('click', openCreateModal);
             document.getElementById('landing-become-finder-btn').addEventListener('click', () => switchView('finder-hub-view'));
             document.getElementById('landing-view-all-btn').addEventListener('click', () => switchView('main-content'));
 

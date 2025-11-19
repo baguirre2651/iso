@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> In Search Of - The Social Marketplace</title>
+    <title>In Search Of - The Social Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -49,9 +49,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .podium-1 { order: 2; transform: translateY(-20px); }
-        .podium-2 { order: 1; }
-        .podium-3 { order: 3; }
         .upvote-blink {
             animation: upvote-animation 0.5s ease;
         }
@@ -421,6 +418,8 @@
                 </div>
             </div>
         </div>
+
+    </div>
 
     <!-- Modals -->
     <div id="modal-backdrop" class="modal-backdrop"></div>
@@ -1306,6 +1305,13 @@
                 <div class="space-y-4">
                     <p class="text-gray-700 leading-relaxed">${insights}</p>
                     <p class="text-xs text-gray-400 pt-2 border-t border-gray-200">✨ Powered by Gemini. Insights are for informational purposes only.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t">
+                     <label for="ai-question" class="block text-sm font-medium text-gray-700 mb-2">Ask a follow-up question</label>
+                     <div class="flex space-x-2">
+                        <input type="text" id="ai-question-input" class="flex-1 w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., How does this compare to...?">
+                        <button id="ai-ask-btn" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Ask</button>
+                     </div>
                      <div id="ai-answer" class="mt-4 text-sm"></div>
                 </div>
             `;
@@ -1621,7 +1627,7 @@
                     <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md mb-6">
                         <p class="font-bold text-blue-800">Guaranteed Buyback Price</p>
                         <p class="text-3xl font-bold text-blue-900">$${item.acquired.buybackPrice.toLocaleString()}</p>
-                        <p class="text-sm text-blue-700">ISO will repurchase the item at this price upon verification of its condition.</p>
+                        <p class="text-sm text-blue-700">The original seller has been notified and is obligated to repurchase the item at this price upon verification of its condition.</p>
                     </div>
                     <div class="pt-4 flex justify-end">
                         <button class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-sm hover:bg-blue-700">Confirm & Start Process</button>
@@ -1632,13 +1638,6 @@
             lucide.createIcons();
             document.getElementById('close-buyback-modal').addEventListener('click', () => toggleModal(buybackModal, false));
         }
-
-        /**
-         * Starts various timers and leaderboards.
-         */
-        
-    
-           
 
         // =================================================================================
         // NEW CHAT & FINDER LOGIC
@@ -2081,7 +2080,6 @@
             toggleModal(sellModal, false);
             toggleModal(aiModal, false);
             toggleModal(bidsModal, false);
-            toggleModal(editModal, false);
             toggleModal(profileModal, false);
             toggleModal(buybackModal, false);
             toggleModal(welcomeModal, false);
@@ -2242,8 +2240,6 @@
             switchView('main-content');
             renderFeed();
             renderRecentlyFound();
-            renderTrendingHunts();
-            startCountdown();
             // Render dashboards with mock data
             renderMyIsoView();
             renderFinderHubView();
@@ -2254,4 +2250,3 @@
     </script>
 </body>
 </html>
-

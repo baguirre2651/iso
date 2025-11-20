@@ -201,6 +201,9 @@
             from, to { opacity: 0; }
             50% { opacity: 1; }
         }
+        #chat-log {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -1763,14 +1766,13 @@
         let currentChatStep = 0;
         let isoInProgress = {};
         const chatFlow = [
-            { bot: "Hey! I'll help create your ISO. First, what's the name of the item you're searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
-            { bot: "Great. Now, add key details like size, condition, and category.", key: 'details', placeholder: "e.g., Size 10, new, sneakers" },
-            { bot: "Perfect. Lastly, write a short description for your hunt. This is your chance to add a personal touch.", key: 'description', placeholder: "Looking for a pair with the original box..." },
-            { bot: "What's the top offer you'd like to make for this item?", key: 'topOffer', placeholder: "$550" },
-            { bot: "Here's a summary of your hunt so far.", action: 'summary_check' },
+            { bot: "Hey! I can help create your new hunt. First, what's the name of the item you're searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
+            { bot: "Great. Now, let's add some key details. What is the size and condition?", key: 'details', placeholder: "e.g., Size 10, new" },
             { bot: "Which category does this fall under?", key: 'category', action: 'category' },
-            { bot: "A picture is worth a thousand words! Please upload a reference image.", key: 'image', action: 'image' },
-            { bot: "How long should this hunt be active?", key: 'duration', action: 'duration' },
+            { bot: "Got it. Now for the offer. Naming your price helps attract serious sellers.", action: 'offer_preamble' },
+            { bot: "What's the top offer you'd like to make?", key: 'topOffer', placeholder: "$550" },
+            { bot: "Okay, here is the complete summary. Does this all look correct?", action: 'summary_check' },
+            { bot: "Perfect! A picture is worth a thousand words. Please upload a reference image.", key: 'image', action: 'image' },
             { bot: "Great. To ensure sellers know you're serious, we'll simulate a fund verification. This signals you're a ready buyer.", action: 'verify' },
             { bot: "Perfect! Your funds are verified. We are now matching your ISO with a vetted expert Finder.", action: 'syndicate' }
         ];
@@ -1807,7 +1809,7 @@
 
         function parseDetailsInput(input) {
             let details = [];
-            let remainingInput = input;
+            let remainingInput = ` ${input} `.replace(/,/g, ' ');
 
             // Extract size
             const sizeRegex = /(size|sz)\s*:?\s*([\d\w.]+)/i;
@@ -1818,7 +1820,7 @@
             }
 
             // Extract condition
-            const conditionKeywords = ['new', 'unworn', 'deadstock', 'ds', 'good condition', 'used', 'vnds', 'mint', 'og all'];
+            const conditionKeywords = ['new', 'unworn', 'deadstock', 'ds', 'good condition', 'used', 'vnds', 'mint'];
             conditionKeywords.forEach(keyword => {
                 const keywordRegex = new RegExp(`\\b${keyword}\\b`, 'i');
                 if (input.match(keywordRegex)) {
@@ -1827,19 +1829,36 @@
                 }
             });
 
-            // Any remaining text from this input is also part of the details
-            if (remainingInput) details.push(remainingInput);
+            // Extract category
+            const categoryKeywords = { "Sneakers": ["sneaker", "sneakers", "jordan", "yeezy", "nike", "adidas"], "Archival Fashion": ["archive", "raf", "rick owens", "margiela"], "Watches": ["watch", "watches", "rolex", "patek", "omega"], "Collectibles": ["collectible", "collectibles", "art", "painting", "figure"] };
+            for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                keywords.forEach(keyword => {
+                    const keywordRegex = new RegExp(`\\b${keyword}\\b`, 'i');
+                    if (input.match(keywordRegex)) {
+                        isoInProgress.category = category;
+                        remainingInput = remainingInput.replace(keywordRegex, '').trim();
+                    }
+                });
+            }
+
+            if (remainingInput.trim()) details.push(remainingInput.trim());
             isoInProgress.details = details.join(', ');
         }
 
         function showChatSummary() {
+            // Remove any existing summary card before adding a new one
+            document.querySelectorAll('.chat-summary-card').forEach(card => card.remove());
+            
+            const missingText = (key) => !isoInProgress[key] ? `<span class="text-gray-400">...</span>` : isoInProgress[key];
+            const offerText = isoInProgress.topOffer ? `$${isoInProgress.topOffer.replace(/\D/g, '')}` : `<span class="text-gray-400">...</span>`;
+
             const summaryHTML = `
-                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm">
+                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm chat-summary-card mt-2">
                     <div class="space-y-1.5">
-                        <div class="flex justify-between items-center"><span>Item:</span><span class="font-semibold text-right pl-4">${isoInProgress.name || '<span class="text-gray-400">Missing</span>'}</span></div>
-                        <div class="flex justify-between items-center"><span>Details:</span><span class="font-semibold text-right pl-4">${isoInProgress.details || '<span class="text-gray-400">Missing</span>'}</span></div>
-                        <div class="flex justify-between items-center"><span>Category:</span><span class="font-semibold text-right pl-4">${isoInProgress.category || '<span class="text-gray-400">Missing</span>'}</span></div>
-                        <div class="flex justify-between items-center"><span>Offer:</span><span class="font-semibold text-right pl-4">${isoInProgress.topOffer ? '$' + isoInProgress.topOffer.replace(/\D/g,'') : '<span class="text-gray-400">Missing</span>'}</span></div>
+                        <div class="flex justify-between items-center"><span>Item:</span><span class="font-semibold text-right pl-4">${missingText('name')}</span></div>
+                        <div class="flex justify-between items-center"><span>Details:</span><span class="font-semibold text-right pl-4">${isoInProgress.details || '<span class="text-gray-400">...</span>'}</span></div>
+                        <div class="flex justify-between items-center"><span>Category:</span><span class="font-semibold text-right pl-4">${missingText('category')}</span></div>
+                        <div class="flex justify-between items-center"><span>Offer:</span><span class="font-semibold text-right pl-4">${offerText}</span></div>
                     </div>
                 </div>
             `;
@@ -1859,8 +1878,7 @@
             } else if (currentStep.key === 'details') {
                 parseDetailsInput(userText);
             } else if (currentStep.key) {
-                // Sanitize offer input
-                isoInProgress[currentStep.key] = currentStep.key === 'topOffer' ? userText.replace(/\D/g,'') : userText;
+                isoInProgress[currentStep.key] = userText;
             }
 
             chatInput.value = '';
@@ -1879,7 +1897,7 @@
             }
             
             // Skip step if data already exists
-            if (nextStep.key && isoInProgress[nextStep.key] && !['details', 'description', 'category'].includes(nextStep.key)) {
+            if (nextStep.key && isoInProgress[nextStep.key] && !['details'].includes(nextStep.key)) {
                 currentChatStep++;
                 processNextChatStep();
                 return;
@@ -1889,64 +1907,97 @@
             chatLog.innerHTML += typingIndicator;
             chatLog.scrollTop = chatLog.scrollHeight;
 
-            setTimeout(async () => { // Short delay for responsiveness
+            setTimeout(async () => {
                 chatLog.removeChild(chatLog.lastChild);
+                chatLog.scrollTop = chatLog.scrollHeight;
+
+                // if (currentChatStep === 1) { // After getting the name
+                //     addBotMessage("Awesome, let's get a hunt going for a <strong>" + isoInProgress.name + "</strong>. Here's what we have so far. I'll help you fill in the rest.");
+                //     setTimeout(showChatSummary, 300);
+                // }
+
                 addBotMessage(nextStep.bot);
                 
-                // Add a second, longer delay for a more natural conversational rhythm before showing complex elements
-                setTimeout(() => { // Longer delay for conversational feel
-                    if (nextStep.action === 'summary_check') {
+                setTimeout(() => {
+                    if (nextStep.action === 'offer_preamble') {
+                        addBotMessage("Just so you know, your funds are only held in secure escrow <em>after</em> you accept a verified offer. You're not committing any money right now.");
+                        setTimeout(() => {
+                            currentChatStep++;
+                            processNextChatStep();
+                        }, 1200);
+                    } else if (nextStep.action === 'summary_check') {
                         showChatSummary();
-                    const missing = ['name', 'category', 'topOffer'].filter(k => !isoInProgress[k]);
+                        const missing = ['name', 'category', 'topOffer'].filter(k => !isoInProgress[k]);
 
                         if (missing.length > 0) {
-                        addBotMessage(`It looks like we're still missing some info. Do you want to add it now, or continue?`);
-                        const summaryActionsHTML = `
-                            <div class="flex gap-2 mt-2 justify-start">
-                                <button id="chat-continue-anyway" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">Continue Anyway</button>
-                            </div>`;
-                        addMessage(summaryActionsHTML, false);
-                        document.getElementById('chat-continue-anyway').addEventListener('click', () => {
-                            addUserMessage('Continue Anyway');
-                            currentChatStep++;
-                            processNextChatStep();
-                        });
+                            addBotMessage(`It looks like we're still missing some key info. Do you want to add it now, or continue?`);
+                            const summaryActionsHTML = `
+                                <div class="flex gap-2 mt-2 justify-start">
+                                    <button id="chat-continue-anyway" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">Continue Anyway</button>
+                                </div>`;
+                            addMessage(summaryActionsHTML, false);
+                            document.getElementById('chat-continue-anyway').addEventListener('click', () => {
+                                addUserMessage('Continue Anyway');
+                                currentChatStep++;
+                                processNextChatStep();
+                            });
                         } else {
-                        addBotMessage(`Looks great! Ready to move on?`);
-                        const summaryActionsHTML = `
-                            <div class="flex gap-2 mt-2 justify-start">
-                                <button id="chat-continue" class="chat-action-btn bg-indigo-600 text-white text-sm font-semibold py-1 px-3 rounded-full hover:bg-indigo-700">Yes, Continue</button>
-                            </div>`;
-                        addMessage(summaryActionsHTML, false);
-                        document.getElementById('chat-continue').addEventListener('click', () => {
-                            addUserMessage('Yes, Continue');
-                            currentChatStep++;
-                            processNextChatStep();
-                        });
-                    }
+                            addBotMessage(`Does this all look correct?`);
+                            const summaryActionsHTML = `
+                                <div class="flex gap-2 mt-2 justify-start">
+                                    <button id="chat-continue" class="chat-action-btn bg-indigo-600 text-white text-sm font-semibold py-1 px-3 rounded-full hover:bg-indigo-700">Yes, looks good</button>
+                                    <button id="chat-edit" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">No, make a change</button>
+                                </div>`;
+                            addMessage(summaryActionsHTML, false);
+                            document.getElementById('chat-continue').addEventListener('click', () => {
+                                addUserMessage('Yes, Looks Good');
+                                currentChatStep++;
+                                processNextChatStep();
+                            });
+                            document.getElementById('chat-edit').addEventListener('click', () => {
+                                addUserMessage('Make a change');
+                                addBotMessage('What would you like to change?');
+                                const editOptionsHTML = `
+                                    <div class="flex flex-wrap gap-2 mt-2 justify-start">
+                                        <button class="edit-option-btn" data-step="0">Item Name</button>
+                                        <button class="edit-option-btn" data-step="1">Details</button>
+                                        <button class="edit-option-btn" data-step="2">Category</button>
+                                        <button class="edit-option-btn" data-step="4">Offer</button>
+                                    </div>
+                                `.replaceAll('class="edit-option-btn"', 'class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100"');
+                                addMessage(editOptionsHTML, false);
+                                document.querySelectorAll('.edit-option-btn').forEach(btn => btn.addEventListener('click', (e) => {
+                                    const step = parseInt(e.target.dataset.step);
+                                    currentChatStep = step;
+                                    isoInProgress[chatFlow[step].key] = null; // Clear the data for that step
+                                    addUserMessage(`Change ${e.target.textContent}`);
+                                    processNextChatStep();
+                                }));
+                            });
+                        }
                         chatInput.disabled = true;
                         chatSubmit.disabled = true;
 
                     } else if (nextStep.action === 'category') {
-                     const categories = ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'];
-                     const categoryButtonsHTML = `
-                        <div class="flex flex-wrap gap-2 mt-2 justify-start">
-                            ${categories.map(cat => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${cat}</button>`).join('')}
-                        </div>
-                     `;
-                     addMessage(categoryButtonsHTML, false);
-                     document.querySelectorAll('.chat-action-btn').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const category = btn.textContent;
-                            isoInProgress.category = category;
-                            addUserMessage(category);
-                            currentChatStep++;
-                            processNextChatStep();
+                        const categories = ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'];
+                        const categoryButtonsHTML = `
+                            <div class="flex flex-wrap gap-2 mt-2 justify-start">
+                                ${categories.map(cat => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${cat}</button>`).join('')}
+                            </div>
+                        `;
+                        addMessage(categoryButtonsHTML, false);
+                        document.querySelectorAll('.chat-action-btn').forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                const category = btn.textContent;
+                                addUserMessage(category);
+                                isoInProgress.category = category;
+                                currentChatStep++;
+                                processNextChatStep();
+                            });
                         });
-                     });
                     } else if (nextStep.action === 'duration') {
-                    const durations = [7, 14, 30];
-                    const durationButtonsHTML = `
+                     const durations = [7, 14, 30];
+                     const durationButtonsHTML = `
                         <div class="flex flex-wrap gap-2 mt-2 justify-start">
                             ${durations.map(dur => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100" data-duration="${dur}">${dur} Days</button>`).join('')}
                         </div>
@@ -1955,13 +2006,13 @@
                     document.querySelectorAll('.chat-action-btn').forEach(btn => {
                         btn.addEventListener('click', () => {
                             const duration = btn.dataset.duration;
-                            isoInProgress.duration = parseInt(duration);
+                             isoInProgress.duration = parseInt(duration);
                             addUserMessage(`${duration} Days`);
                             currentChatStep++;
                             processNextChatStep();
                         });
                     });
-                    } else if (nextStep.action === 'image') {
+                     } else if (nextStep.action === 'image') {
                     const imageUploaderHTML = `
                         <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                             <div class="space-y-1 text-center">
@@ -1980,26 +2031,27 @@
                         </div>`;
                     addMessage(imageUploaderHTML, false);
                     document.getElementById('chat-image-upload-input').addEventListener('change', handleChatImageUpload);
-                    } else if (nextStep.action === 'verify') {
+                     } else if (nextStep.action === 'verify') {
                     setTimeout(() => {
                         const successMsg = `<div class="flex items-center space-x-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i><p>Funds Verified!</p></div>`;
                         addMessage(successMsg, false);
                         lucide.createIcons();
                         currentChatStep++;
                         processNextChatStep();
-                        }, 1000);
-                    } else if (nextStep.action === 'syndicate') {
+                     }, 1000);
+                     } else if (nextStep.action === 'syndicate') {
                     createNewIsoFromChat();
                     toggleModal(isoModal, false);
-                    } else {
+                     } else {
                     chatInput.placeholder = nextStep.placeholder;
                     chatInput.disabled = false;
                     chatSubmit.disabled = false;
                     chatInput.focus();
+                    showChatSummary();
                     }
                 }, 700);
 
-            }, 200);
+            }, 1200);
         }
         
         function createNewIsoFromChat() {

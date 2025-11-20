@@ -637,14 +637,14 @@
         </div>
 
         <!-- Chat View -->
-        <div id="chat-view">
-            <div id="chat-log" class="p-6 h-96 overflow-y-auto space-y-4">
+        <div id="chat-view" class="flex flex-col max-h-[70vh] md:max-h-[550px]">
+            <div id="chat-log" class="flex-1 p-4 md:p-6 overflow-y-auto space-y-4">
                 <!-- Chat messages will be injected here -->
             </div>
-            <div class="p-4 border-t border-gray-200">
-                <div class="flex items-center space-x-2">
-                    <input type="text" id="chat-input" placeholder="Type your answer..." class="flex-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500" disabled>
-                    <button id="chat-submit" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-700 transition-colors" disabled>Send</button>
+            <div class="p-3 border-t border-gray-200 bg-white rounded-b-xl">
+                <div class="relative flex items-center">
+                    <input type="text" id="chat-input" placeholder="Type your answer..." class="flex-1 w-full px-4 py-2.5 bg-gray-100 border-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-400" disabled>
+                    <button id="chat-submit" class="absolute right-2 bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm hover:bg-indigo-700 transition-colors disabled:bg-gray-300" disabled><i data-lucide="arrow-up" class="w-5 h-5"></i></button>
                 </div>
             </div>
         </div>
@@ -1763,13 +1763,14 @@
         let currentChatStep = 0;
         let isoInProgress = {};
         const chatFlow = [
-            { bot: "Hey! I'll help create your ISO. What are you searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
-            { bot: "Got it. Any specific details? (Size, condition, etc.)", key: 'details', placeholder: "e.g., Size 10, New" },
-            { bot: "Great. Now, let's craft a compelling description to attract the best Finders and Sellers.", action: 'generate_description' },
-            { bot: "Which category does this fall under?", action: 'category' },
+            { bot: "Hey! I'll help create your ISO. First, what's the name of the item you're searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
+            { bot: "Great. Now, add key details like size, condition, and category.", key: 'details', placeholder: "e.g., Size 10, new, sneakers" },
+            { bot: "Perfect. Lastly, write a short description for your hunt. This is your chance to add a personal touch.", key: 'description', placeholder: "Looking for a pair with the original box..." },
             { bot: "What's the top offer you'd like to make for this item?", key: 'topOffer', placeholder: "$550" },
-            { bot: "A picture is worth a thousand words! Please upload a reference image for your hunt.", action: 'image' },
-            { bot: "How long should this hunt be active for?", action: 'duration' },
+            { bot: "Here's a summary of your hunt so far.", action: 'summary_check' },
+            { bot: "Which category does this fall under?", key: 'category', action: 'category' },
+            { bot: "A picture is worth a thousand words! Please upload a reference image.", key: 'image', action: 'image' },
+            { bot: "How long should this hunt be active?", key: 'duration', action: 'duration' },
             { bot: "Great. To ensure sellers know you're serious, we'll simulate a fund verification. This signals you're a ready buyer.", action: 'verify' },
             { bot: "Perfect! Your funds are verified. We are now matching your ISO with a vetted expert Finder.", action: 'syndicate' }
         ];
@@ -1788,8 +1789,8 @@
         function addMessage(content, isUser = false) {
             const messageWrapper = document.createElement('div');
             messageWrapper.className = `chat-message flex ${isUser ? 'justify-end' : 'justify-start'}`;
-            const bubble = document.createElement('div');
-            bubble.className = `chat-bubble p-3 rounded-2xl text-sm ${isUser ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}`;
+            const bubble = document.createElement('div'); // max-w-[85%]
+            bubble.className = `chat-bubble p-3 rounded-xl text-sm ${isUser ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}`;
             bubble.innerHTML = content;
             messageWrapper.appendChild(bubble);
             chatLog.appendChild(messageWrapper);
@@ -1804,14 +1805,62 @@
             addMessage(text, true);
         }
 
+        function parseDetailsInput(input) {
+            let details = [];
+            let remainingInput = input;
+
+            // Extract size
+            const sizeRegex = /(size|sz)\s*:?\s*([\d\w.]+)/i;
+            const sizeMatch = input.match(sizeRegex);
+            if (sizeMatch) {
+                details.push(`Size ${sizeMatch[2]}`);
+                remainingInput = remainingInput.replace(sizeMatch[0], '').trim();
+            }
+
+            // Extract condition
+            const conditionKeywords = ['new', 'unworn', 'deadstock', 'ds', 'good condition', 'used', 'vnds', 'mint', 'og all'];
+            conditionKeywords.forEach(keyword => {
+                const keywordRegex = new RegExp(`\\b${keyword}\\b`, 'i');
+                if (input.match(keywordRegex)) {
+                    details.push(keyword.charAt(0).toUpperCase() + keyword.slice(1));
+                    remainingInput = remainingInput.replace(keywordRegex, '').trim();
+                }
+            });
+
+            // Any remaining text from this input is also part of the details
+            if (remainingInput) details.push(remainingInput);
+            isoInProgress.details = details.join(', ');
+        }
+
+        function showChatSummary() {
+            const summaryHTML = `
+                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center"><span>Item:</span><span class="font-semibold text-right pl-4">${isoInProgress.name || '<span class="text-gray-400">Missing</span>'}</span></div>
+                        <div class="flex justify-between items-center"><span>Details:</span><span class="font-semibold text-right pl-4">${isoInProgress.details || '<span class="text-gray-400">Missing</span>'}</span></div>
+                        <div class="flex justify-between items-center"><span>Category:</span><span class="font-semibold text-right pl-4">${isoInProgress.category || '<span class="text-gray-400">Missing</span>'}</span></div>
+                        <div class="flex justify-between items-center"><span>Offer:</span><span class="font-semibold text-right pl-4">${isoInProgress.topOffer ? '$' + isoInProgress.topOffer.replace(/\D/g,'') : '<span class="text-gray-400">Missing</span>'}</span></div>
+                    </div>
+                </div>
+            `;
+            addMessage(summaryHTML, false);
+        }
+
         function handleChatSubmission() {
             const userText = chatInput.value.trim();
             if (!userText) return;
 
             addUserMessage(userText);
+            
             const currentStep = chatFlow[currentChatStep];
-            if (currentStep.key) {
-                isoInProgress[currentStep.key] = userText;
+            
+            if (currentStep.key === 'name') {
+                isoInProgress.name = userText;
+            } else if (currentStep.key === 'details') {
+                parseDetailsInput(userText);
+            } else if (currentStep.key) {
+                // Sanitize offer input
+                isoInProgress[currentStep.key] = currentStep.key === 'topOffer' ? userText.replace(/\D/g,'') : userText;
             }
 
             chatInput.value = '';
@@ -1829,35 +1878,59 @@
                 return;
             }
             
+            // Skip step if data already exists
+            if (nextStep.key && isoInProgress[nextStep.key] && !['details', 'description', 'category'].includes(nextStep.key)) {
+                currentChatStep++;
+                processNextChatStep();
+                return;
+            }
+            
             const typingIndicator = `<div class="chat-message flex justify-start"><div class="chat-bubble p-3 rounded-2xl bg-gray-200"><div class="typing-indicator flex items-center space-x-1"><span></span><span></span><span></span></div></div></div>`;
             chatLog.innerHTML += typingIndicator;
             chatLog.scrollTop = chatLog.scrollHeight;
 
-            setTimeout(async () => {
+            setTimeout(async () => { // Short delay for responsiveness
                 chatLog.removeChild(chatLog.lastChild);
                 addBotMessage(nextStep.bot);
                 
-                if (nextStep.action === 'generate_description') {
-                    const generateBtnHTML = `
-                        <button id="generate-desc-btn" class="mt-2 w-full flex items-center justify-center space-x-2 bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-purple-700">
-                            <i data-lucide="sparkles" class="w-4 h-4"></i>
-                            <span>Generate Description with AI</span>
-                        </button>`;
-                    addMessage(generateBtnHTML, false);
-                    lucide.createIcons();
-                    document.getElementById('generate-desc-btn').addEventListener('click', async (e) => {
-                        e.target.closest('button').innerHTML = `<div class="loader !w-5 !h-5 !border-2"></div>`;
-                        const prompt = `Generate a compelling, one-sentence marketplace description for an ISO (In Search Of) post. The item is a "${isoInProgress.name}" with these details: "${isoInProgress.details}".`;
-                        const generatedDesc = await callGeminiAPI(prompt);
-                        isoInProgress.details = generatedDesc; // Overwrite details with AI version
-                        addUserMessage(`<em>Used AI to generate a new description: "${generatedDesc}"</em>`);
-                        currentChatStep++;
-                        processNextChatStep();
-                    });
-                } else if (nextStep.action === 'category') {
+                // Add a second, longer delay for a more natural conversational rhythm before showing complex elements
+                setTimeout(() => { // Longer delay for conversational feel
+                    if (nextStep.action === 'summary_check') {
+                        showChatSummary();
+                    const missing = ['name', 'category', 'topOffer'].filter(k => !isoInProgress[k]);
+
+                        if (missing.length > 0) {
+                        addBotMessage(`It looks like we're still missing some info. Do you want to add it now, or continue?`);
+                        const summaryActionsHTML = `
+                            <div class="flex gap-2 mt-2 justify-start">
+                                <button id="chat-continue-anyway" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">Continue Anyway</button>
+                            </div>`;
+                        addMessage(summaryActionsHTML, false);
+                        document.getElementById('chat-continue-anyway').addEventListener('click', () => {
+                            addUserMessage('Continue Anyway');
+                            currentChatStep++;
+                            processNextChatStep();
+                        });
+                        } else {
+                        addBotMessage(`Looks great! Ready to move on?`);
+                        const summaryActionsHTML = `
+                            <div class="flex gap-2 mt-2 justify-start">
+                                <button id="chat-continue" class="chat-action-btn bg-indigo-600 text-white text-sm font-semibold py-1 px-3 rounded-full hover:bg-indigo-700">Yes, Continue</button>
+                            </div>`;
+                        addMessage(summaryActionsHTML, false);
+                        document.getElementById('chat-continue').addEventListener('click', () => {
+                            addUserMessage('Yes, Continue');
+                            currentChatStep++;
+                            processNextChatStep();
+                        });
+                    }
+                        chatInput.disabled = true;
+                        chatSubmit.disabled = true;
+
+                    } else if (nextStep.action === 'category') {
                      const categories = ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'];
                      const categoryButtonsHTML = `
-                        <div class="flex flex-wrap gap-2 mt-2">
+                        <div class="flex flex-wrap gap-2 mt-2 justify-start">
                             ${categories.map(cat => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${cat}</button>`).join('')}
                         </div>
                      `;
@@ -1871,10 +1944,10 @@
                             processNextChatStep();
                         });
                      });
-                } else if (nextStep.action === 'duration') {
+                    } else if (nextStep.action === 'duration') {
                     const durations = [7, 14, 30];
                     const durationButtonsHTML = `
-                        <div class="flex flex-wrap gap-2 mt-2">
+                        <div class="flex flex-wrap gap-2 mt-2 justify-start">
                             ${durations.map(dur => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100" data-duration="${dur}">${dur} Days</button>`).join('')}
                         </div>
                     `;
@@ -1888,7 +1961,7 @@
                             processNextChatStep();
                         });
                     });
-                } else if (nextStep.action === 'image') {
+                    } else if (nextStep.action === 'image') {
                     const imageUploaderHTML = `
                         <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                             <div class="space-y-1 text-center">
@@ -1907,26 +1980,26 @@
                         </div>`;
                     addMessage(imageUploaderHTML, false);
                     document.getElementById('chat-image-upload-input').addEventListener('change', handleChatImageUpload);
-                } else if (nextStep.action === 'verify') {
+                    } else if (nextStep.action === 'verify') {
                     setTimeout(() => {
                         const successMsg = `<div class="flex items-center space-x-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i><p>Funds Verified!</p></div>`;
                         addMessage(successMsg, false);
                         lucide.createIcons();
                         currentChatStep++;
                         processNextChatStep();
-                    }, 2000);
-                } else if (nextStep.action === 'syndicate') {
-                    setTimeout(() => {
-                        createNewIsoFromChat();
-                        toggleModal(isoModal, false);
-                    }, 2000);
-                } else {
+                        }, 1000);
+                    } else if (nextStep.action === 'syndicate') {
+                    createNewIsoFromChat();
+                    toggleModal(isoModal, false);
+                    } else {
                     chatInput.placeholder = nextStep.placeholder;
                     chatInput.disabled = false;
                     chatSubmit.disabled = false;
                     chatInput.focus();
-                }
-            }, 1500);
+                    }
+                }, 700);
+
+            }, 200);
         }
         
         function createNewIsoFromChat() {
@@ -1934,8 +2007,8 @@
                 id: Date.now(),
                 seekers: 1,
                 joined: true, // Creator auto-joins their hunt
-                name: isoInProgress.name,
-                details: isoInProgress.details,
+                name: isoInProgress.name || "Untitled Hunt",
+                details: isoInProgress.details || "No specific details provided.",
                 topOffer: parseInt(isoInProgress.topOffer.replace(/\D/g,'')) || 0,
                 category: isoInProgress.category || "Uncategorized",
                 upvotes: 1,

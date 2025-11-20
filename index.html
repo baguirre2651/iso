@@ -164,19 +164,23 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        @keyframes pulse-primary {
-            0%, 100% { background-color: #4f46e5; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2), 0 4px 6px -2px rgba(99, 102, 241, 0.1); }
-            50% { background-color: #4338ca; box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.3), 0 10px 10px -5px rgba(99, 102, 241, 0.1); }
+        @keyframes pulse-primary-bg {
+            0%, 100% { background-color: #4f46e5; }
+            50% { background-color: #4338ca; }
         }
-        @keyframes pulse-secondary {
+        @keyframes pulse-secondary-border {
             0%, 100% { border-color: #e5e7eb; }
             50% { border-color: #a5b4fc; }
         }
         .pulse-primary-btn {
-            animation: pulse-primary 2.5s infinite ease-in-out;
+            animation: pulse-primary-bg 2.5s infinite ease-in-out;
+        }
+        .pulse-primary-btn:hover {
+            animation-play-state: paused;
+            background-color: #3730a3;
         }
         .pulse-secondary-btn {
-            animation: pulse-secondary 2.5s infinite ease-in-out;
+            animation: pulse-secondary-border 2.5s infinite ease-in-out;
         }
 
         @keyframes blink-caret {
@@ -260,12 +264,12 @@
                     </p>
                     <div class="hero-buttons flex flex-col sm:flex-row items-center justify-center w-full sm:w-auto">
                         <div class="p-2">
-                            <button id="landing-post-hunt-btn" class="pulse-primary-btn px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg text-base hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl shadow-indigo-200">
-                                Post a Hunt
+                            <button id="landing-post-hunt-btn" class="pulse-primary-btn px-6 py-3 text-white font-semibold rounded-lg text-base transition-all shadow-lg hover:shadow-xl shadow-indigo-200">
+                                Make an ISO
                             </button>
                         </div>
                         <div class="p-2">
-                            <button id="landing-become-finder-btn" class="pulse-secondary-btn px-6 py-3 bg-white text-gray-900 border-2 border-gray-200 font-semibold rounded-lg text-base hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-lg">
+                            <button id="landing-become-finder-btn" class="pulse-secondary-btn px-6 py-3 bg-white text-gray-900 border-2 font-semibold rounded-lg text-base hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-lg">
                                 Browse Hunts
                             </button>
                         </div>

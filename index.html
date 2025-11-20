@@ -129,10 +129,54 @@
             opacity: 1;
             transform: translateY(0) scale(1);
         }
+        .animated-gradient {
+            background: linear-gradient(300deg, #e0e7ff, #c7d2fe, #ddd6fe, #e0e7ff);
+            background-size: 200% 200%;
+            animation: gradient-animation 15s ease infinite;
+        }
         .blinking-cursor {
-            font-weight: 300; /* A thinner cursor */
-            color: #4f46e5; /* Match the accent color */
-            animation: blink-caret 0.8s step-end 4; /* Blinks 4 times, then disappears */
+            font-weight: 300;
+            color: #4f46e5;
+            animation: blink-caret 0.8s step-end 8;
+        }
+        .hero-animate-in > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .hero-animate-in.start-animation > .hero-title {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.2s;
+        }
+        .hero-animate-in.start-animation > .hero-subtitle {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.4s;
+        }
+        .hero-animate-in.start-animation > .hero-buttons {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.6s;
+        }
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes pulse-primary {
+            0%, 100% { background-color: #4f46e5; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2), 0 4px 6px -2px rgba(99, 102, 241, 0.1); }
+            50% { background-color: #4338ca; box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.3), 0 10px 10px -5px rgba(99, 102, 241, 0.1); }
+        }
+        @keyframes pulse-secondary {
+            0%, 100% { border-color: #e5e7eb; }
+            50% { border-color: #a5b4fc; }
+        }
+        .pulse-primary-btn {
+            animation: pulse-primary 2.5s infinite ease-in-out;
+        }
+        .pulse-secondary-btn {
+            animation: pulse-secondary 2.5s infinite ease-in-out;
         }
 
         @keyframes blink-caret {
@@ -206,22 +250,22 @@
         <!-- Landing Page View -->
         <div id="landing-view" class="landing-view">
             <!-- Hero Section -->
-            <div class="relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8" style="background: radial-gradient(circle at top left, #e0e7ff, transparent 40%), radial-gradient(circle at bottom right, #fef3c7, transparent 30%), #ffffff;">
-                <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-40 flex flex-col items-center text-center">
-                    <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 max-w-4xl leading-tight">
+            <div class="relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8 animated-gradient">
+                <div class="relative max-w-7xl mx-auto px-6 py-24 lg:py-40 flex flex-col items-center text-center hero-animate-in">
+                    <h1 class="hero-title text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 max-w-4xl leading-tight">
                         Post your hunt.<span class="blinking-cursor">|</span> <br><span class="text-indigo-600">Our experts find it.</span>
                     </h1>
-                    <p class="text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
+                    <p class="hero-subtitle text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
                         Stop refreshing listing pages. Create an ISO (In Search Of) post, name your price, and let sellers bring the items directly to you.
                     </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center w-full sm:w-auto">
+                    <div class="hero-buttons flex flex-col sm:flex-row items-center justify-center w-full sm:w-auto">
                         <div class="p-2">
-                            <button id="landing-post-hunt-btn" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg text-base hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl shadow-indigo-200">
+                            <button id="landing-post-hunt-btn" class="pulse-primary-btn px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg text-base hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl shadow-indigo-200">
                                 Post a Hunt
                             </button>
                         </div>
                         <div class="p-2">
-                            <button id="landing-become-finder-btn" class="px-6 py-3 bg-white text-gray-900 border-2 border-gray-200 font-semibold rounded-lg text-base hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-lg">
+                            <button id="landing-become-finder-btn" class="pulse-secondary-btn px-6 py-3 bg-white text-gray-900 border-2 border-gray-200 font-semibold rounded-lg text-base hover:border-indigo-600 hover:text-indigo-600 transition-all hover:shadow-lg">
                                 Browse Hunts
                             </button>
                         </div>
@@ -1313,6 +1357,9 @@
                 document.querySelectorAll('.animate-on-scroll').forEach(el => {
                     el.classList.remove('is-visible');
                 });
+                setTimeout(() => {
+                    document.querySelector('.hero-animate-in')?.classList.add('start-animation');
+                }, 100);
             }
         }
         
@@ -2043,6 +2090,8 @@
             document.querySelectorAll('.landing-category-card').forEach(card => {
                 card.addEventListener('click', (e) => {
                     const category = e.currentTarget.dataset.category;
+                    // Remove hero animation class so it can be re-added on next view
+                    document.querySelector('.hero-animate-in')?.classList.remove('start-animation');
                     switchView('main-content', { category: category });
                 });
             });
@@ -2226,7 +2275,11 @@
             
             // Landing page buttons
             document.getElementById('landing-post-hunt-btn').addEventListener('click', openCreateModal);
-            document.getElementById('landing-become-finder-btn').addEventListener('click', () => switchView('main-content'));
+            document.getElementById('landing-become-finder-btn').addEventListener('click', () => {
+                // Remove hero animation class so it can be re-added on next view
+                document.querySelector('.hero-animate-in')?.classList.remove('start-animation');
+                switchView('main-content');
+            });
             document.getElementById('landing-view-all-btn').addEventListener('click', () => switchView('main-content'));
 
             // Profile Dropdown Logic

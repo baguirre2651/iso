@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>In Search Of - The Social Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7f7f9;
+            background-color: #f8fafc; /* Use slate-50 for a cleaner, cooler gray */
+        }
+        .font-filter {
+            font-family: 'Public Sans', sans-serif;
         }
         h1, h2, h3, h4, .font-swiss {
             font-family: 'Manrope', sans-serif;
@@ -380,33 +383,85 @@
 
         <!-- Main Content View (Feed) -->
         <div id="main-content" class="main-content">
-            <div class="py-8">
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">Hunts</h1>
-                <p class="mt-2 text-lg text-gray-500">Browse what collectors are searching for.</p>
-
-                <!-- Control Bar -->
-                <div class="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <!-- Search Bar -->
-                    <div class="relative flex-grow md:flex-grow-0 md:w-80">
-                        <input type="search" id="search-bar" placeholder="Search for items, brands, or users..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+            <div class="flex flex-col md:flex-row md:gap-8">
+                <!-- Left Sidebar -->
+                <aside class="w-56 flex-shrink-0 hidden md:block font-filter">
+                    <div class="sticky top-24 space-y-8">
+                        <h3 class="text-lg font-bold text-gray-900 font-swiss">Filters</h3>
+                        
+                        <!-- Categories -->
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 mb-3 tracking-wide">CATEGORY</h4>
+                            <div id="filter-bar" class="space-y-2">
+                                <button class="filter-btn active w-full text-left font-semibold py-2 px-3 rounded-lg transition-colors flex items-center justify-between text-base" data-category="All">
+                                    <span>All</span>
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Sneakers">Sneakers</button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Archival Fashion">Archival Fashion</button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Collectibles">Collectibles</button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Watches">Watches</button>
+                            </div>
                         </div>
+
+                        <!-- Budget -->
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 mb-3 tracking-wide">BUDGET</h4>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="budget-min" placeholder="Min" class="w-full bg-gray-100 border-transparent rounded-md shadow-sm text-sm py-2 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500">
+                                <span class="text-gray-400">-</span>
+                                <input type="number" id="budget-max" placeholder="Max" class="w-full bg-gray-100 border-transparent rounded-md shadow-sm text-sm py-2 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 mb-3 tracking-wide">STATUS</h4>
+                            <div id="status-filters" class="space-y-2">
+                                <label class="flex items-center space-x-2 text-sm text-gray-600 font-medium">
+                                    <input type="checkbox" data-filter="fundsVerified" class="rounded border-gray-300 text-indigo-800 shadow-sm focus:ring-indigo-700">
+                                    <span>Funds Verified</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-sm text-gray-600 font-medium">
+                                    <input type="checkbox" data-filter="finderAssigned" class="rounded border-gray-300 text-indigo-800 shadow-sm focus:ring-indigo-700">
+                                    <span>Finder Assigned</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button id="clear-filters-btn" class="w-full text-sm text-gray-500 font-semibold hover:text-indigo-800 transition-colors">Clear all filters</button>
                     </div>
-                    <!-- Filters -->
-                    <div id="filter-bar" class="flex space-x-2 overflow-x-auto pb-2 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
-                        <button class="filter-btn active flex-shrink-0 font-semibold py-2 px-4 rounded-full transition-colors" data-category="All">All</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Sneakers">Sneakers</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Archival Fashion">Archival Fashion</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Collectibles">Collectibles</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Watches">Watches</button>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="flex-1 min-w-0">
+                    <!-- Sticky Top Bar -->
+                    <div class="sticky top-20 bg-slate-50/80 backdrop-blur-lg z-10 py-4 -mt-4 mb-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between gap-4">
+                             <!-- Search Bar -->
+                            <div class="relative flex-grow">
+                                <input type="search" id="search-bar" placeholder="Search hunts..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-700">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <!-- Sort Dropdown -->
+                            <div class="flex-shrink-0">
+                                <select class="border-gray-300 rounded-md shadow-sm text-sm font-medium focus:ring-indigo-700 focus:border-indigo-700">
+                                    <option>Sort by: Newest</option>
+                                    <option>Sort by: Top Offer</option>
+                                    <option>Sort by: Ending Soon</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-3">Showing <span id="hunt-counter" class="font-bold text-gray-700">0</span> active hunts</p>
+                    </div>
+
+                    <!-- ISO Feed Grid -->
+                    <div id="iso-feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- ISO cards will be injected here -->
                     </div>
                 </div>
-            </div>
-    
-            <!-- ISO Feed Grid -->
-            <div id="iso-feed" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                <!-- ISO cards will be injected here -->
             </div>
         </div>
 
@@ -924,6 +979,10 @@
         const imageUploadIcon = document.getElementById('image-upload-icon');
         const searchBar = document.getElementById('search-bar');
 
+        // Filter elements
+        const budgetMinInput = document.getElementById('budget-min');
+        const budgetMaxInput = document.getElementById('budget-max');
+        const statusFiltersContainer = document.getElementById('status-filters');
         // Profile Dropdown
         const profileDropdownBtn = document.getElementById('profile-dropdown-btn');
         const profileDropdown = document.getElementById('profile-dropdown');
@@ -982,53 +1041,47 @@
          */
         function createHuntCardElement(item) {
             const categoryColors = {
-                "Sneakers": "border-t-blue-500",
-                "Archival Fashion": "border-t-purple-500",
-                "Watches": "border-t-amber-500",
-                "Collectibles": "border-t-green-500",
+                "Sneakers": { border: "border-indigo-600", bg: "bg-indigo-600", text: "text-indigo-700" }, // Kept as primary
+                "Archival Fashion": { border: "border-violet-600", bg: "bg-violet-600", text: "text-violet-700" }, // Changed to Violet for distinction
+                "Watches": { border: "border-amber-600", bg: "bg-amber-600", text: "text-amber-700" },
+                "Collectibles": { border: "border-green-600", bg: "bg-green-600", text: "text-green-700" },
             };
-            const categoryColorClass = categoryColors[item.category] || "border-t-gray-300";
+            const colors = categoryColors[item.category] || { border: "border-gray-500", bg: "bg-gray-500", text: "text-gray-600" };
 
             const card = document.createElement('div');
-            card.className = `group view-details-btn flex flex-col bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer border border-gray-200/80 border-t-4 ${categoryColorClass}`;
+            card.className = `group view-details-btn bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-transparent hover:border-indigo-300 flex flex-col cursor-pointer overflow-hidden`;
             card.dataset.id = item.id;
 
-            const fundsVerifiedBadge = item.fundsVerified 
-                ? `<div class="absolute top-2 right-2 flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur-sm px-2 py-1 text-xs font-bold text-green-700">
-                       <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                       <span>Verified</span>
-                   </div>`
-                : '';
-            
-            const seekersHtml = item.seekers > 1 ? `<span class="flex items-center text-xs font-bold"><i data-lucide="users" class="w-4 h-4 mr-1"></i> ${item.seekers - 1}</span>` : '';
+            const verificationIcon = item.fundsVerified ? `<i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>` : '';
 
             card.innerHTML = `
-                <div class="p-4 flex items-center space-x-3 border-b border-gray-100">
-                    <img src="${item.user.avatar}" alt="${item.user.name}" class="w-8 h-8 rounded-full"/>
-                    <div>
-                        <p class="text-sm font-semibold text-gray-800">${item.user.name}</p>
-                        <p class="text-xs text-gray-400">${getDaysRemaining(item.createdAt, item.duration)}</p>
+                <div class="flex-shrink-0 relative">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="${item.imageUrl}" alt="${item.name}" class="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" />
+                    </div>
+                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 text-xs font-bold ${colors.text} border border-black/5">${item.category}</div>
+                    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-3 left-3 text-white">
+                        <p class="text-xs opacity-80">Top Offer</p>
+                        <p class="text-xl font-bold tracking-tight">
+                            $${item.topOffer.toLocaleString()}
+                        </p>
                     </div>
                 </div>
-                <div class="p-4 flex-grow">
-                    <div class="relative aspect-video w-full overflow-hidden rounded-lg mb-4">
-                        <img src="${item.imageUrl}" alt="${item.name}" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                        ${fundsVerifiedBadge}
+                <div class="p-4 flex flex-col flex-grow">
+                    <h3 class="font-bold text-gray-900 truncate group-hover:text-indigo-800 transition-colors text-base font-swiss leading-tight" title="${item.name}">${item.name}</h3>
+                    
+                    <div class="flex items-center space-x-2 mt-2">
+                        <img src="${item.user.avatar}" alt="${item.user.name}" class="w-6 h-6 rounded-full"/>
+                        <span class="text-sm font-medium text-gray-700">${item.user.name}</span>
+                        ${verificationIcon}
                     </div>
-                    <h3 class="font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">${item.name}</h3>
-                    <p class="text-sm text-gray-500 truncate">${item.details}</p>
                 </div>
-                <div class="px-4 pb-4 mt-auto">
-                    <div class="pt-4 border-t border-gray-100 flex items-end justify-between">
-                            <div>
-                                <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Top Offer</p>
-                                <p class="text-2xl font-bold text-gray-900">$${item.topOffer.toLocaleString()}</p>
-                            </div>
-                            <div class="flex items-center space-x-3 text-gray-500">
-                                <span class="flex items-center text-xs font-bold"><i data-lucide="arrow-up-circle" class="w-4 h-4 mr-1"></i> ${item.upvotes}</span>
-                                <span class="flex items-center text-xs font-bold"><i data-lucide="message-square" class="w-4 h-4 mr-1"></i> ${item.comments}</span>
-                                ${seekersHtml}
-                            </div>
+                <div class="mt-auto px-4 py-3 border-t border-gray-200 bg-slate-50/70 rounded-b-xl">
+                    <div class="flex items-center justify-between text-xs text-gray-600 font-medium">
+                        <span class="flex items-center gap-1.5" title="Seekers"><i data-lucide="users" class="w-4 h-4"></i> ${item.seekers}</span>
+                        <button class="upvote-btn flex items-center gap-1.5 hover:text-indigo-600" title="Upvotes"><i data-lucide="arrow-up-circle" class="w-4 h-4"></i> <span class="upvote-count">${item.upvotes}</span></button>
+                        <span class="flex items-center gap-1.5" title="Time Remaining"><i data-lucide="clock" class="w-4 h-4"></i> ${getDaysRemaining(item.createdAt, item.duration).replace(/Expires in |<[^>]*>?/gm, '').replace('days', 'd')}</span>
                     </div>
                 </div>
             `;
@@ -1039,12 +1092,22 @@
          * Renders the main feed of "In Search Of" cards.
          */
         function renderFeed(filterCategory = 'All', searchTerm = '') {
+            const budgetMin = parseInt(document.getElementById('budget-min').value) || 0;
+            const budgetMax = parseInt(document.getElementById('budget-max').value) || Infinity;
+            const statusFilters = {
+                fundsVerified: document.querySelector('[data-filter="fundsVerified"]').checked,
+                finderAssigned: document.querySelector('[data-filter="finderAssigned"]').checked,
+            };
+
+            const counterEl = document.getElementById('hunt-counter');
             let filteredData = isoData;
 
+            // 1. Filter by Category
             if (filterCategory !== 'All') {
                 filteredData = filteredData.filter(item => item.category === filterCategory);
             }
 
+            // 2. Filter by Search Term
             if (searchTerm) {
                 const lowercasedTerm = searchTerm.toLowerCase();
                 filteredData = filteredData.filter(item => 
@@ -1053,7 +1116,20 @@
                 );
             }
 
+            // 3. Filter by Budget
+            filteredData = filteredData.filter(item => item.topOffer >= budgetMin && item.topOffer <= budgetMax);
+
+            // 4. Filter by Status
+            if (statusFilters.fundsVerified) {
+                filteredData = filteredData.filter(item => item.fundsVerified);
+            }
+            if (statusFilters.finderAssigned) {
+                filteredData = filteredData.filter(item => item.finder !== null);
+            }
+
+
             isoFeed.innerHTML = '';
+            if (counterEl) counterEl.textContent = filteredData.length;
 
             if (filteredData.length > 0) {
                 filteredData.sort((a, b) => b.createdAt - a.createdAt).forEach(item => {
@@ -1062,7 +1138,7 @@
                 });
             } else {
                 isoFeed.innerHTML = `
-                    <div class="md:col-span-2 lg:col-span-4 text-center py-16">
+                    <div class="sm:col-span-2 lg:col-span-3 text-center py-16">
                         <i data-lucide="search-x" class="w-16 h-16 mx-auto text-gray-300"></i>
                         <h3 class="mt-4 text-xl font-bold text-gray-800">No Hunts Found</h3>
                         <p class="mt-1 text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
@@ -1405,7 +1481,7 @@
 
             // If we are switching to the main feed, always re-render it to show the latest data.
             if (viewId === 'main-content') {
-                renderFeed(filterBar.querySelector('.active')?.dataset.category || 'All', searchBar.value);
+                triggerRenderFeed();
             }
 
             // Reset landing page animations when switching to it
@@ -1420,6 +1496,15 @@
             }
         }
         
+        /**
+         * A helper to gather all filter values and call renderFeed.
+         */
+        function triggerRenderFeed() {
+            const activeCategory = filterBar.querySelector('.active')?.dataset.category || 'All';
+            const searchTerm = searchBar.value;
+            renderFeed(activeCategory, searchTerm);
+        }
+
         /**
          * Toggles modal visibility.
          */
@@ -2085,22 +2170,30 @@
             });
 
             // Search and filter
-            searchBar.addEventListener('input', (e) => {
-                const searchTerm = e.target.value;
-                const activeFilter = filterBar.querySelector('.active').dataset.category;
-                renderFeed(activeFilter, searchTerm);
-            });
+            searchBar.addEventListener('input', triggerRenderFeed);
+            budgetMinInput.addEventListener('input', triggerRenderFeed);
+            budgetMaxInput.addEventListener('input', triggerRenderFeed);
+            statusFiltersContainer.addEventListener('change', triggerRenderFeed);
 
             filterBar.addEventListener('click', (e) => {
                 if (e.target.classList.contains('filter-btn')) {
                     filterBar.querySelectorAll('.filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                        btn.classList.add('bg-white', 'text-gray-500', 'custom-shadow', 'border', 'border-gray-200/80', 'hover:bg-gray-50');
+                        btn.classList.remove('active', 'bg-indigo-100', 'text-indigo-800');
+                        btn.classList.add('text-gray-600', 'hover:bg-gray-100');
                     });
                     e.target.classList.add('active');
-                    e.target.classList.remove('bg-white', 'text-gray-500', 'custom-shadow', 'border', 'border-gray-200/80', 'hover:bg-gray-50');
-                    renderFeed(e.target.dataset.category, searchBar.value);
+                    e.target.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                    e.target.classList.add('bg-indigo-100', 'text-indigo-800');
+                    triggerRenderFeed();
                 }
+            });
+
+            document.getElementById('clear-filters-btn').addEventListener('click', () => {
+                searchBar.value = '';
+                budgetMinInput.value = '';
+                budgetMaxInput.value = '';
+                statusFiltersContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                filterBar.querySelector('[data-category="All"]').click(); // Clicks the "All" button
             });
             
             // View switching
@@ -2147,6 +2240,20 @@
                 const removeHuntBtn = e.target.closest('.remove-hunt-btn');
                 if (removeHuntBtn) {
                     handleJoinHunt(removeHuntBtn); // Same logic as joining/leaving
+                }
+
+                const upvoteBtn = e.target.closest('.upvote-btn');
+                if (upvoteBtn) {
+                    e.stopPropagation(); // Prevent card click
+                    const card = upvoteBtn.closest('.view-details-btn');
+                    const itemId = parseInt(card.dataset.id);
+                    const item = isoData.find(i => i.id === itemId);
+                    if (item) {
+                        item.upvotes++;
+                        const countEl = upvoteBtn.querySelector('.upvote-count');
+                        countEl.textContent = item.upvotes;
+                        upvoteBtn.classList.add('upvote-blink', 'text-green-500', 'font-bold');
+                    }
                 }
             });
             

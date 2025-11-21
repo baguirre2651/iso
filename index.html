@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>In Search Of - The Social Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f7f7f9;
         }
-        h1, h2, h3, h4 {
-            font-family: 'DM Serif Display', serif;
+        h1, h2, h3, h4, .font-swiss {
+            font-family: 'Manrope', sans-serif;
         }
         .custom-shadow {
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
@@ -214,7 +214,7 @@
     <header class="sticky top-0 z-30 w-full border-b border-gray-200/80 sticky-header">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
-                <a href="#" id="logo-link" class="flex items-center space-x-3 text-gray-900 no-underline">
+                <a href="#" id="logo-link" class="flex items-center space-x-3 text-gray-900 no-underline font-swiss">
                     <div class="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-md">
                         <i data-lucide="search-check" class="w-6 h-6"></i>
                     </div>
@@ -261,8 +261,8 @@
         <div id="landing-view" class="landing-view">
             <!-- Hero Section -->
             <div class="relative overflow-hidden animated-gradient -mt-20">
-                <div class="relative max-w-7xl mx-auto px-6 pt-32 pb-24 lg:pt-40 lg:pb-40 flex flex-col items-center text-center hero-animate-in">
-                    <h1 class="hero-title text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 max-w-4xl leading-tight">
+                <div class="relative max-w-7xl mx-auto px-6 pt-32 pb-24 lg:pt-40 lg:pb-40 flex flex-col items-center text-center hero-animate-in font-swiss">
+                    <h1 class="hero-title text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tighter mb-6 max-w-4xl leading-tight">
                         Post your hunt.<span class="blinking-cursor">|</span> <br><span class="text-indigo-600">Our experts find it.</span>
                     </h1>
                     <p class="hero-subtitle text-lg text-gray-500 max-w-2xl mb-10 leading-relaxed">
@@ -1402,6 +1402,11 @@
                 }
             }
 
+            // If we are switching to the main feed, always re-render it to show the latest data.
+            if (viewId === 'main-content') {
+                renderFeed(filterBar.querySelector('.active')?.dataset.category || 'All', searchBar.value);
+            }
+
             // Reset landing page animations when switching to it
             if (viewId === 'landing-view') {
                 // The scroll animations are now part of the main app container, not landing view
@@ -1765,6 +1770,7 @@
         // =================================================================================
         let currentChatStep = 0;
         let isoInProgress = {};
+        let isFirstBotMessage = true;
         const chatFlow = [
             { bot: "Hey! I can help create your new hunt. First, what's the name of the item you're searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
             { bot: "Great. Now, let's add some key details. What is the size and condition?", key: 'details', placeholder: "e.g., Size 10, new" },
@@ -1781,6 +1787,7 @@
             currentChatStep = 0;
             isoInProgress = {};
             chatLog.innerHTML = '';
+            isFirstBotMessage = true; // Reset the flag for the new chat session
             addBotMessage(chatFlow[0].bot);
             chatInput.placeholder = chatFlow[0].placeholder;
             chatInput.disabled = false;
@@ -1796,11 +1803,45 @@
             bubble.innerHTML = content;
             messageWrapper.appendChild(bubble);
             chatLog.appendChild(messageWrapper);
-            chatLog.scrollTop = chatLog.scrollHeight;
+            // Use a small timeout to ensure the browser has rendered the new message
+            // and updated the scroll height before we try to scroll. This is a robust way
+            // to handle the browser's rendering lifecycle.
+            setTimeout(() => chatLog.scrollTop = chatLog.scrollHeight, 0);
         }
         
         function addBotMessage(text) {
-            addMessage(text, false);
+            // Only do the typing animation for the very first message of a chat.
+            if (isFirstBotMessage) {
+                isFirstBotMessage = false; // Set flag to false so it doesn't run again
+                return new Promise(resolve => {
+                    const messageWrapper = document.createElement('div');
+                    messageWrapper.className = 'chat-message flex justify-start';
+                    const bubble = document.createElement('div');
+                    bubble.className = 'chat-bubble p-3 rounded-xl text-sm bg-gray-100 text-gray-800';
+                    bubble.innerHTML = ''; // Start with an empty bubble
+                    messageWrapper.appendChild(bubble);
+                    chatLog.appendChild(messageWrapper);
+                    chatLog.scrollTop = chatLog.scrollHeight;
+                    setTimeout(() => chatLog.scrollTop = chatLog.scrollHeight, 0);
+
+                    let i = 0;
+                    const typingSpeed = 30; // Milliseconds per character
+
+                    const typingInterval = setInterval(() => {
+                        if (i < text.length) {
+                            bubble.innerHTML += text.charAt(i);
+                            i++;
+                            chatLog.scrollTop = chatLog.scrollHeight; // Scroll as it types
+                        } else {
+                            clearInterval(typingInterval);
+                            resolve(); // Resolve the promise when typing is done
+                        }
+                    }, typingSpeed);
+                });
+            } else {
+                addMessage(text, false);
+                return Promise.resolve(); // Return a resolved promise to maintain consistency
+            }
         }
 
         function addUserMessage(text) {
@@ -1904,75 +1945,74 @@
             }
             
             const typingIndicator = `<div class="chat-message flex justify-start"><div class="chat-bubble p-3 rounded-2xl bg-gray-200"><div class="typing-indicator flex items-center space-x-1"><span></span><span></span><span></span></div></div></div>`;
-            chatLog.innerHTML += typingIndicator;
-            chatLog.scrollTop = chatLog.scrollHeight;
+            addMessage(typingIndicator, false); // Use addMessage to handle scrolling correctly
 
-            setTimeout(async () => {
+            setTimeout(() => {
                 chatLog.removeChild(chatLog.lastChild);
-                chatLog.scrollTop = chatLog.scrollHeight;
 
                 // if (currentChatStep === 1) { // After getting the name
                 //     addBotMessage("Awesome, let's get a hunt going for a <strong>" + isoInProgress.name + "</strong>. Here's what we have so far. I'll help you fill in the rest.");
                 //     setTimeout(showChatSummary, 300);
                 // }
 
-                addBotMessage(nextStep.bot);
+                addBotMessage(nextStep.bot).then(() => {
                 
-                setTimeout(() => {
                     if (nextStep.action === 'offer_preamble') {
-                        addBotMessage("Just so you know, your funds are only held in secure escrow <em>after</em> you accept a verified offer. You're not committing any money right now.");
-                        setTimeout(() => {
+                        addBotMessage("Just so you know, your funds are only held in secure escrow <em>after</em> you accept a verified offer. You're not committing any money right now.").then(() => {
                             currentChatStep++;
                             processNextChatStep();
-                        }, 1200);
+                        });
                     } else if (nextStep.action === 'summary_check') {
                         showChatSummary();
                         const missing = ['name', 'category', 'topOffer'].filter(k => !isoInProgress[k]);
 
                         if (missing.length > 0) {
-                            addBotMessage(`It looks like we're still missing some key info. Do you want to add it now, or continue?`);
-                            const summaryActionsHTML = `
-                                <div class="flex gap-2 mt-2 justify-start">
-                                    <button id="chat-continue-anyway" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">Continue Anyway</button>
-                                </div>`;
-                            addMessage(summaryActionsHTML, false);
-                            document.getElementById('chat-continue-anyway').addEventListener('click', () => {
-                                addUserMessage('Continue Anyway');
-                                currentChatStep++;
-                                processNextChatStep();
+                            addBotMessage(`It looks like we're still missing some key info. Do you want to add it now, or continue?`).then(() => {
+                                const summaryActionsHTML = `
+                                    <div class="flex gap-2 mt-2 justify-start">
+                                        <button id="chat-continue-anyway" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">Continue Anyway</button>
+                                    </div>`;
+                                addMessage(summaryActionsHTML, false);
+                                document.getElementById('chat-continue-anyway').addEventListener('click', () => {
+                                    addUserMessage('Continue Anyway');
+                                    currentChatStep++;
+                                    processNextChatStep();
+                                });
                             });
                         } else {
-                            addBotMessage(`Does this all look correct?`);
-                            const summaryActionsHTML = `
-                                <div class="flex gap-2 mt-2 justify-start">
-                                    <button id="chat-continue" class="chat-action-btn bg-indigo-600 text-white text-sm font-semibold py-1 px-3 rounded-full hover:bg-indigo-700">Yes, looks good</button>
-                                    <button id="chat-edit" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">No, make a change</button>
-                                </div>`;
-                            addMessage(summaryActionsHTML, false);
-                            document.getElementById('chat-continue').addEventListener('click', () => {
-                                addUserMessage('Yes, Looks Good');
-                                currentChatStep++;
-                                processNextChatStep();
-                            });
-                            document.getElementById('chat-edit').addEventListener('click', () => {
-                                addUserMessage('Make a change');
-                                addBotMessage('What would you like to change?');
-                                const editOptionsHTML = `
-                                    <div class="flex flex-wrap gap-2 mt-2 justify-start">
-                                        <button class="edit-option-btn" data-step="0">Item Name</button>
-                                        <button class="edit-option-btn" data-step="1">Details</button>
-                                        <button class="edit-option-btn" data-step="2">Category</button>
-                                        <button class="edit-option-btn" data-step="4">Offer</button>
-                                    </div>
-                                `.replaceAll('class="edit-option-btn"', 'class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100"');
-                                addMessage(editOptionsHTML, false);
-                                document.querySelectorAll('.edit-option-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                                    const step = parseInt(e.target.dataset.step);
-                                    currentChatStep = step;
-                                    isoInProgress[chatFlow[step].key] = null; // Clear the data for that step
-                                    addUserMessage(`Change ${e.target.textContent}`);
+                            addBotMessage(`Does this all look correct?`).then(() => {
+                                const summaryActionsHTML = `
+                                    <div class="flex gap-2 mt-2 justify-start">
+                                        <button id="chat-continue" class="chat-action-btn bg-indigo-600 text-white text-sm font-semibold py-1 px-3 rounded-full hover:bg-indigo-700">Yes, looks good</button>
+                                        <button id="chat-edit" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">No, make a change</button>
+                                    </div>`;
+                                addMessage(summaryActionsHTML, false);
+                                document.getElementById('chat-continue').addEventListener('click', () => {
+                                    addUserMessage('Yes, Looks Good');
+                                    currentChatStep++;
                                     processNextChatStep();
-                                }));
+                                });
+                                document.getElementById('chat-edit').addEventListener('click', () => {
+                                    addUserMessage('Make a change');
+                                    addBotMessage('What would you like to change?').then(() => {
+                                        const editOptionsHTML = `
+                                            <div class="flex flex-wrap gap-2 mt-2 justify-start">
+                                                <button class="edit-option-btn" data-step="0">Item Name</button>
+                                                <button class="edit-option-btn" data-step="1">Details</button>
+                                                <button class="edit-option-btn" data-step="2">Category</button>
+                                                <button class="edit-option-btn" data-step="4">Offer</button>
+                                            </div>
+                                        `.replaceAll('class="edit-option-btn"', 'class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100"');
+                                        addMessage(editOptionsHTML, false);
+                                        document.querySelectorAll('.edit-option-btn').forEach(btn => btn.addEventListener('click', (e) => {
+                                            const step = parseInt(e.target.dataset.step);
+                                            currentChatStep = step;
+                                            isoInProgress[chatFlow[step].key] = null; // Clear the data for that step
+                                            addUserMessage(`Change ${e.target.textContent}`);
+                                            processNextChatStep();
+                                        }));
+                                    });
+                                });
                             });
                         }
                         chatInput.disabled = true;
@@ -2047,9 +2087,8 @@
                     chatInput.disabled = false;
                     chatSubmit.disabled = false;
                     chatInput.focus();
-                    showChatSummary();
                     }
-                }, 700);
+                });
 
             }, 1200);
         }
@@ -2465,7 +2504,85 @@
             scrollElements.forEach(el => {
                 observer.observe(el);
             });
+
+            // initializeFluidGlassEffect();
         }
+
+        // function initializeFluidGlassEffect() {
+        //     // Only run if Three.js is available
+        //     if (typeof THREE === 'undefined') {
+        //         import('three').then(THREE_Module => {
+        //             window.THREE = THREE_Module;
+        //             setupScene();
+        //         }).catch(err => {
+        //             console.error("Could not load Three.js for the glass effect.", err);
+        //         });
+        //     } else {
+        //         setupScene();
+        //     }
+
+        //     function setupScene() {
+        //         const section = document.getElementById('fluid-glass-section');
+        //         const canvas = document.getElementById('glass-effect-canvas');
+        //         if (!section || !canvas) return;
+
+        //         const scene = new THREE.Scene();
+        //         const camera = new THREE.PerspectiveCamera(50, section.offsetWidth / section.offsetHeight, 0.1, 1000);
+        //         camera.position.z = 5;
+
+        //         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        //         renderer.setSize(section.offsetWidth, section.offsetHeight);
+        //         renderer.setPixelRatio(window.devicePixelRatio);
+
+        //         // The "glass" sphere
+        //         const geometry = new THREE.SphereGeometry(1, 64, 64);
+        //         const material = new THREE.MeshPhysicalMaterial({
+        //             roughness: 0.0,
+        //             transmission: 1.0,
+        //             thickness: 1.5, // This creates the distortion
+        //             ior: 1.5, // Index of Refraction (like glass)
+        //         });
+        //         const sphere = new THREE.Mesh(geometry, material);
+        //         scene.add(sphere);
+
+        //         // Add some subtle ambient light
+        //         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        //         scene.add(ambientLight);
+        //         const pointLight = new THREE.PointLight(0xffffff, 0.8);
+        //         pointLight.position.set(5, 5, 5);
+        //         scene.add(pointLight);
+
+        //         // Mouse tracking
+        //         const mouse = new THREE.Vector2(-100, -100); // Start off-screen
+
+        //         section.addEventListener('mousemove', (event) => {
+        //             const rect = section.getBoundingClientRect();
+        //             // Convert mouse position to normalized device coordinates (-1 to +1)
+        //             mouse.x = ((event.clientX - rect.left) / section.offsetWidth) * 2 - 1;
+        //             mouse.y = -((event.clientY - rect.top) / section.offsetHeight) * 2 + 1;
+        //         });
+
+        //         section.addEventListener('mouseleave', () => {
+        //             // Move sphere off-screen when mouse leaves
+        //             mouse.x = -100;
+        //             mouse.y = -100;
+        //         });
+
+        //         // Animation loop
+        //         function animate() {
+        //             requestAnimationFrame(animate);
+
+        //             // Make the sphere follow the mouse with a slight delay (easing)
+        //             const targetX = mouse.x * (section.offsetWidth / 200);
+        //             const targetY = mouse.y * (section.offsetHeight / 200);
+        //             sphere.position.x += (targetX - sphere.position.x) * 0.05;
+        //             sphere.position.y += (targetY - sphere.position.y) * 0.05;
+
+        //             renderer.render(scene, camera);
+        //         }
+        //         animate();
+        //     }
+        // }
     })();
     </script>
 </body>

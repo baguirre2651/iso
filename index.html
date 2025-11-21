@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>In Search Of - The Social Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7f7f9;
+            background-color: #f8fafc; /* Use slate-50 for a cleaner, cooler gray */
+        }
+        .font-filter {
+            font-family: 'Public Sans', sans-serif;
         }
         h1, h2, h3, h4, .font-swiss {
             font-family: 'Manrope', sans-serif;
@@ -236,8 +239,8 @@
                         <span>Create ISO</span>
                     </button>
                     <!-- Profile Dropdown -->
-                    <div class="relative">
-                        <button id="profile-dropdown-btn" class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden focus:outline-none ring-2 ring-offset-2 ring-transparent focus:ring-indigo-500">
+                    <div class="relative group">
+                        <button id="profile-dropdown-btn" class="w-10 h-10 rounded-full bg-gray-200 overflow-hidden focus:outline-none ring-2 ring-offset-2 ring-indigo-500 transition-all group-hover:ring-offset-0">
                             <img src="https://i.pravatar.cc/150?u=me" alt="Profile" class="w-full h-full object-cover">
                         </button>
                         <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 z-50 py-2">
@@ -245,10 +248,11 @@
                                 <p class="text-sm font-bold text-gray-900">@newSeeker</p>
                                 <p class="text-xs text-gray-500">Collector</p>
                             </div>
-                            <a href="#" data-view="my-iso-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="search" class="w-4 h-4"></i> My ISO</a>
-                            <a href="#" data-view="finder-hub-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="scan-eye" class="w-4 h-4"></i> Finder Hub</a>
-                            <a href="#" data-view="seller-portal-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="store" class="w-4 h-4"></i> Seller Portal</a>
+                            <a href="#" data-view="my-iso-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i> My Profile</a>
+                            <a href="#" data-view="my-iso-view" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="search" class="w-4 h-4"></i> My Hunts</a>
+                            <a href="#" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="bookmark" class="w-4 h-4"></i> Saved Items</a>
                             <div class="h-px bg-gray-100 my-1"></div>
+                            <a href="#" class="profile-dropdown-link w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"><i data-lucide="settings" class="w-4 h-4"></i> Settings</a>
                             <a href="#" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i> Sign Out</a>
                         </div>
                     </div>
@@ -379,33 +383,85 @@
 
         <!-- Main Content View (Feed) -->
         <div id="main-content" class="main-content">
-            <div class="py-8">
-                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">Hunts</h1>
-                <p class="mt-2 text-lg text-gray-500">Browse what collectors are searching for.</p>
-
-                <!-- Control Bar -->
-                <div class="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <!-- Search Bar -->
-                    <div class="relative flex-grow md:flex-grow-0 md:w-80">
-                        <input type="search" id="search-bar" placeholder="Search for items, brands, or users..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+            <div class="flex flex-col md:flex-row md:gap-8">
+                <!-- Left Sidebar -->
+                <aside class="w-56 flex-shrink-0 hidden md:block font-filter">
+                    <div class="sticky top-24 space-y-8">
+                        <h3 class="text-lg font-bold text-gray-900 font-swiss">Filters</h3>
+                        
+                        <!-- Categories -->
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 mb-3 tracking-wide">CATEGORY</h4>
+                            <div id="filter-bar" class="space-y-2">
+                                <button class="filter-btn active w-full text-left font-semibold py-2 px-3 rounded-lg transition-colors flex items-center justify-between text-base" data-category="All">
+                                    <span>All</span>
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Sneakers">Sneakers</button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Archival Fashion">Archival Fashion</button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Collectibles">Collectibles</button>
+                                <button class="filter-btn w-full text-left text-gray-600 font-semibold py-2 px-3 rounded-lg hover:bg-gray-100 transition-colors text-base" data-category="Watches">Watches</button>
+                            </div>
                         </div>
+
+                        <!-- Budget -->
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 mb-3 tracking-wide">BUDGET</h4>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="budget-min" placeholder="Min" class="w-full bg-gray-100 border-transparent rounded-md shadow-sm text-sm py-2 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500">
+                                <span class="text-gray-400">-</span>
+                                <input type="number" id="budget-max" placeholder="Max" class="w-full bg-gray-100 border-transparent rounded-md shadow-sm text-sm py-2 focus:bg-white focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <h4 class="font-bold text-sm text-gray-800 mb-3 tracking-wide">STATUS</h4>
+                            <div id="status-filters" class="space-y-2">
+                                <label class="flex items-center space-x-2 text-sm text-gray-600 font-medium">
+                                    <input type="checkbox" data-filter="fundsVerified" class="rounded border-gray-300 text-indigo-800 shadow-sm focus:ring-indigo-700">
+                                    <span>Funds Verified</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-sm text-gray-600 font-medium">
+                                    <input type="checkbox" data-filter="finderAssigned" class="rounded border-gray-300 text-indigo-800 shadow-sm focus:ring-indigo-700">
+                                    <span>Finder Assigned</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button id="clear-filters-btn" class="w-full text-sm text-gray-500 font-semibold hover:text-indigo-800 transition-colors">Clear all filters</button>
                     </div>
-                    <!-- Filters -->
-                    <div id="filter-bar" class="flex space-x-2 overflow-x-auto pb-2 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
-                        <button class="filter-btn active flex-shrink-0 font-semibold py-2 px-4 rounded-full transition-colors" data-category="All">All</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Sneakers">Sneakers</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Archival Fashion">Archival Fashion</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Collectibles">Collectibles</button>
-                        <button class="filter-btn flex-shrink-0 bg-white text-gray-500 font-semibold py-2 px-4 rounded-full custom-shadow border border-gray-200/80 hover:bg-gray-50 transition-colors" data-category="Watches">Watches</button>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="flex-1 min-w-0">
+                    <!-- Sticky Top Bar -->
+                    <div class="sticky top-20 bg-slate-50/80 backdrop-blur-lg z-10 py-4 -mt-4 mb-4 border-b border-gray-200">
+                        <div class="flex items-center justify-between gap-4">
+                             <!-- Search Bar -->
+                            <div class="relative flex-grow">
+                                <input type="search" id="search-bar" placeholder="Search hunts..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-700">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <!-- Sort Dropdown -->
+                            <div class="flex-shrink-0">
+                                <select class="border-gray-300 rounded-md shadow-sm text-sm font-medium focus:ring-indigo-700 focus:border-indigo-700">
+                                    <option>Sort by: Newest</option>
+                                    <option>Sort by: Top Offer</option>
+                                    <option>Sort by: Ending Soon</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-3">Showing <span id="hunt-counter" class="font-bold text-gray-700">0</span> active hunts</p>
+                    </div>
+
+                    <!-- ISO Feed Grid -->
+                    <div id="iso-feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- ISO cards will be injected here -->
                     </div>
                 </div>
-            </div>
-    
-            <!-- ISO Feed Grid -->
-            <div id="iso-feed" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- ISO cards will be injected here -->
             </div>
         </div>
 
@@ -923,6 +979,10 @@
         const imageUploadIcon = document.getElementById('image-upload-icon');
         const searchBar = document.getElementById('search-bar');
 
+        // Filter elements
+        const budgetMinInput = document.getElementById('budget-min');
+        const budgetMaxInput = document.getElementById('budget-max');
+        const statusFiltersContainer = document.getElementById('status-filters');
         // Profile Dropdown
         const profileDropdownBtn = document.getElementById('profile-dropdown-btn');
         const profileDropdown = document.getElementById('profile-dropdown');
@@ -981,53 +1041,47 @@
          */
         function createHuntCardElement(item) {
             const categoryColors = {
-                "Sneakers": "border-t-blue-500",
-                "Archival Fashion": "border-t-purple-500",
-                "Watches": "border-t-amber-500",
-                "Collectibles": "border-t-green-500",
+                "Sneakers": { border: "border-indigo-600", bg: "bg-indigo-600", text: "text-indigo-700" }, // Kept as primary
+                "Archival Fashion": { border: "border-violet-600", bg: "bg-violet-600", text: "text-violet-700" }, // Changed to Violet for distinction
+                "Watches": { border: "border-amber-600", bg: "bg-amber-600", text: "text-amber-700" },
+                "Collectibles": { border: "border-green-600", bg: "bg-green-600", text: "text-green-700" },
             };
-            const categoryColorClass = categoryColors[item.category] || "border-t-gray-300";
+            const colors = categoryColors[item.category] || { border: "border-gray-500", bg: "bg-gray-500", text: "text-gray-600" };
 
             const card = document.createElement('div');
-            card.className = `group view-details-btn flex flex-col bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer border border-gray-200/80 border-t-4 ${categoryColorClass}`;
+            card.className = `group view-details-btn bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-transparent hover:border-indigo-300 flex flex-col cursor-pointer overflow-hidden`;
             card.dataset.id = item.id;
 
-            const fundsVerifiedBadge = item.fundsVerified 
-                ? `<div class="absolute top-2 right-2 flex items-center gap-1.5 rounded-full bg-white/80 backdrop-blur-sm px-2 py-1 text-xs font-bold text-green-700">
-                       <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-                       <span>Verified</span>
-                   </div>`
-                : '';
-            
-            const seekersHtml = item.seekers > 1 ? `<span class="flex items-center text-xs font-bold"><i data-lucide="users" class="w-4 h-4 mr-1"></i> ${item.seekers - 1}</span>` : '';
+            const verificationIcon = item.fundsVerified ? `<i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>` : '';
 
             card.innerHTML = `
-                <div class="p-4 flex items-center space-x-3 border-b border-gray-100">
-                    <img src="${item.user.avatar}" alt="${item.user.name}" class="w-8 h-8 rounded-full"/>
-                    <div>
-                        <p class="text-sm font-semibold text-gray-800">${item.user.name}</p>
-                        <p class="text-xs text-gray-400">${getDaysRemaining(item.createdAt, item.duration)}</p>
+                <div class="flex-shrink-0 relative">
+                    <div class="aspect-square overflow-hidden">
+                        <img src="${item.imageUrl}" alt="${item.name}" class="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" />
+                    </div>
+                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 text-xs font-bold ${colors.text} border border-black/5">${item.category}</div>
+                    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-3 left-3 text-white">
+                        <p class="text-xs opacity-80">Top Offer</p>
+                        <p class="text-xl font-bold tracking-tight">
+                            $${item.topOffer.toLocaleString()}
+                        </p>
                     </div>
                 </div>
-                <div class="p-4 flex-grow">
-                    <div class="relative aspect-video w-full overflow-hidden rounded-lg mb-4">
-                        <img src="${item.imageUrl}" alt="${item.name}" class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                        ${fundsVerifiedBadge}
+                <div class="p-4 flex flex-col flex-grow">
+                    <h3 class="font-bold text-gray-900 truncate group-hover:text-indigo-800 transition-colors text-base font-swiss leading-tight" title="${item.name}">${item.name}</h3>
+                    
+                    <div class="flex items-center space-x-2 mt-2">
+                        <img src="${item.user.avatar}" alt="${item.user.name}" class="w-6 h-6 rounded-full"/>
+                        <span class="text-sm font-medium text-gray-700">${item.user.name}</span>
+                        ${verificationIcon}
                     </div>
-                    <h3 class="font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">${item.name}</h3>
-                    <p class="text-sm text-gray-500 truncate">${item.details}</p>
                 </div>
-                <div class="px-4 pb-4 mt-auto">
-                    <div class="pt-4 border-t border-gray-100 flex items-end justify-between">
-                            <div>
-                                <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Top Offer</p>
-                                <p class="text-2xl font-bold text-gray-900">$${item.topOffer.toLocaleString()}</p>
-                            </div>
-                            <div class="flex items-center space-x-3 text-gray-500">
-                                <span class="flex items-center text-xs font-bold"><i data-lucide="arrow-up-circle" class="w-4 h-4 mr-1"></i> ${item.upvotes}</span>
-                                <span class="flex items-center text-xs font-bold"><i data-lucide="message-square" class="w-4 h-4 mr-1"></i> ${item.comments}</span>
-                                ${seekersHtml}
-                            </div>
+                <div class="mt-auto px-4 py-3 border-t border-gray-200 bg-slate-50/70 rounded-b-xl">
+                    <div class="flex items-center justify-between text-xs text-gray-600 font-medium">
+                        <span class="flex items-center gap-1.5" title="Seekers"><i data-lucide="users" class="w-4 h-4"></i> ${item.seekers}</span>
+                        <button class="upvote-btn flex items-center gap-1.5 hover:text-indigo-600" title="Upvotes"><i data-lucide="arrow-up-circle" class="w-4 h-4"></i> <span class="upvote-count">${item.upvotes}</span></button>
+                        <span class="flex items-center gap-1.5" title="Time Remaining"><i data-lucide="clock" class="w-4 h-4"></i> ${getDaysRemaining(item.createdAt, item.duration).replace(/Expires in |<[^>]*>?/gm, '').replace('days', 'd')}</span>
                     </div>
                 </div>
             `;
@@ -1038,12 +1092,22 @@
          * Renders the main feed of "In Search Of" cards.
          */
         function renderFeed(filterCategory = 'All', searchTerm = '') {
+            const budgetMin = parseInt(document.getElementById('budget-min').value) || 0;
+            const budgetMax = parseInt(document.getElementById('budget-max').value) || Infinity;
+            const statusFilters = {
+                fundsVerified: document.querySelector('[data-filter="fundsVerified"]').checked,
+                finderAssigned: document.querySelector('[data-filter="finderAssigned"]').checked,
+            };
+
+            const counterEl = document.getElementById('hunt-counter');
             let filteredData = isoData;
 
+            // 1. Filter by Category
             if (filterCategory !== 'All') {
                 filteredData = filteredData.filter(item => item.category === filterCategory);
             }
 
+            // 2. Filter by Search Term
             if (searchTerm) {
                 const lowercasedTerm = searchTerm.toLowerCase();
                 filteredData = filteredData.filter(item => 
@@ -1052,7 +1116,20 @@
                 );
             }
 
+            // 3. Filter by Budget
+            filteredData = filteredData.filter(item => item.topOffer >= budgetMin && item.topOffer <= budgetMax);
+
+            // 4. Filter by Status
+            if (statusFilters.fundsVerified) {
+                filteredData = filteredData.filter(item => item.fundsVerified);
+            }
+            if (statusFilters.finderAssigned) {
+                filteredData = filteredData.filter(item => item.finder !== null);
+            }
+
+
             isoFeed.innerHTML = '';
+            if (counterEl) counterEl.textContent = filteredData.length;
 
             if (filteredData.length > 0) {
                 filteredData.sort((a, b) => b.createdAt - a.createdAt).forEach(item => {
@@ -1061,7 +1138,7 @@
                 });
             } else {
                 isoFeed.innerHTML = `
-                    <div class="md:col-span-2 lg:col-span-4 text-center py-16">
+                    <div class="sm:col-span-2 lg:col-span-3 text-center py-16">
                         <i data-lucide="search-x" class="w-16 h-16 mx-auto text-gray-300"></i>
                         <h3 class="mt-4 text-xl font-bold text-gray-800">No Hunts Found</h3>
                         <p class="mt-1 text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
@@ -1404,7 +1481,7 @@
 
             // If we are switching to the main feed, always re-render it to show the latest data.
             if (viewId === 'main-content') {
-                renderFeed(filterBar.querySelector('.active')?.dataset.category || 'All', searchBar.value);
+                triggerRenderFeed();
             }
 
             // Reset landing page animations when switching to it
@@ -1419,6 +1496,15 @@
             }
         }
         
+        /**
+         * A helper to gather all filter values and call renderFeed.
+         */
+        function triggerRenderFeed() {
+            const activeCategory = filterBar.querySelector('.active')?.dataset.category || 'All';
+            const searchTerm = searchBar.value;
+            renderFeed(activeCategory, searchTerm);
+        }
+
         /**
          * Toggles modal visibility.
          */
@@ -1768,352 +1854,33 @@
         // =================================================================================
         // NEW CHAT & FINDER LOGIC
         // =================================================================================
-        let currentChatStep = 0;
-        let isoInProgress = {};
-        let isFirstBotMessage = true;
-        const chatFlow = [
-            { bot: "Hey! I can help create your new hunt. First, what's the name of the item you're searching for?", key: 'name', placeholder: "e.g., Jordan 1 'Chicago'" },
-            { bot: "Great. Now, let's add some key details. What is the size and condition?", key: 'details', placeholder: "e.g., Size 10, new" },
-            { bot: "Which category does this fall under?", key: 'category', action: 'category' },
-            { bot: "Got it. Now for the offer. Naming your price helps attract serious sellers.", action: 'offer_preamble' },
-            { bot: "What's the top offer you'd like to make?", key: 'topOffer', placeholder: "$550" },
-            { bot: "Okay, here is the complete summary. Does this all look correct?", action: 'summary_check' },
-            { bot: "Perfect! A picture is worth a thousand words. Please upload a reference image.", key: 'image', action: 'image' },
-            { bot: "Great. To ensure sellers know you're serious, we'll simulate a fund verification. This signals you're a ready buyer.", action: 'verify' },
-            { bot: "Perfect! Your funds are verified. We are now matching your ISO with a vetted expert Finder.", action: 'syndicate' }
-        ];
+        let chatAssistant; // This will hold the instance of our new class
 
-        function startChat() {
-            currentChatStep = 0;
-            isoInProgress = {};
-            chatLog.innerHTML = '';
-            isFirstBotMessage = true; // Reset the flag for the new chat session
-            addBotMessage(chatFlow[0].bot);
-            chatInput.placeholder = chatFlow[0].placeholder;
-            chatInput.disabled = false;
-            chatSubmit.disabled = false;
-            chatInput.focus();
-        }
-
-        function addMessage(content, isUser = false) {
-            const messageWrapper = document.createElement('div');
-            messageWrapper.className = `chat-message flex ${isUser ? 'justify-end' : 'justify-start'}`;
-            const bubble = document.createElement('div'); // max-w-[85%]
-            bubble.className = `chat-bubble p-3 rounded-xl text-sm ${isUser ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}`;
-            bubble.innerHTML = content;
-            messageWrapper.appendChild(bubble);
-            chatLog.appendChild(messageWrapper);
-            // Use a small timeout to ensure the browser has rendered the new message
-            // and updated the scroll height before we try to scroll. This is a robust way
-            // to handle the browser's rendering lifecycle.
-            setTimeout(() => chatLog.scrollTop = chatLog.scrollHeight, 0);
-        }
-        
-        function addBotMessage(text) {
-            // Only do the typing animation for the very first message of a chat.
-            if (isFirstBotMessage) {
-                isFirstBotMessage = false; // Set flag to false so it doesn't run again
-                return new Promise(resolve => {
-                    const messageWrapper = document.createElement('div');
-                    messageWrapper.className = 'chat-message flex justify-start';
-                    const bubble = document.createElement('div');
-                    bubble.className = 'chat-bubble p-3 rounded-xl text-sm bg-gray-100 text-gray-800';
-                    bubble.innerHTML = ''; // Start with an empty bubble
-                    messageWrapper.appendChild(bubble);
-                    chatLog.appendChild(messageWrapper);
-                    chatLog.scrollTop = chatLog.scrollHeight;
-                    setTimeout(() => chatLog.scrollTop = chatLog.scrollHeight, 0);
-
-                    let i = 0;
-                    const typingSpeed = 30; // Milliseconds per character
-
-                    const typingInterval = setInterval(() => {
-                        if (i < text.length) {
-                            bubble.innerHTML += text.charAt(i);
-                            i++;
-                            chatLog.scrollTop = chatLog.scrollHeight; // Scroll as it types
-                        } else {
-                            clearInterval(typingInterval);
-                            resolve(); // Resolve the promise when typing is done
-                        }
-                    }, typingSpeed);
-                });
-            } else {
-                addMessage(text, false);
-                return Promise.resolve(); // Return a resolved promise to maintain consistency
-            }
-        }
-
-        function addUserMessage(text) {
-            addMessage(text, true);
-        }
-
-        function parseDetailsInput(input) {
-            let details = [];
-            let remainingInput = ` ${input} `.replace(/,/g, ' ');
-
-            // Extract size
-            const sizeRegex = /(size|sz)\s*:?\s*([\d\w.]+)/i;
-            const sizeMatch = input.match(sizeRegex);
-            if (sizeMatch) {
-                details.push(`Size ${sizeMatch[2]}`);
-                remainingInput = remainingInput.replace(sizeMatch[0], '').trim();
-            }
-
-            // Extract condition
-            const conditionKeywords = ['new', 'unworn', 'deadstock', 'ds', 'good condition', 'used', 'vnds', 'mint'];
-            conditionKeywords.forEach(keyword => {
-                const keywordRegex = new RegExp(`\\b${keyword}\\b`, 'i');
-                if (input.match(keywordRegex)) {
-                    details.push(keyword.charAt(0).toUpperCase() + keyword.slice(1));
-                    remainingInput = remainingInput.replace(keywordRegex, '').trim();
-                }
-            });
-
-            // Extract category
-            const categoryKeywords = { "Sneakers": ["sneaker", "sneakers", "jordan", "yeezy", "nike", "adidas"], "Archival Fashion": ["archive", "raf", "rick owens", "margiela"], "Watches": ["watch", "watches", "rolex", "patek", "omega"], "Collectibles": ["collectible", "collectibles", "art", "painting", "figure"] };
-            for (const [category, keywords] of Object.entries(categoryKeywords)) {
-                keywords.forEach(keyword => {
-                    const keywordRegex = new RegExp(`\\b${keyword}\\b`, 'i');
-                    if (input.match(keywordRegex)) {
-                        isoInProgress.category = category;
-                        remainingInput = remainingInput.replace(keywordRegex, '').trim();
-                    }
-                });
-            }
-
-            if (remainingInput.trim()) details.push(remainingInput.trim());
-            isoInProgress.details = details.join(', ');
-        }
-
-        function showChatSummary() {
-            // Remove any existing summary card before adding a new one
-            document.querySelectorAll('.chat-summary-card').forEach(card => card.remove());
-            
-            const missingText = (key) => !isoInProgress[key] ? `<span class="text-gray-400">...</span>` : isoInProgress[key];
-            const offerText = isoInProgress.topOffer ? `$${isoInProgress.topOffer.replace(/\D/g, '')}` : `<span class="text-gray-400">...</span>`;
-
-            const summaryHTML = `
-                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm chat-summary-card mt-2">
-                    <div class="space-y-1.5">
-                        <div class="flex justify-between items-center"><span>Item:</span><span class="font-semibold text-right pl-4">${missingText('name')}</span></div>
-                        <div class="flex justify-between items-center"><span>Details:</span><span class="font-semibold text-right pl-4">${isoInProgress.details || '<span class="text-gray-400">...</span>'}</span></div>
-                        <div class="flex justify-between items-center"><span>Category:</span><span class="font-semibold text-right pl-4">${missingText('category')}</span></div>
-                        <div class="flex justify-between items-center"><span>Offer:</span><span class="font-semibold text-right pl-4">${offerText}</span></div>
-                    </div>
-                </div>
-            `;
-            addMessage(summaryHTML, false);
-        }
-
-        function handleChatSubmission() {
-            const userText = chatInput.value.trim();
-            if (!userText) return;
-
-            addUserMessage(userText);
-            
-            const currentStep = chatFlow[currentChatStep];
-            
-            if (currentStep.key === 'name') {
-                isoInProgress.name = userText;
-            } else if (currentStep.key === 'details') {
-                parseDetailsInput(userText);
-            } else if (currentStep.key) {
-                isoInProgress[currentStep.key] = userText;
-            }
-
-            chatInput.value = '';
-            chatInput.disabled = true;
-            chatSubmit.disabled = true;
-
-            currentChatStep++;
-            processNextChatStep();
-        }
-        
-        function processNextChatStep() {
-            const nextStep = chatFlow[currentChatStep];
-            if (!nextStep) {
-                chatInput.placeholder = "All done!";
-                return;
-            }
-            
-            // Skip step if data already exists
-            if (nextStep.key && isoInProgress[nextStep.key] && !['details'].includes(nextStep.key)) {
-                currentChatStep++;
-                processNextChatStep();
-                return;
-            }
-            
-            const typingIndicator = `<div class="chat-message flex justify-start"><div class="chat-bubble p-3 rounded-2xl bg-gray-200"><div class="typing-indicator flex items-center space-x-1"><span></span><span></span><span></span></div></div></div>`;
-            addMessage(typingIndicator, false); // Use addMessage to handle scrolling correctly
-
-            setTimeout(() => {
-                chatLog.removeChild(chatLog.lastChild);
-
-                // if (currentChatStep === 1) { // After getting the name
-                //     addBotMessage("Awesome, let's get a hunt going for a <strong>" + isoInProgress.name + "</strong>. Here's what we have so far. I'll help you fill in the rest.");
-                //     setTimeout(showChatSummary, 300);
-                // }
-
-                addBotMessage(nextStep.bot).then(() => {
-                
-                    if (nextStep.action === 'offer_preamble') {
-                        addBotMessage("Just so you know, your funds are only held in secure escrow <em>after</em> you accept a verified offer. You're not committing any money right now.").then(() => {
-                            currentChatStep++;
-                            processNextChatStep();
-                        });
-                    } else if (nextStep.action === 'summary_check') {
-                        showChatSummary();
-                        const missing = ['name', 'category', 'topOffer'].filter(k => !isoInProgress[k]);
-
-                        if (missing.length > 0) {
-                            addBotMessage(`It looks like we're still missing some key info. Do you want to add it now, or continue?`).then(() => {
-                                const summaryActionsHTML = `
-                                    <div class="flex gap-2 mt-2 justify-start">
-                                        <button id="chat-continue-anyway" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">Continue Anyway</button>
-                                    </div>`;
-                                addMessage(summaryActionsHTML, false);
-                                document.getElementById('chat-continue-anyway').addEventListener('click', () => {
-                                    addUserMessage('Continue Anyway');
-                                    currentChatStep++;
-                                    processNextChatStep();
-                                });
-                            });
-                        } else {
-                            addBotMessage(`Does this all look correct?`).then(() => {
-                                const summaryActionsHTML = `
-                                    <div class="flex gap-2 mt-2 justify-start">
-                                        <button id="chat-continue" class="chat-action-btn bg-indigo-600 text-white text-sm font-semibold py-1 px-3 rounded-full hover:bg-indigo-700">Yes, looks good</button>
-                                        <button id="chat-edit" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">No, make a change</button>
-                                    </div>`;
-                                addMessage(summaryActionsHTML, false);
-                                document.getElementById('chat-continue').addEventListener('click', () => {
-                                    addUserMessage('Yes, Looks Good');
-                                    currentChatStep++;
-                                    processNextChatStep();
-                                });
-                                document.getElementById('chat-edit').addEventListener('click', () => {
-                                    addUserMessage('Make a change');
-                                    addBotMessage('What would you like to change?').then(() => {
-                                        const editOptionsHTML = `
-                                            <div class="flex flex-wrap gap-2 mt-2 justify-start">
-                                                <button class="edit-option-btn" data-step="0">Item Name</button>
-                                                <button class="edit-option-btn" data-step="1">Details</button>
-                                                <button class="edit-option-btn" data-step="2">Category</button>
-                                                <button class="edit-option-btn" data-step="4">Offer</button>
-                                            </div>
-                                        `.replaceAll('class="edit-option-btn"', 'class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100"');
-                                        addMessage(editOptionsHTML, false);
-                                        document.querySelectorAll('.edit-option-btn').forEach(btn => btn.addEventListener('click', (e) => {
-                                            const step = parseInt(e.target.dataset.step);
-                                            currentChatStep = step;
-                                            isoInProgress[chatFlow[step].key] = null; // Clear the data for that step
-                                            addUserMessage(`Change ${e.target.textContent}`);
-                                            processNextChatStep();
-                                        }));
-                                    });
-                                });
-                            });
-                        }
-                        chatInput.disabled = true;
-                        chatSubmit.disabled = true;
-
-                    } else if (nextStep.action === 'category') {
-                        const categories = ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'];
-                        const categoryButtonsHTML = `
-                            <div class="flex flex-wrap gap-2 mt-2 justify-start">
-                                ${categories.map(cat => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${cat}</button>`).join('')}
-                            </div>
-                        `;
-                        addMessage(categoryButtonsHTML, false);
-                        document.querySelectorAll('.chat-action-btn').forEach(btn => {
-                            btn.addEventListener('click', () => {
-                                const category = btn.textContent;
-                                addUserMessage(category);
-                                isoInProgress.category = category;
-                                currentChatStep++;
-                                processNextChatStep();
-                            });
-                        });
-                    } else if (nextStep.action === 'duration') {
-                     const durations = [7, 14, 30];
-                     const durationButtonsHTML = `
-                        <div class="flex flex-wrap gap-2 mt-2 justify-start">
-                            ${durations.map(dur => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100" data-duration="${dur}">${dur} Days</button>`).join('')}
-                        </div>
-                    `;
-                    addMessage(durationButtonsHTML, false);
-                    document.querySelectorAll('.chat-action-btn').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const duration = btn.dataset.duration;
-                             isoInProgress.duration = parseInt(duration);
-                            addUserMessage(`${duration} Days`);
-                            currentChatStep++;
-                            processNextChatStep();
-                        });
-                    });
-                     } else if (nextStep.action === 'image') {
-                    const imageUploaderHTML = `
-                        <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                            <div class="space-y-1 text-center">
-                                <img id="chat-image-preview" src="" class="hidden mx-auto h-24 w-auto mb-4 rounded-md"/>
-                                <svg id="chat-image-upload-icon" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                <div class="flex text-sm text-gray-600">
-                                    <label for="chat-image-upload-input" class="relative cursor-pointer bg-gray-200 rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 px-1">
-                                        <span>Upload a file</span>
-                                        <input id="chat-image-upload-input" name="file-upload" type="file" class="sr-only" accept="image/*">
-                                    </label>
-                                </div>
-                                <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
-                            </div>
-                        </div>`;
-                    addMessage(imageUploaderHTML, false);
-                    document.getElementById('chat-image-upload-input').addEventListener('change', handleChatImageUpload);
-                     } else if (nextStep.action === 'verify') {
-                    setTimeout(() => {
-                        const successMsg = `<div class="flex items-center space-x-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i><p>Funds Verified!</p></div>`;
-                        addMessage(successMsg, false);
-                        lucide.createIcons();
-                        currentChatStep++;
-                        processNextChatStep();
-                     }, 1000);
-                     } else if (nextStep.action === 'syndicate') {
-                    createNewIsoFromChat();
-                    toggleModal(isoModal, false);
-                     } else {
-                    chatInput.placeholder = nextStep.placeholder;
-                    chatInput.disabled = false;
-                    chatSubmit.disabled = false;
-                    chatInput.focus();
-                    }
-                });
-
-            }, 1200);
-        }
-        
-        function createNewIsoFromChat() {
+        /**
+         * Creates a new ISO data object from the completed chat data.
+         */
+        function createNewIsoFromChat(chatData) {
             const newItem = {
                 id: Date.now(),
                 seekers: 1,
                 joined: true, // Creator auto-joins their hunt
-                name: isoInProgress.name || "Untitled Hunt",
-                details: isoInProgress.details || "No specific details provided.",
-                topOffer: parseInt(isoInProgress.topOffer.replace(/\D/g,'')) || 0,
-                category: isoInProgress.category || "Uncategorized",
+                name: chatData.name || "Untitled Hunt",
+                details: chatData.details || "No specific details provided.",
+                topOffer: parseInt(String(chatData.topOffer).replace(/\D/g,'')) || 0,
+                category: chatData.category || "Uncategorized",
                 upvotes: 1,
                 comments: 0,
-                imageUrl: isoInProgress.imageUrl || "https://placehold.co/700x500/e2e8f0/4a5568?text=New+Hunt",
+                imageUrl: chatData.imageUrl || "https://placehold.co/700x500/e2e8f0/4a5568?text=New+Hunt",
                 user: { name: "@newSeeker", avatar: `https://i.pravatar.cc/40?u=${Date.now()}`, rating: 5.0 },
                 fundsVerified: true,
                 privateBids: 0,
-                duration: isoInProgress.duration || 30,
+                duration: chatData.duration || 30,
                 createdAt: Date.now(),
                 finder: null
             };
             isoData.unshift(newItem);
             switchView('main-content');
+            toggleModal(isoModal, false);
         }
 
         function handleChatImageUpload(e) {
@@ -2121,19 +1888,18 @@
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = (event) => {
-                isoInProgress.imageUrl = event.target.result;
+            reader.onload = (readEvent) => {
+                const imageUrl = readEvent.target.result;
                 const preview = document.getElementById('chat-image-preview');
                 const icon = document.getElementById('chat-image-upload-icon');
                 if (preview) {
-                    preview.src = event.target.result;
+                    preview.src = imageUrl;
                     preview.classList.remove('hidden');
                 }
                 if (icon) icon.style.display = 'none';
 
-                addUserMessage('<em>Image successfully uploaded.</em>');
-                currentChatStep++;
-                processNextChatStep();
+                // Use the instance method to proceed
+                chatAssistant.handleActionInput('image', imageUrl);
             };
             reader.readAsDataURL(file);
         }
@@ -2351,11 +2117,14 @@
             const openCreateModal = () => {
                 toggleModal(isoModal, true);
                 resetIsoForm();
-                startChat(); // Start the chat by default
-                chatView.style.display = 'block';
-                formView.style.display = 'none';
-                tabChat.classList.add('text-indigo-600', 'border-indigo-500');
-                tabForm.classList.remove('text-indigo-600', 'border-indigo-500');
+                if (!chatView.style.display || chatView.style.display === 'block') {
+                    chatView.style.display = 'block';
+                    formView.style.display = 'none';
+                    tabChat.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-500');
+                    tabForm.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-500');
+                    chatAssistant = new ChatAssistant(chatLog, chatInput, chatSubmit, chatFlowDefinition);
+                    chatAssistant.start();
+                }
             };
 
             postIsoBtn.addEventListener('click', openCreateModal);
@@ -2364,11 +2133,12 @@
             
             // Chat vs Form tabs
             tabChat.addEventListener('click', () => {
-                chatView.style.display = 'block';
+                chatView.style.display = 'flex'; // Use flex to match the container
                 formView.style.display = 'none';
                 tabChat.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-500');
                 tabForm.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-500');
-                startChat();
+                chatAssistant = new ChatAssistant(chatLog, chatInput, chatSubmit, chatFlowDefinition);
+                chatAssistant.start();
             });
             tabForm.addEventListener('click', () => {
                 chatView.style.display = 'none';
@@ -2378,10 +2148,10 @@
             });
             
             // Chat submission
-            chatSubmit.addEventListener('click', handleChatSubmission);
+            chatSubmit.addEventListener('click', () => chatAssistant.handleSubmission());
             chatInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !chatSubmit.disabled) {
-                    handleChatSubmission();
+                if (e.key === 'Enter' && !chatSubmit.disabled && chatAssistant) {
+                    chatAssistant.handleSubmission();
                 }
             });
 
@@ -2400,22 +2170,30 @@
             });
 
             // Search and filter
-            searchBar.addEventListener('input', (e) => {
-                const searchTerm = e.target.value;
-                const activeFilter = filterBar.querySelector('.active').dataset.category;
-                renderFeed(activeFilter, searchTerm);
-            });
+            searchBar.addEventListener('input', triggerRenderFeed);
+            budgetMinInput.addEventListener('input', triggerRenderFeed);
+            budgetMaxInput.addEventListener('input', triggerRenderFeed);
+            statusFiltersContainer.addEventListener('change', triggerRenderFeed);
 
             filterBar.addEventListener('click', (e) => {
                 if (e.target.classList.contains('filter-btn')) {
                     filterBar.querySelectorAll('.filter-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                        btn.classList.add('bg-white', 'text-gray-500', 'custom-shadow', 'border', 'border-gray-200/80', 'hover:bg-gray-50');
+                        btn.classList.remove('active', 'bg-indigo-100', 'text-indigo-800');
+                        btn.classList.add('text-gray-600', 'hover:bg-gray-100');
                     });
                     e.target.classList.add('active');
-                    e.target.classList.remove('bg-white', 'text-gray-500', 'custom-shadow', 'border', 'border-gray-200/80', 'hover:bg-gray-50');
-                    renderFeed(e.target.dataset.category, searchBar.value);
+                    e.target.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                    e.target.classList.add('bg-indigo-100', 'text-indigo-800');
+                    triggerRenderFeed();
                 }
+            });
+
+            document.getElementById('clear-filters-btn').addEventListener('click', () => {
+                searchBar.value = '';
+                budgetMinInput.value = '';
+                budgetMaxInput.value = '';
+                statusFiltersContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                filterBar.querySelector('[data-category="All"]').click(); // Clicks the "All" button
             });
             
             // View switching
@@ -2463,6 +2241,20 @@
                 if (removeHuntBtn) {
                     handleJoinHunt(removeHuntBtn); // Same logic as joining/leaving
                 }
+
+                const upvoteBtn = e.target.closest('.upvote-btn');
+                if (upvoteBtn) {
+                    e.stopPropagation(); // Prevent card click
+                    const card = upvoteBtn.closest('.view-details-btn');
+                    const itemId = parseInt(card.dataset.id);
+                    const item = isoData.find(i => i.id === itemId);
+                    if (item) {
+                        item.upvotes++;
+                        const countEl = upvoteBtn.querySelector('.upvote-count');
+                        countEl.textContent = item.upvotes;
+                        upvoteBtn.classList.add('upvote-blink', 'text-green-500', 'font-bold');
+                    }
+                }
             });
             
             // Modal closing
@@ -2504,7 +2296,288 @@
             scrollElements.forEach(el => {
                 observer.observe(el);
             });
+
+            
         }
+        
+        // =================================================================================
+        // NEW CHAT ASSISTANT ARCHITECTURE (10/10 Version)
+        // =================================================================================
+
+        const chatFlowDefinition = {
+            start: {
+                bot: "Hey! I can help create your new hunt. First, what's the name of the item you're searching for?",
+                key: 'name',
+                placeholder: "e.g., Jordan 1 'Chicago'",
+                next: 'details'
+            },
+            details: {
+                bot: "Great. Now, let's add some key details. What is the size and condition?",
+                key: 'details',
+                placeholder: "e.g., Size 10, new",
+                next: 'category'
+            },
+            category: {
+                bot: "Which category does this fall under?",
+                key: 'category',
+                type: 'buttons',
+                options: ['Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'],
+                next: 'offer_preamble'
+            },
+            offer_preamble: {
+                bot: "Got it. Now for the offer. Naming your price helps attract serious sellers.",
+                type: 'messageOnly',
+                next: 'offer_info'
+            },
+            offer_info: {
+                bot: "Just so you know, your funds are only held in secure escrow <em>after</em> you accept a verified offer. You're not committing any money right now.",
+                type: 'messageOnly',
+                next: 'topOffer'
+            },
+            topOffer: {
+                bot: "What's the top offer you'd like to make?",
+                key: 'topOffer',
+                placeholder: "$550",
+                next: 'summary'
+            },
+            summary: {
+                bot: "Okay, here is the complete summary. Does this all look correct?",
+                type: 'summary',
+                next: 'image'
+            },
+            image: {
+                bot: "Perfect! A picture is worth a thousand words. Please upload a reference image.",
+                key: 'imageUrl',
+                type: 'image',
+                next: 'verify'
+            },
+            verify: {
+                bot: "Great. To ensure sellers know you're serious, we'll simulate a fund verification. This signals you're a ready buyer.",
+                type: 'action',
+                action: 'verifyFunds',
+                next: 'syndicate'
+            },
+            syndicate: {
+                bot: "Perfect! Your funds are verified. We are now matching your ISO with a vetted expert Finder.",
+                type: 'action',
+                action: 'createISO',
+                next: null // End of flow
+            }
+        };
+
+        class ChatAssistant {
+            constructor(logEl, inputEl, submitEl, flow) {
+                this.logEl = logEl;
+                this.inputEl = inputEl;
+                this.submitEl = submitEl;
+                this.flow = flow;
+                this.state = {};
+                this.currentStepKey = 'start';
+                this.isFirstBotMessage = true;
+            }
+
+            start() {
+                this.logEl.innerHTML = '';
+                this.state = {};
+                this.currentStepKey = 'start';
+                this.isFirstBotMessage = true;
+                this.processStep();
+            }
+
+            async processStep() {
+                if (!this.currentStepKey) return;
+
+                const step = this.flow[this.currentStepKey];
+                if (!step) {
+                    console.error("Chat Error: Step not found", this.currentStepKey);
+                    return;
+                }
+
+                this.setUiState(true); // Disable UI
+
+                if (step.bot) {
+                    await this.addBotMessage(step.bot);
+                }
+
+                switch (step.type) {
+                    case 'buttons':
+                        this.renderButtons(step.options);
+                        break;
+                    case 'summary':
+                        this.renderSummary();
+                        break;
+                    case 'image':
+                        this.renderImageUploader();
+                        break;
+                    case 'action':
+                        await this.executeAction(step.action);
+                        this.currentStepKey = step.next;
+                        setTimeout(() => this.processStep(), 500);
+                        break;
+                    case 'messageOnly':
+                        this.currentStepKey = step.next;
+                        setTimeout(() => this.processStep(), 500);
+                        break;
+                    default: // Standard text input
+                        this.setUiState(false, step.placeholder);
+                        break;
+                }
+            }
+
+            handleSubmission() {
+                const userInput = this.inputEl.value.trim();
+                if (!userInput) return;
+
+                this.addUserMessage(userInput);
+                const step = this.flow[this.currentStepKey];
+                this.state[step.key] = userInput;
+
+                this.currentStepKey = step.next;
+                setTimeout(() => this.processStep(), 300);
+            }
+
+            handleActionInput(type, value) {
+                if (type === 'button') this.addUserMessage(value);
+                if (type === 'image') this.addUserMessage('<em>Image successfully uploaded.</em>');
+                
+                const step = this.flow[this.currentStepKey];
+                this.state[step.key] = value;
+                
+                this.currentStepKey = step.next;
+                setTimeout(() => this.processStep(), 300);
+            }
+
+            // ... other methods like renderButtons, renderSummary, renderImageUploader, etc.
+            // ... UI methods like addBotMessage, addUserMessage, setUiState
+
+            // --- UI & Helper Methods ---
+
+            setUiState(disabled, placeholder = '') {
+                this.inputEl.disabled = disabled;
+                this.submitEl.disabled = disabled;
+                this.inputEl.value = '';
+                this.inputEl.placeholder = placeholder;
+                if (!disabled) this.inputEl.focus();
+            }
+
+            addMessage(content, isUser) {
+                const messageWrapper = document.createElement('div');
+                messageWrapper.className = `chat-message flex ${isUser ? 'justify-end' : 'justify-start'}`;
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble p-3 rounded-xl text-sm ${isUser ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-800'}`;
+                bubble.innerHTML = content;
+                messageWrapper.appendChild(bubble);
+                this.logEl.appendChild(messageWrapper);
+                setTimeout(() => this.logEl.scrollTop = this.logEl.scrollHeight, 0);
+            }
+
+            addUserMessage(text) { this.addMessage(text, true); }
+
+            async addBotMessage(text) {
+                if (this.isFirstBotMessage) {
+                    this.isFirstBotMessage = false;
+                    return new Promise(resolve => {
+                        const messageWrapper = document.createElement('div');
+                        messageWrapper.className = 'chat-message flex justify-start';
+                        const bubble = document.createElement('div');
+                        bubble.className = 'chat-bubble p-3 rounded-xl text-sm bg-gray-100 text-gray-800';
+                        bubble.innerHTML = ''; // Start empty
+                        messageWrapper.appendChild(bubble);
+                        this.logEl.appendChild(messageWrapper);
+                        this.logEl.scrollTop = this.logEl.scrollHeight;
+
+                        let i = 0;
+                        const typingSpeed = 30;
+                        const typingInterval = setInterval(() => {
+                            if (i < text.length) {
+                                bubble.innerHTML += text.charAt(i++);
+                                this.logEl.scrollTop = this.logEl.scrollHeight;
+                            } else {
+                                clearInterval(typingInterval);
+                                resolve();
+                            }
+                        }, typingSpeed);
+                    });
+                }
+                this.addMessage(text, false);
+                return new Promise(resolve => setTimeout(resolve, 200)); // Simulate thinking time
+            }
+
+            renderButtons(options) {
+                const buttonsHtml = `<div class="flex flex-wrap gap-2 mt-2 justify-start">${options.map(opt => `<button class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">${opt}</button>`).join('')}</div>`;
+                this.addMessage(buttonsHtml, false);
+                this.logEl.querySelectorAll('.chat-action-btn').forEach(btn => {
+                    btn.addEventListener('click', () => this.handleActionInput('button', btn.textContent));
+                });
+            }
+
+            renderSummary() {
+                const missingText = (key) => !this.state[key] ? `<span class="text-gray-400">...</span>` : this.state[key];
+                const offerText = this.state.topOffer ? `$${String(this.state.topOffer).replace(/\D/g, '')}` : `<span class="text-gray-400">...</span>`;
+
+                const summaryHTML = `
+                    <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm chat-summary-card mt-2">
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between items-center"><span>Item:</span><span class="font-semibold text-right pl-4">${missingText('name')}</span></div>
+                            <div class="flex justify-between items-center"><span>Details:</span><span class="font-semibold text-right pl-4">${this.state.details || '<span class="text-gray-400">...</span>'}</span></div>
+                            <div class="flex justify-between items-center"><span>Category:</span><span class="font-semibold text-right pl-4">${missingText('category')}</span></div>
+                            <div class="flex justify-between items-center"><span>Offer:</span><span class="font-semibold text-right pl-4">${offerText}</span></div>
+                        </div>
+                    </div>
+                `;
+                this.addMessage(summaryHTML, false);
+
+                const summaryActionsHTML = `
+                    <div class="flex gap-2 mt-2 justify-start">
+                        <button id="chat-continue" class="chat-action-btn bg-indigo-600 text-white text-sm font-semibold py-1 px-3 rounded-full hover:bg-indigo-700">Yes, looks good</button>
+                        <button id="chat-edit" class="chat-action-btn bg-white border border-gray-300 text-gray-700 text-sm font-semibold py-1 px-3 rounded-full hover:bg-gray-100">No, make a change</button>
+                    </div>`;
+                this.addMessage(summaryActionsHTML, false);
+
+                document.getElementById('chat-continue').addEventListener('click', () => {
+                    this.handleActionInput('button', 'Yes, looks good');
+                });
+                document.getElementById('chat-edit').addEventListener('click', () => {
+                    this.addUserMessage('Make a change');
+                    this.addBotMessage("Sorry, the ability to edit is not implemented in this demo. Please restart the chat.").then(() => {
+                        this.setUiState(true, "Please restart chat to make changes.");
+                    });
+                });
+            }
+
+            renderImageUploader() {
+                const uploaderHtml = `
+                        <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                            <div class="space-y-1 text-center">
+                                <img id="chat-image-preview" src="" class="hidden mx-auto h-24 w-auto mb-4 rounded-md"/>
+                                <svg id="chat-image-upload-icon" class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="chat-image-upload-input" class="relative cursor-pointer bg-gray-200 rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 px-1">
+                                        <span>Upload a file</span>
+                                        <input id="chat-image-upload-input" name="file-upload" type="file" class="sr-only" accept="image/*">
+                                    </label>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                            </div>
+                        </div>`;
+                this.addMessage(uploaderHtml, false);
+                document.getElementById('chat-image-upload-input').addEventListener('change', handleChatImageUpload);
+            }
+
+            async executeAction(actionName) {
+                if (actionName === 'verifyFunds') {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const successMsg = `<div class="flex items-center space-x-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i><p>Funds Verified!</p></div>`;
+                    this.addMessage(successMsg, false);
+                    lucide.createIcons();
+                } else if (actionName === 'createISO') {
+                    createNewIsoFromChat(this.state);
+                }
+            }
+        }
+
     })();
     </script>
 </body>

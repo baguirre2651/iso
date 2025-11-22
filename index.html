@@ -228,8 +228,6 @@
         <nav class="flex flex-col items-center justify-center h-full -mt-16 space-y-6 text-2xl font-semibold text-gray-800">
             <a href="#" class="nav-link-overlay" data-view="main-content">Hunts</a>
             <a href="#" class="nav-link-overlay" data-view="my-iso-view">My ISO</a>
-            <a href="#" class="nav-link-overlay" data-view="finder-hub-view">Finder Hub</a>
-            <a href="#" class="nav-link-overlay" data-view="seller-portal-view">Seller Portal</a>
             <a href="#" class="nav-link-overlay" data-view="how-it-works-view">How It Works</a>
             <button id="mobile-menu-post-iso-btn" class="mt-8 bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow-sm">Create ISO</button>
         </nav>
@@ -250,8 +248,6 @@
                  <nav class="hidden md:flex items-center space-x-6 text-sm">
                     <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="main-content">Hunts</a>
                     <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="my-iso-view">My ISO</a>
-                    <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="finder-hub-view">Finder Hub</a>
-                    <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="seller-portal-view">Seller Portal</a>
                     <a href="#" class="nav-link text-gray-600 hover:text-indigo-600 transition-colors" data-view="how-it-works-view">How It Works</a>
                 </nav>
                 <div class="flex items-center space-x-2 sm:space-x-3">
@@ -481,7 +477,7 @@
                     </div>
 
                     <!-- ISO Feed Grid -->
-                    <div id="iso-feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div id="iso-feed" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         <!-- ISO cards will be injected here -->
                     </div>
                 </div>
@@ -516,89 +512,6 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-3">My Collection</h3>
                 <div id="my-iso-collection" class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <!-- Collection items will be injected here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Finder Hub View -->
-        <div id="finder-hub-view" class="finder-hub-view">
-            <div class="py-6">
-                <h2 class="text-2xl font-bold text-gray-900">Finder Hub</h2>
-                <p class="text-gray-500 mt-1">Manage your claimed hunts, source new leads, and track your performance.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 space-y-8">
-                    <!-- Hunt Pool -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">The Hunt Pool (New Leads)</h3>
-                        <div id="finder-hunt-pool" class="space-y-4">
-                             <!-- Hunt pool will be injected here -->
-                        </div>
-                    </div>
-                     <!-- My Active Hunts -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">My Active Hunts</h3>
-                        <div id="finder-active-hunts" class="space-y-4">
-                             <!-- Finder's active hunts will be injected here -->
-                        </div>
-                    </div>
-                </div>
-                <!-- Finder Stats -->
-                <aside>
-                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 space-y-6">
-                        <div>
-                            <h3 class="font-bold text-lg mb-4 text-gray-900">Your Stats</h3>
-                            <div class="space-y-4">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600">Active Hunts</span>
-                                    <span class="font-bold text-indigo-600">1</span>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600">Success Rate</span>
-                                    <span class="font-bold">92%</span>
-                                </div>
-                                 <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-600">Your Rating</span>
-                                    <span class="font-bold flex items-center">5.0 <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400 ml-1"></i></span>
-                                </div>
-                                <div class="pt-4 border-t">
-                                    <p class="text-sm text-gray-600">Earnings (30 Days)</p>
-                                    <p class="text-2xl font-bold text-green-600">$1,850</p>
-                                </div>
-                            </div>
-                        </div>
-                         <!-- Onboarding CTA -->
-                        <div class="pt-6 border-t">
-                            <h3 class="font-bold text-lg mb-2">Become a Vetted Finder</h3>
-                            <p class="text-sm text-gray-600 mb-4">Monetize your expertise and get access to a stream of qualified buyers.</p>
-                            <button class="w-full bg-indigo-100 text-indigo-700 font-semibold py-2 rounded-lg hover:bg-indigo-200 transition-colors">Apply Now</button>
-                        </div>
-                    </div>
-                </aside>
-            </div>
-        </div>
-        
-        <!-- Seller Portal View -->
-        <div id="seller-portal-view" class="seller-portal-view">
-            <div class="py-6">
-                <h2 class="text-2xl font-bold text-gray-900">Seller Portal</h2>
-                <p class="text-gray-500 mt-1">Respond to qualified leads from our expert Finders.</p>
-            </div>
-            <div class="space-y-8">
-                 <!-- Requests from Finders -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Requests from Finders</h3>
-                     <div id="seller-requests">
-                         <!-- Seller requests will be injected here -->
-                     </div>
-                </div>
-                 <!-- My Sent Offers -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">My Sent Offers</h3>
-                     <div id="seller-offers">
-                        <!-- Seller offers will be injected here -->
-                     </div>
                 </div>
             </div>
         </div>
@@ -965,8 +878,6 @@
         const detailView = document.getElementById('detail-view');
         const howItWorksView = document.getElementById('how-it-works-view');
         const myIsoView = document.getElementById('my-iso-view');
-        const finderHubView = document.getElementById('finder-hub-view');
-        const sellerPortalView = document.getElementById('seller-portal-view');
         const filterBar = document.getElementById('filter-bar');
 
         // Modal elements
@@ -1073,7 +984,7 @@
 
             const card = document.createElement('div');
             // This is the outer "matte" or frame
-            card.className = `group view-details-btn bg-slate-50 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-200/80 flex flex-col cursor-pointer p-2`;
+            card.className = `group view-details-btn bg-slate-50 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-gray-200/80 flex flex-col cursor-pointer p-1.5`;
             card.dataset.id = item.id;
 
             const verificationIcon = item.fundsVerified ? `<i data-lucide="check-circle" class="w-4 h-4 text-blue-600"></i>` : '';
@@ -1085,7 +996,7 @@
                         <img src="${item.imageUrl}" alt="${item.name}" class="h-full w-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" />
                         <div class="absolute top-2.5 right-2.5 bg-white/80 backdrop-blur-sm rounded-full px-2 py-0.5 text-xs font-semibold ${colors.text} border border-black/5">${item.category}</div>
                     </div>
-                    <div class="p-4 flex flex-col flex-grow">
+                    <div class="p-3 flex flex-col flex-grow">
                         <div class="flex items-center space-x-2">
                             <img src="${item.user.avatar}" alt="${item.user.name}" class="w-6 h-6 rounded-full"/>
                             <span class="text-sm font-semibold text-gray-700">${item.user.name}</span>
@@ -1176,7 +1087,7 @@
          */
         function renderDetailView(itemId) {
             const item = isoData.find(i => i.id === parseInt(itemId));
-            if (!item) return;
+            if (!item) { return; }
 
             document.querySelectorAll('.main-content, .my-iso-view, .finder-hub-view, .seller-portal-view, .how-it-works-view, .landing-view').forEach(v => v.classList.remove('active'));
             
@@ -1382,94 +1293,6 @@
             lucide.createIcons();
         }
 
-        function renderFinderHubView() {
-            const huntPoolContainer = document.getElementById('finder-hunt-pool');
-            const activeHuntsContainer = document.getElementById('finder-active-hunts');
-            
-            // Empty states for demo
-            const hasPoolItems = true;
-            const hasActiveHunts = true;
-            
-            if(hasPoolItems) {
-                 // Simulate a claimed state for the demo
-                const isClaimed = finderHubView.dataset.claimed === 'true';
-                const buttonText = isClaimed ? 'Unclaim' : 'Claim Hunt';
-                const buttonClasses = isClaimed ? 'bg-gray-200 text-gray-500' : 'bg-indigo-600 text-white';
-
-                huntPoolContainer.innerHTML = `
-                     <div class="bg-white p-4 rounded-xl custom-shadow border border-gray-100">
-                        <p class="text-xs text-gray-500">Sneakers | Posted 2 hours ago</p>
-                        <p class="font-bold text-gray-900 mt-1">Travis Scott Jordan 1 Low</p>
-                        <div class="flex justify-between items-center mt-2">
-                            <div>
-                                <p class="text-sm font-semibold text-green-600">$720</p>
-                                <p class="text-xs text-gray-500">Buyer's Offer</p>
-                            </div>
-                            <button class="claim-hunt-btn ${buttonClasses} font-semibold px-4 py-2 rounded-lg">${buttonText}</button>
-                        </div>
-                    </div>`;
-            } else {
-                huntPoolContainer.innerHTML = `<div class="text-center py-6 bg-white rounded-lg border border-gray-200"><p class="text-sm text-gray-500">No new hunts in the pool right now.</p></div>`;
-            }
-
-            if(hasActiveHunts) {
-                activeHuntsContainer.innerHTML = `
-                    <div class="bg-white p-4 rounded-xl custom-shadow border border-gray-100">
-                        <p class="text-xs text-gray-500">Archival Fashion | Claimed 1 day ago</p>
-                        <p class="font-bold text-gray-900 mt-1">Raf Simons 'Riot' Bomber Jacket</p>
-                        <div class="flex justify-between items-center mt-2">
-                             <p class="text-sm text-green-600 font-semibold">1 Option Presented to Buyer</p>
-                            <button class="manage-hunt-btn bg-gray-100 border border-gray-200 font-semibold px-4 py-2 rounded-lg hover:bg-gray-200" data-id="6">Manage</button>
-                        </div>
-                    </div>`;
-            } else {
-                 activeHuntsContainer.innerHTML = `<div class="text-center py-6 bg-white rounded-lg border border-gray-200"><p class="text-sm text-gray-500">You have no active hunts.</p></div>`;
-            }
-        }
-
-        function renderSellerPortalView() {
-            const requestsContainer = document.getElementById('seller-requests');
-            const offersContainer = document.getElementById('seller-offers');
-            
-            const hasRequests = true;
-            const hasOffers = true;
-            
-            if(hasRequests){
-                 requestsContainer.innerHTML = `
-                     <div class="bg-white p-4 rounded-xl custom-shadow border border-gray-100">
-                        <div class="flex items-center space-x-3 mb-3">
-                             <img src="https://i.pravatar.cc/40?u=curator" class="w-10 h-10 rounded-full"/>
-                             <div>
-                                 <p class="text-sm">Request from <span class="font-bold">@TheCurator</span></p>
-                                 <p class="text-xs text-gray-500">Archival Fashion Expert</p>
-                             </div>
-                        </div>
-                        <p class="font-bold text-gray-900">Item: Raf Simons 'Riot' Bomber Jacket</p>
-                        <p class="text-sm text-gray-600 mt-1">Details: Buyer has verified funds for a $4,500 offer. Do you have this in inventory?</p>
-                        <div class="mt-4">
-                             <button class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg">Submit Private Offer</button>
-                        </div>
-                    </div>`;
-            } else {
-                 requestsContainer.innerHTML = `<div class="text-center py-6 bg-white rounded-lg border border-gray-200"><p class="text-sm text-gray-500">No new requests from Finders.</p></div>`;
-            }
-
-            if(hasOffers) {
-                 offersContainer.innerHTML = `
-                     <div class="bg-white p-4 rounded-xl custom-shadow border border-gray-100">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-bold text-gray-900">Raf Simons 'Riot' Bomber Jacket</p>
-                                <p class="text-sm text-gray-500">Your Offer: $4,400</p>
-                            </div>
-                            <p class="text-sm font-semibold text-green-600">Presented to Buyer</p>
-                        </div>
-                    </div>`;
-            } else {
-                offersContainer.innerHTML = `<div class="text-center py-6 bg-white rounded-lg border border-gray-200"><p class="text-sm text-gray-500">You have not sent any offers.</p></div>`;
-            }
-        }
-
         // =================================================================================
         // MODAL & FORM HANDLING FUNCTIONS
         // =================================================================================
@@ -1478,7 +1301,7 @@
          * Switches between the main application views.
          */
         function switchView(viewId, options = {}) {
-            document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .my-iso-view, .finder-hub-view, .seller-portal-view, .landing-view').forEach(view => {
+            document.querySelectorAll('.main-content, .detail-view, .how-it-works-view, .my-iso-view, .landing-view').forEach(view => {
                 view.classList.remove('active');
             });
             const targetView = document.getElementById(viewId);
@@ -1491,7 +1314,7 @@
                     link.classList.add('active');
                 }
             });
-             if(['how-it-works-view', 'my-iso-view', 'finder-hub-view', 'seller-portal-view', 'landing-view'].includes(viewId)){
+             if(['how-it-works-view', 'my-iso-view', 'landing-view'].includes(viewId)){
                  lucide.createIcons();
             }
 
@@ -2131,8 +1954,6 @@
             
             // Initial render
             renderFeed();
-            renderMyIsoView();
-            renderFinderHubView();
             renderLandingPage();
             switchView('landing-view'); // Start on the landing page
 
@@ -2277,13 +2098,6 @@
                     postIsoBtn.click();
                 }
 
-                const claimHuntBtn = e.target.closest('.claim-hunt-btn');
-                if (claimHuntBtn) {
-                    const isClaimed = finderHubView.dataset.claimed === 'true';
-                    finderHubView.dataset.claimed = !isClaimed;
-                    renderFinderHubView();
-                }
-                
                 const removeHuntBtn = e.target.closest('.remove-hunt-btn');
                 if (removeHuntBtn) {
                     handleJoinHunt(removeHuntBtn); // Same logic as joining/leaving

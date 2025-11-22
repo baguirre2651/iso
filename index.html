@@ -210,6 +210,11 @@
         #chat-log {
             scroll-behavior: smooth;
         }
+        /* Sidebar Transitions */
+        #main-sidebar {
+            transition: width 0.3s ease-in-out, padding 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .sidebar-collapsed { width: 0 !important; padding-left: 0 !important; padding-right: 0 !important; opacity: 0; }
     </style>
 </head>
 <body class="text-gray-800 overflow-x-hidden">
@@ -399,7 +404,7 @@
         <div id="main-content" class="main-content">
             <div class="flex flex-col md:flex-row md:gap-8">
                 <!-- Left Sidebar -->
-                <aside class="w-56 flex-shrink-0 hidden md:block font-filter">
+                <aside id="main-sidebar" class="w-56 flex-shrink-0 hidden md:block font-filter">
                     <div class="sticky top-24 space-y-8">
                         <h3 class="text-lg font-bold text-gray-900 font-swiss">Filters</h3>
                         
@@ -450,8 +455,12 @@
                 <!-- Main Content -->
                 <main class="flex-1 min-w-0">
                     <!-- Sticky Top Bar -->
-                    <div class="sticky top-20 bg-slate-50/80 backdrop-blur-lg z-10 py-4 -mt-4 mb-4 border-b border-gray-200">
-                        <div class="flex items-center justify-between gap-4">
+                    <div class="sticky top-20 bg-slate-50/80 backdrop-blur-lg z-10 py-4 -mt-4 mb-4 border-b border-gray-200 md:bg-transparent md:border-none md:backdrop-filter-none">
+                        <div class="flex items-center gap-4">
+                            <!-- Desktop Sidebar Toggle -->
+                            <button id="sidebar-toggle-btn" class="hidden md:block p-2 rounded-lg hover:bg-gray-200 transition-colors">
+                                <i data-lucide="panel-left" class="w-5 h-5 text-gray-600"></i>
+                            </button>
                              <!-- Search Bar -->
                             <div class="relative flex-grow">
                                 <input type="search" id="search-bar" placeholder="Search hunts..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-700">
@@ -2125,7 +2134,20 @@
             renderMyIsoView();
             renderFinderHubView();
             renderLandingPage();
-            switchView('main-content'); // Start on the main content page
+            switchView('landing-view'); // Start on the landing page
+
+            // --- Desktop Sidebar Collapse Logic ---
+            const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+            const mainSidebar = document.getElementById('main-sidebar');
+            if (sidebarToggleBtn && mainSidebar) {
+                sidebarToggleBtn.addEventListener('click', () => {
+                    mainSidebar.classList.toggle('sidebar-collapsed');
+                    // Optional: Change icon based on state
+                    const icon = sidebarToggleBtn.querySelector('i');
+                    icon.setAttribute('data-lucide', mainSidebar.classList.contains('sidebar-collapsed') ? 'panel-right' : 'panel-left');
+                    lucide.createIcons({ nodes: [icon] });
+                });
+            }
 
             // --- Mobile Menu Overlay Logic ---
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');

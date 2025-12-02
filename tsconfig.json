@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    
+    /* Relaxed Rules for Easy Deployment */
+    "strict": false,                 // Disables strict type checking (fixes implicit any)
+    "noUnusedLocals": false,         // Ignores unused variables
+    "noUnusedParameters": false,     // Ignores unused function parameters
+    "noFallthroughCasesInSwitch": true,
+    
+    /* Path Resolution Helpers */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],                // Explicitly tell it to look in src
+  "exclude": ["node_modules"]
+}

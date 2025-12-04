@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LogOut, Instagram, Globe, ShoppingBag, Smartphone, Loader2, X, CheckCircle, ScanLine, Star, Fingerprint } from 'lucide-react';
 import { User as UserType } from '../types';
 
@@ -26,6 +26,15 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, onLogout }) => {
 
     const [verifying, setVerifying] = useState<string | null>(null);
     const [connectModal, setConnectModal] = useState<string | null>(null);
+    const [holoActive, setHoloActive] = useState(false);
+
+    // Auto-bounce the holographic effect
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setHoloActive(prev => !prev);
+        }, 3000); // Changes every 3 seconds
+        return () => clearInterval(interval);
+    }, []);
 
     // Calculate dynamic trust score
     const verifiedCount = Object.values(verifiedState).filter(Boolean).length;
@@ -40,7 +49,12 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, onLogout }) => {
     
     const formatDate = (dateString?: string) => {
         if (!dateString) return "01 JAN 95";
-        const date = new Date(dateString);
+        
+        // Fix: Parse YYYY-MM-DD manually to prevent UTC timezone shift (off-by-one error)
+        // Browsers interpret "YYYY-MM-DD" as UTC midnight, which shifts back a day in Western timezones.
+        const [y, m, d] = dateString.split('-').map(Number);
+        const date = new Date(y, m - 1, d); // Construct local date explicitly (Month is 0-indexed)
+
         // Format: 01 JAN 95
         const day = date.getDate().toString().padStart(2, '0');
         const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
@@ -83,7 +97,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, onLogout }) => {
         const line2 = line2Base.padEnd(44, '<');
 
         return (
-            <div className="font-mono text-[11px] tracking-[1px] leading-relaxed text-slate-800 uppercase mt-5 select-all pt-3 font-bold text-left mix-blend-multiply opacity-80" style={{ fontFamily: '"OCR-B", "Courier New", monospace' }}>
+            <div className="font-mono text-[9px] md:text-[11px] tracking-[1px] leading-relaxed text-slate-800 uppercase mt-5 select-all pt-3 font-bold text-left mix-blend-multiply opacity-80 break-all" style={{ fontFamily: '"OCR-B", "Courier New", monospace' }}>
                 <p>{line1}</p>
                 <p>{line2}</p>
             </div>
@@ -158,28 +172,28 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, onLogout }) => {
                      
                      <div className="flex items-center gap-3 relative z-10">
                         {/* Emblem */}
-                        <div className="w-8 h-8 rounded-full border border-[#d4af37] flex items-center justify-center bg-[#1e293b] shadow-lg text-[#d4af37]">
+                        <div className="w-8 h-8 rounded-full border border-[#d4af37] flex items-center justify-center bg-[#1e293b] shadow-lg text-[#d4af37] shrink-0">
                             <Fingerprint className="w-5 h-5" />
                         </div>
-                        <div className="flex flex-col">
-                            <h1 className="font-serif text-base font-black tracking-[0.05em] text-[#f8fafc] uppercase leading-none mb-0.5">Network of ISO</h1>
-                            <p className="font-mono text-[7px] font-bold text-[#d4af37] tracking-[0.2em] uppercase">Digital Identification Passport</p>
+                        <div className="flex flex-col min-w-0">
+                            <h1 className="font-serif text-sm md:text-base font-black tracking-[0.05em] text-[#f8fafc] uppercase leading-none mb-0.5 truncate">Network of ISO</h1>
+                            <p className="font-mono text-[7px] font-bold text-[#d4af37] tracking-[0.2em] uppercase truncate">Digital Identification Passport</p>
                         </div>
                      </div>
                      
                      {/* Chip Icon */}
-                     <div className="w-9 h-7 rounded bg-[#d4af37]/20 border border-[#d4af37] flex items-center justify-center relative">
+                     <div className="w-9 h-7 rounded bg-[#d4af37]/20 border border-[#d4af37] flex items-center justify-center relative shrink-0">
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')] opacity-30"></div>
                         <ScanLine className="w-4 h-4 text-[#d4af37]" />
                      </div>
                 </div>
 
-                <div className="p-6 relative z-10">
+                <div className="p-4 md:p-6 relative z-10">
                     
-                    {/* The "Wet Ink" Trust Stamp */}
-                    <div className="absolute right-6 top-5 z-30 transform rotate-[-8deg] pointer-events-none mix-blend-multiply opacity-85">
+                    {/* The "Wet Ink" Trust Stamp - Positioned for Mobile & Desktop */}
+                    <div className="absolute right-4 top-16 md:right-6 md:top-5 z-30 transform rotate-[-8deg] pointer-events-none mix-blend-multiply opacity-85 scale-75 md:scale-100 origin-top-right">
                          <div className={`
-                            w-20 h-20 rounded-full border-[3px] flex flex-col items-center justify-center backdrop-blur-[1px]
+                            w-20 h-20 rounded-full border-[3px] flex flex-col items-center justify-center backdrop-blur-[1px] shadow-sm
                             ${trustScore >= 80 ? 'border-emerald-700 text-emerald-800' : 'border-amber-700 text-amber-800'}
                         `} style={{ maskImage: 'url("https://www.transparenttextures.com/patterns/grunge-wall.png")' }}>
                             <p className="text-[6px] font-black tracking-widest uppercase mb-0.5">System Verified</p>
@@ -189,33 +203,48 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, onLogout }) => {
                     </div>
 
                     <div className="flex flex-col md:flex-row gap-6 items-start">
-                        {/* Primary Photo with Holographic Transition */}
-                        <div className="w-28 shrink-0 flex flex-col gap-2 relative group cursor-help">
-                             <div className="w-28 h-36 bg-[#e2e8f0] rounded-[2px] relative overflow-hidden border border-slate-300 shadow-sm">
-                                {/* DEFAULT: Monochrome Warm/Sepia Tint (Archival Look) */}
-                                <div className="absolute inset-0 bg-amber-900/10 mix-blend-multiply z-10 transition-opacity duration-300 group-hover:opacity-0"></div>
+                        {/* Primary Photo with Bouncing Holographic Effect */}
+                        <div 
+                            onClick={() => setHoloActive(!holoActive)}
+                            className="w-28 shrink-0 flex flex-col gap-2 relative group cursor-pointer"
+                        >
+                             <div className="w-28 h-36 bg-white rounded-[2px] relative overflow-hidden border border-slate-300 shadow-sm">
+                                {/* Base Image */}
                                 <img 
                                     src={user.avatar} 
-                                    className="w-full h-full object-cover filter grayscale contrast-125 sepia-[0.3] transition-all duration-300 group-hover:grayscale-0 group-hover:contrast-100 group-hover:sepia-0" 
+                                    className={`w-full h-full object-cover transition-all duration-1000 ease-in-out ${
+                                        holoActive 
+                                            ? 'grayscale-0 contrast-100 sepia-0' // Full Color (Active)
+                                            : 'grayscale contrast-125 sepia-[0.3]' // Archival (Inactive)
+                                    }`} 
                                 />
                                 
-                                {/* Holographic Overlay - Appears on Hover */}
-                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-overlay z-20"></div>
+                                {/* Holographic Overlay - Cycles opacity */}
+                                <div className={`absolute inset-0 bg-gradient-to-tr from-transparent via-blue-200/30 to-indigo-500/20 pointer-events-none mix-blend-overlay z-20 transition-opacity duration-1000 ${
+                                    holoActive ? 'opacity-100' : 'opacity-0'
+                                }`}></div>
+
+                                {/* Scan Line Animation (Only when active) */}
+                                {holoActive && (
+                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent z-30 animate-pulse pointer-events-none"></div>
+                                )}
                              </div>
                              
                              <div className="flex items-center justify-center gap-1.5 text-center">
-                                <ScanLine className="w-3 h-3 text-slate-400 animate-pulse" />
-                                <p className="text-[7px] font-bold text-slate-500 uppercase tracking-widest">Hover to Verify</p>
+                                <ScanLine className={`w-3 h-3 ${holoActive ? 'text-indigo-500 animate-spin' : 'text-slate-400'}`} />
+                                <p className={`text-[7px] font-bold uppercase tracking-widest transition-colors ${holoActive ? 'text-indigo-600' : 'text-slate-500'}`}>
+                                    {holoActive ? 'Live Verify' : 'Tap to Verify'}
+                                </p>
                              </div>
                         </div>
 
                         {/* ICAO Standard Data Fields */}
-                        <div className="flex-1 grid grid-cols-2 gap-y-4 gap-x-4 content-start pt-1">
+                        <div className="flex-1 grid grid-cols-2 gap-y-4 gap-x-4 content-start pt-1 w-full md:w-auto pr-16 md:pr-0">
                              
                              {/* Row 1: Username */}
                              <div className="col-span-2 border-b border-slate-300 pb-1">
                                 <p className="text-[7px] text-slate-500 uppercase font-bold tracking-widest mb-0.5">Username</p>
-                                <p className="font-serif text-lg font-bold text-slate-900 uppercase tracking-wide drop-shadow-sm">
+                                <p className="font-serif text-lg font-bold text-slate-900 uppercase tracking-wide drop-shadow-sm truncate">
                                     {user.name}
                                 </p>
                              </div>
@@ -253,7 +282,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, onLogout }) => {
                              {/* Row 4: Place of Birth / Authority */}
                              <div className="border-b border-slate-300 pb-1">
                                 <p className="text-[7px] text-slate-500 uppercase font-bold tracking-widest mb-0.5">Place of Birth</p>
-                                <p className="font-mono text-xs font-bold text-slate-800 tracking-wider">
+                                <p className="font-mono text-xs font-bold text-slate-800 tracking-wider truncate">
                                     {passportOrigin}
                                 </p>
                              </div>

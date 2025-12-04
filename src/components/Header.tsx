@@ -178,10 +178,11 @@ const Header: React.FC<HeaderProps> = ({ activeView, onNavigate, onCreateClick, 
                             </>
                         ) : (
                             <>
-                                <button onClick={() => { onCreateClick(); setIsMobileMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 mt-4 text-center transition-all">
+                                {/* Fixed Conflict: Removed 'text-left' so 'text-center' works properly */}
+                                <button onClick={() => { onCreateClick(); setIsMobileMenuOpen(false); }} className="block w-full px-4 py-3 rounded-xl text-base font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 mt-4 text-center transition-all">
                                     Create ISO
                                 </button>
-                                <button onClick={() => { onLoginClick(); setIsMobileMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-xl text-base font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md mt-2 text-center transition-all">
+                                <button onClick={() => { onLoginClick(); setIsMobileMenuOpen(false); }} className="block w-full px-4 py-3 rounded-xl text-base font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md mt-2 text-center transition-all">
                                     Sign In
                                 </button>
                             </>

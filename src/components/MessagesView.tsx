@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, MoreVertical, Paperclip, Send, Archive, Trash2, Inbox, RotateCcw, AlertTriangle, Shield, Star, ScanLine, X, Lock } from 'lucide-react';
+import { Search, MoreVertical, Paperclip, Send, Archive, Trash2, Inbox, RotateCcw, AlertTriangle, Shield, Star, ScanLine, X, Lock, ArrowLeft } from 'lucide-react';
 import { User } from '../types';
 import { getThreads, saveThread, updateThreadStatus, Thread, Message } from '../services/chatService';
 
@@ -151,13 +151,16 @@ const MessagesView: React.FC<MessagesViewProps> = ({ currentUser, initialItemNam
     );
 
     return (
-        <div className="max-w-6xl mx-auto h-[calc(100vh-8rem)] bg-white border border-gray-200 flex animate-fade-in overflow-hidden shadow-sm relative font-swiss">
+        // Mobile: Calculate height based on DVH minus Header height (approx 65px).
+        // Desktop: Keep the 100vh minus spacing.
+        // Used 'md:border' to remove border on mobile for full bleed effect.
+        <div className="max-w-6xl mx-auto h-[calc(100dvh-65px)] md:h-[calc(100vh-9rem)] bg-white md:border border-gray-200 flex animate-fade-in overflow-hidden shadow-sm relative font-swiss md:rounded-xl">
             
             {viewingProfile && <ProfileModal user={viewingProfile} onClose={() => setViewingProfile(null)} />}
 
-            {/* Sidebar */}
-            <div className="w-full md:w-80 border-r border-gray-200 flex flex-col bg-white shrink-0">
-                <div className="p-4 border-b border-gray-200">
+            {/* Sidebar - Hidden on mobile if chat is active */}
+            <div className={`${activeChat ? 'hidden md:flex' : 'flex'} w-full md:w-80 border-r border-gray-200 flex-col bg-white shrink-0 h-full`}>
+                <div className="p-4 border-b border-gray-200 shrink-0">
                     <h2 className="text-lg font-bold text-gray-900 mb-4">Messages</h2>
                     
                     {/* Folder Tabs */}
@@ -225,29 +228,39 @@ const MessagesView: React.FC<MessagesViewProps> = ({ currentUser, initialItemNam
                 </div>
             </div>
 
-            {/* Chat Area */}
+            {/* Chat Area - Visible on mobile if chat is active */}
             {activeThread ? (
-                <div className="hidden md:flex flex-1 flex-col bg-white">
+                <div className={`${activeChat ? 'flex' : 'hidden'} md:flex flex-1 flex-col bg-white w-full h-full relative`}>
                     {/* Header with Profile Link & Actions */}
-                    <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-white shadow-sm z-10">
-                        <div 
-                            className="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => setViewingProfile(activeThread.user)}
-                        >
-                            <img src={activeThread.user.avatar} className="w-10 h-10 rounded-full object-cover border border-gray-200" />
-                            <div>
-                                <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
-                                    {activeThread.user.name}
-                                    {activeThread.user.trustScore && activeThread.user.trustScore > 80 && (
-                                        <Shield className="w-3 h-3 text-emerald-600 fill-emerald-600" />
-                                    )}
-                                </h3>
-                                <p className="text-xs text-indigo-600 font-mono uppercase tracking-wide font-bold">View Identity Passport</p>
+                    <div className="px-4 py-3 md:px-6 md:py-4 border-b border-gray-200 flex justify-between items-center bg-white shadow-sm z-10 shrink-0 sticky top-0">
+                        <div className="flex items-center gap-3">
+                            {/* Back Button for Mobile */}
+                            <button onClick={() => setActiveChat(null)} className="md:hidden p-2 -ml-2 text-gray-600 hover:text-gray-900 active:bg-gray-100 rounded-full transition-colors">
+                                <ArrowLeft className="w-5 h-5" />
+                            </button>
+                            
+                            <div 
+                                className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+                                onClick={() => setViewingProfile(activeThread.user)}
+                            >
+                                <div className="relative">
+                                    <img src={activeThread.user.avatar} className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border border-gray-200" />
+                                    <div className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white ${activeThread.user.status === 'online' ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-gray-900 text-sm md:text-base flex items-center gap-2">
+                                        {activeThread.user.name}
+                                        {activeThread.user.trustScore && activeThread.user.trustScore > 80 && (
+                                            <Shield className="w-3 h-3 text-emerald-600 fill-emerald-600" />
+                                        )}
+                                    </h3>
+                                    <p className="text-[10px] text-indigo-600 font-mono uppercase tracking-wide font-bold hidden md:block">View Identity Passport</p>
+                                </div>
                             </div>
                         </div>
 
                         {/* Context Actions */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                             {folder === 'active' && (
                                 <>
                                     <button onClick={() => handleAction('archive')} className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition-colors" title="Archive Chat">
@@ -277,26 +290,26 @@ const MessagesView: React.FC<MessagesViewProps> = ({ currentUser, initialItemNam
                     </div>
 
                     {/* Safety Disclaimer Banner */}
-                    <div className="bg-amber-50 border-b border-amber-100 px-6 py-2 flex items-center gap-3 justify-center">
+                    <div className="bg-amber-50 border-b border-amber-100 px-6 py-2 flex items-center gap-3 justify-center shrink-0">
                         <Lock className="w-3 h-3 text-amber-600" />
-                        <p className="text-[10px] font-bold text-amber-800 uppercase tracking-wide font-mono">
-                            Safety Alert: Never share passwords or credit card details directly in chat.
+                        <p className="text-[9px] md:text-[10px] font-bold text-amber-800 uppercase tracking-wide font-mono text-center">
+                            Safety: Verify items before paying off-app.
                         </p>
                     </div>
 
-                    {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white custom-scrollbar">
+                    {/* Messages List - This handles scrolling */}
+                    <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6 bg-white custom-scrollbar overscroll-contain">
                         {activeThread.messages.map((msg) => (
                             <div key={msg.id} className={`flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[70%] ${msg.sender === 'me' ? 'order-1' : 'order-2'}`}>
-                                    <div className={`p-4 text-sm font-medium leading-relaxed shadow-sm border whitespace-pre-wrap ${
+                                <div className={`max-w-[75%] md:max-w-[70%] ${msg.sender === 'me' ? 'order-1' : 'order-2'}`}>
+                                    <div className={`p-3 md:p-4 text-sm font-medium leading-relaxed shadow-sm border whitespace-pre-wrap ${
                                         msg.sender === 'me' 
                                             ? 'bg-gray-900 text-white border-gray-900 rounded-2xl rounded-tr-none' 
                                             : 'bg-white text-gray-900 border-gray-200 rounded-2xl rounded-tl-none'
                                     }`}>
                                         {msg.text}
                                     </div>
-                                    <p className={`text-[10px] text-gray-400 mt-1.5 font-bold uppercase tracking-wider ${msg.sender === 'me' ? 'text-right' : 'text-left'}`}>
+                                    <p className={`text-[9px] md:text-[10px] text-gray-400 mt-1.5 font-bold uppercase tracking-wider ${msg.sender === 'me' ? 'text-right' : 'text-left'}`}>
                                         {msg.time}
                                     </p>
                                 </div>
@@ -304,34 +317,37 @@ const MessagesView: React.FC<MessagesViewProps> = ({ currentUser, initialItemNam
                         ))}
                     </div>
 
-                    {/* Input - Disabled if in Trash/Archive */}
+                    {/* Input Area - Disabled if in Trash/Archive */}
                     {folder === 'active' ? (
-                        <div className="p-4 border-t border-gray-200 bg-white">
+                        <div 
+                            className="p-3 md:p-4 border-t border-gray-200 bg-white shrink-0"
+                            style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }} // Ensure space on iPhone X+
+                        >
                             <form onSubmit={handleSendMessage} className="flex items-end gap-2">
-                                <button type="button" className="p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
+                                <button type="button" className="p-3 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors hidden md:block">
                                     <Paperclip className="w-5 h-5" />
                                 </button>
-                                <div className="flex-1 bg-gray-50 border border-gray-200 rounded-none focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600 transition-all">
+                                <div className="flex-1 bg-gray-50 border border-gray-200 rounded-xl md:rounded-none focus-within:ring-1 focus-within:ring-indigo-600 focus-within:border-indigo-600 transition-all overflow-hidden">
                                     <textarea 
                                         value={input}
                                         onChange={(e) => setInput(e.target.value)}
                                         onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(e); } }}
                                         placeholder="Type your message..." 
-                                        className="w-full px-4 py-3 bg-transparent border-none focus:ring-0 text-sm font-medium resize-none max-h-32 placeholder:text-gray-400"
+                                        className="w-full px-4 py-3 bg-transparent border-none focus:ring-0 text-base md:text-sm font-medium resize-none max-h-32 placeholder:text-gray-400"
                                         rows={1}
                                     />
                                 </div>
                                 <button 
                                     type="submit" 
                                     disabled={!input.trim()}
-                                    className="p-3 bg-indigo-600 text-white rounded-none hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all"
+                                    className="p-3 bg-indigo-600 text-white rounded-xl md:rounded-none hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all"
                                 >
                                     <Send className="w-5 h-5" />
                                 </button>
                             </form>
                         </div>
                     ) : (
-                        <div className="p-4 bg-gray-50 border-t border-gray-200 text-center">
+                        <div className="p-4 bg-gray-50 border-t border-gray-200 text-center shrink-0">
                             <p className="text-xs text-gray-500 font-mono uppercase">
                                 This conversation is {folder}. Restore it to continue chatting.
                             </p>

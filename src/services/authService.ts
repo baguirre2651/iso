@@ -1,13 +1,12 @@
 
-// import { supabase } from './supabaseClient';
 import { User } from '../types';
 
-// --- MOCK AUTH SERVICE (Replacing Supabase for Demo) ---
-
-const MOCK_USER_KEY = 'iso_mock_user';
+// --- MOCK AUTH SERVICE (In-Memory Only) ---
 
 // Mock delay helper
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+let currentUser: User | null = null;
 
 export async function signInWithEmail(email: string, password: string): Promise<User> {
     await delay(800); // Simulate network request
@@ -26,7 +25,7 @@ export async function signInWithEmail(email: string, password: string): Promise<
         }
     };
     
-    localStorage.setItem(MOCK_USER_KEY, JSON.stringify(user));
+    currentUser = user;
     return user;
 }
 
@@ -48,30 +47,22 @@ export async function signUpWithEmail(email: string, password: string, username:
         }
     };
 
-    localStorage.setItem(MOCK_USER_KEY, JSON.stringify(user));
+    currentUser = user;
     return user;
 }
 
 export async function updateUserProfile(user: User): Promise<User> {
     await delay(500);
-    localStorage.setItem(MOCK_USER_KEY, JSON.stringify(user));
+    currentUser = user;
     return user;
 }
 
 export async function signOut() {
     await delay(400);
-    localStorage.removeItem(MOCK_USER_KEY);
+    currentUser = null;
 }
 
 export async function getCurrentUser(): Promise<User | null> {
-    // Check local storage instead of Supabase session
-    const stored = localStorage.getItem(MOCK_USER_KEY);
-    if (stored) {
-        try {
-            return JSON.parse(stored);
-        } catch (e) {
-            return null;
-        }
-    }
-    return null;
+    // In-Memory: Returns null on refresh
+    return currentUser;
 }

@@ -104,7 +104,7 @@ const Feed: React.FC<FeedProps> = ({ items, activeCategory, onViewDetails, onCoS
                     
                     {/* Categories */}
                     <div>
-                        <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 font-mono">Sector</h4>
+                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 font-mono">Sector</h4>
                         <div className="space-y-px bg-gray-100 border border-gray-100">
                             {['All', 'Sneakers', 'Archival Fashion', 'Collectibles', 'Watches'].map(cat => (
                                 <button
@@ -124,7 +124,7 @@ const Feed: React.FC<FeedProps> = ({ items, activeCategory, onViewDetails, onCoS
 
                     {/* Budget */}
                     <div>
-                        <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 font-mono">Budget Range</h4>
+                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 font-mono">Budget Range</h4>
                         <div className="flex gap-2">
                             <div className="relative w-1/2">
                                 <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs font-mono">$</span>
@@ -151,7 +151,7 @@ const Feed: React.FC<FeedProps> = ({ items, activeCategory, onViewDetails, onCoS
 
                     {/* Status Toggle */}
                     <div>
-                        <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 font-mono">Verification</h4>
+                        <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 font-mono">Verification</h4>
                         <div className="space-y-2">
                             <label className="flex items-center gap-3 cursor-pointer group">
                                 <div className={`w-4 h-4 border flex items-center justify-center transition-colors ${filters.fundsVerified ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-300'}`}>
@@ -185,35 +185,52 @@ const Feed: React.FC<FeedProps> = ({ items, activeCategory, onViewDetails, onCoS
             {/* Main Feed */}
             <div className="flex-1 min-w-0">
                 {/* Search & Sort Bar */}
-                <div className="flex items-center gap-0 border border-gray-200 mb-8 bg-white">
+                <div className="flex items-center gap-0 border border-gray-200 mb-6 bg-white rounded-lg overflow-hidden shadow-sm">
                     <div className="flex items-center justify-center pl-4 text-gray-400">
                         <Search className="w-4 h-4" />
                     </div>
                     <input 
                         type="search" 
-                        placeholder="SEARCH CATALOG (NAME, REFERENCE, ID)..." 
-                        className="w-full px-4 py-3 bg-transparent text-sm font-bold placeholder:text-gray-300 focus:outline-none uppercase tracking-wide"
+                        placeholder="SEARCH CATALOG..." 
+                        className="w-full px-4 py-3 bg-transparent text-sm font-bold placeholder:text-gray-400 focus:outline-none uppercase tracking-wide"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <div className="border-l border-gray-200 px-4 py-3 bg-gray-50/50">
+                    
+                    {/* Category Dropdown */}
+                    <div className="border-l border-gray-200 px-2 md:px-4 py-3 bg-gray-50/50">
+                        <select 
+                            value={filters.category}
+                            onChange={(e) => handleFilterChange('category', e.target.value)}
+                            className="bg-transparent text-xs font-bold text-gray-700 outline-none uppercase cursor-pointer max-w-[80px] md:max-w-none"
+                        >
+                            <option value="All">All</option>
+                            <option value="Sneakers">Sneakers</option>
+                            <option value="Archival Fashion">Fashion</option>
+                            <option value="Watches">Watches</option>
+                            <option value="Collectibles">Objects</option>
+                        </select>
+                    </div>
+
+                    {/* Sort Dropdown */}
+                    <div className="border-l border-gray-200 px-2 md:px-4 py-3 bg-gray-50/50">
                         <select 
                             value={sortOption}
                             onChange={(e) => setSortOption(e.target.value)}
-                            className="bg-transparent text-xs font-bold text-gray-900 outline-none uppercase cursor-pointer"
+                            className="bg-transparent text-xs font-bold text-gray-700 outline-none uppercase cursor-pointer max-w-[80px] md:max-w-none"
                         >
-                            <option value="Priority">Trust Priority</option>
+                            <option value="Priority">Priority</option>
                             <option value="Recent">Recent</option>
-                            <option value="Price: High">Price: High</option>
-                            <option value="Price: Low">Price: Low</option>
+                            <option value="Price: High">High $$$</option>
+                            <option value="Price: Low">Low $$$</option>
                             <option value="Popular">Popular</option>
                         </select>
                     </div>
                 </div>
 
                 {/* Status Bar */}
-                <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-2">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">
+                <div className="flex items-center justify-between mb-2 pb-1 border-b border-gray-100">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
                         Query Results: {filteredItems.length}
                     </p>
                     <div className="flex items-center gap-2">
@@ -227,7 +244,7 @@ const Feed: React.FC<FeedProps> = ({ items, activeCategory, onViewDetails, onCoS
 
                 {/* Grid */}
                 {sortedItems.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 pb-20">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-6 pb-20">
                         {sortedItems.map(item => {
                             const daysLeft = getDaysLeft(item.createdAt, item.duration);
                             const isHighTrust = (item.user.trustScore || 0) > 85;
@@ -236,89 +253,94 @@ const Feed: React.FC<FeedProps> = ({ items, activeCategory, onViewDetails, onCoS
                                 <div 
                                     key={item.id} 
                                     onClick={() => onViewDetails(item.id)}
-                                    className={`group cursor-pointer flex flex-col relative bg-white border border-gray-200 hover:border-indigo-600 transition-colors duration-300 ${isHighTrust ? 'order-first' : ''}`}
+                                    className={`group cursor-pointer flex flex-col bg-white border border-gray-200 hover:border-gray-900 transition-all duration-200 ${isHighTrust ? 'order-first' : ''}`}
                                 >
-                                    {/* --- 1. Image Area (Gallery Look) --- */}
-                                    <div 
-                                        className="aspect-square bg-white relative overflow-hidden border-b border-gray-100 p-6 flex items-center justify-center group-hover:bg-gray-50 transition-colors"
-                                    >
-                                        <img 
-                                            src={item.imageUrl} 
-                                            alt={item.name} 
-                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                                        />
-                                        
-                                        {/* Avatar Stamp (Top Left) */}
-                                        <div className="absolute top-3 left-3 z-20">
-                                            <div className="w-8 h-8 rounded-full border border-gray-200 overflow-hidden shadow-sm bg-gray-50 group-hover:border-indigo-600 transition-colors">
-                                                <img src={item.user.avatar} className="w-full h-full object-cover" />
+                                    
+                                    {/* --- 1. Header (Compact) --- */}
+                                    <div className="px-3 py-2 border-b border-gray-100 flex justify-between items-center bg-white">
+                                        <div className="flex items-center gap-3">
+                                            <div className="relative shrink-0">
+                                                <img src={item.user.avatar} className="w-9 h-9 rounded-full object-cover border border-gray-100" />
+                                            </div>
+                                            <div className="flex flex-col justify-center">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-xs font-bold text-gray-900 leading-none">{item.user.name}</span>
+                                                    {isHighTrust && (
+                                                        <div className="group/shield relative">
+                                                            <ShieldCheck className="w-3 h-3 text-blue-600 fill-blue-50 cursor-help" />
+                                                            <div className="absolute left-1/2 -translate-x-1/2 -top-6 bg-gray-900 text-white text-[8px] font-bold px-2 py-0.5 rounded whitespace-nowrap opacity-0 group-hover/shield:opacity-100 transition-opacity pointer-events-none">
+                                                                TRUST SCORE 85+
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <span className="text-[9px] text-indigo-500 font-bold tracking-tight mt-0.5">Searching for</span>
                                             </div>
                                         </div>
-
-                                        {/* Verified Badge (Top Right) */}
-                                        {isHighTrust && (
-                                            <div className="absolute top-3 right-3 z-20">
-                                                <div className="bg-white/95 backdrop-blur-sm border border-gray-200 shadow-sm px-2 py-1 flex items-center gap-1.5 rounded-sm">
-                                                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                                                    <span className="text-[9px] font-bold text-gray-900 uppercase tracking-wide">Trusted</span>
-                                                </div>
-                                            </div>
-                                        )}
+                                        
+                                        <span className="text-[9px] font-bold text-gray-500 uppercase tracking-wider bg-gray-50 border border-gray-100 px-2 py-1 rounded-sm">
+                                            {item.category}
+                                        </span>
                                     </div>
 
-                                    {/* --- 2. Details --- */}
-                                    <div className="flex flex-col flex-1">
-                                        {/* Header */}
-                                        <div className="p-4 bg-white flex flex-col gap-1">
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wide">{item.category}</p>
-                                            <div className="flex justify-between items-start gap-2">
-                                                <h3 className="font-bold text-gray-900 text-sm leading-snug font-swiss uppercase tracking-tight">
-                                                    {item.name}
-                                                </h3>
-                                                <ArrowUpRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-600 transition-colors shrink-0" />
-                                            </div>
+                                    {/* --- 2. Image Area --- */}
+                                    <div className="aspect-square bg-white relative px-4 pt-2 pb-8 flex items-center justify-center border-b border-gray-200 overflow-hidden group-hover:bg-gray-50/30 transition-colors">
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <img 
+                                                src={item.imageUrl} 
+                                                alt={item.name} 
+                                                className="max-w-full max-h-full object-contain mx-auto transition-transform duration-500 group-hover:scale-[1.02]" 
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* --- 3. Content Block --- */}
+                                    <div className="flex flex-col bg-white">
+                                        {/* Title Area */}
+                                        <div className="px-3 pt-3 pb-2">
+                                            <h3 className="text-sm font-bold text-gray-900 leading-tight font-swiss uppercase tracking-tight line-clamp-2 min-h-[2.5em]">
+                                                {item.name}
+                                            </h3>
                                         </div>
 
-                                        {/* Structured Data Grid */}
-                                        <div className="grid grid-cols-2 border-t border-gray-100 divide-x divide-gray-100">
-                                            {/* Price Cell */}
-                                            <div className="p-3 bg-gray-50/50">
-                                                <p className="text-[9px] text-gray-400 font-mono uppercase tracking-wider mb-0.5">Top Offer</p>
-                                                <p className="text-sm font-mono font-bold text-gray-900">${item.topOffer.toLocaleString()}</p>
-                                            </div>
-                                            
-                                            {/* Expiration Cell (Moved here) */}
-                                            <div className="p-3 bg-gray-50/50">
-                                                <p className="text-[9px] text-gray-400 font-mono uppercase tracking-wider mb-0.5">Expires In</p>
-                                                <div className={`text-sm font-mono font-bold flex items-center gap-1.5 ${daysLeft <= 3 ? 'text-red-600' : 'text-gray-900'}`}>
-                                                    <Clock className="w-3 h-3" />
-                                                    {daysLeft <= 0 ? 'Closed' : `${daysLeft} Days`}
+                                        {/* Data Footer - Gray Background */}
+                                        <div className="px-3 py-2.5 bg-gray-50 border-t border-gray-100 flex items-end justify-between">
+                                            <div className="flex items-center gap-3">
+                                                {/* Price */}
+                                                <div>
+                                                    <span className="block text-[8px] text-gray-500 uppercase tracking-widest font-sans font-bold mb-0.5">Offer</span>
+                                                    <span className="text-sm font-bold text-gray-900 font-mono">${item.topOffer.toLocaleString()}</span>
+                                                </div>
+                                                
+                                                {/* Vertical Divider - Black */}
+                                                <div className="w-px h-6 bg-gray-900"></div>
+                                                
+                                                {/* Expires */}
+                                                <div>
+                                                    <span className="block text-[8px] text-gray-500 uppercase tracking-widest font-sans font-bold mb-0.5">Expires</span>
+                                                    <span className={`text-sm font-bold font-mono ${daysLeft <= 3 ? 'text-red-600' : 'text-gray-900'}`}>
+                                                        {daysLeft <= 0 ? 'End' : `${daysLeft}d`}
+                                                    </span>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Footer Actions */}
-                                        <div className="px-4 py-3 border-t border-gray-100 bg-white flex items-center justify-between text-[10px] font-mono uppercase tracking-wide mt-auto">
-                                            <span className="text-gray-900 font-extrabold truncate max-w-[100px]">{item.user.name}</span>
-                                            
+                                            {/* Actions */}
                                             <div className="flex items-center gap-3">
-                                                {/* Share Button */}
-                                                <button 
-                                                    onClick={(e) => handleShare(e, item)}
-                                                    className="flex items-center gap-1 text-gray-400 hover:text-indigo-600 transition-colors"
-                                                    title="Share"
-                                                >
-                                                    <Share2 className="w-3.5 h-3.5" />
-                                                </button>
-
-                                                {/* Co-Sign Button */}
                                                 <button 
                                                     onClick={(e) => { e.stopPropagation(); onCoSign(item.id); }}
-                                                    className="flex items-center gap-1 group/cosign"
-                                                    title="Co-Sign (Upvote)"
+                                                    className="flex items-center gap-1 text-gray-400 hover:text-indigo-600 transition-colors group/btn"
                                                 >
-                                                    <Flame className={`w-3.5 h-3.5 ${item.upvotes > 0 ? 'text-indigo-600 fill-indigo-600' : 'text-gray-300 group-hover/cosign:text-indigo-600'}`} />
-                                                    <span className={`font-bold ${item.upvotes > 0 ? 'text-indigo-600' : 'text-gray-400 group-hover/cosign:text-indigo-600'}`}>{item.upvotes}</span>
+                                                    <Flame className={`w-4 h-4 ${item.upvotes > 0 ? 'text-indigo-600 fill-indigo-600' : ''}`} />
+                                                    <span className={`text-[10px] font-bold ${item.upvotes > 0 ? 'text-indigo-600' : 'group-hover/btn:text-indigo-600'}`}>
+                                                        {item.upvotes > 0 ? item.upvotes : ''}
+                                                    </span>
+                                                </button>
+
+                                                <button 
+                                                    onClick={(e) => handleShare(e, item)}
+                                                    className="text-gray-500 hover:text-gray-900 transition-all p-1"
+                                                >
+                                                    <Share2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </div>
@@ -328,12 +350,12 @@ const Feed: React.FC<FeedProps> = ({ items, activeCategory, onViewDetails, onCoS
                         })}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-24 px-4 bg-gray-50 border border-dashed border-gray-200 text-center">
+                    <div className="flex flex-col items-center justify-center py-24 px-4 bg-gray-50 border border-dashed border-gray-200 text-center rounded-2xl">
                         <SearchX className="w-12 h-12 text-gray-300 mb-4" />
                         <h3 className="text-lg font-bold text-gray-900 mb-2 font-swiss uppercase">No Listings Found</h3>
                         <button 
                             onClick={handleResetFilters}
-                            className="px-6 py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest hover:bg-indigo-700 transition-all"
+                            className="px-6 py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest hover:bg-indigo-700 transition-all rounded-lg shadow-sm"
                         >
                             Reset Catalog
                         </button>

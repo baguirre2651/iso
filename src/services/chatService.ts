@@ -23,10 +23,8 @@ export interface Thread {
     unread: number;
     item: string;
     messages: Message[];
-    status: 'active' | 'archived' | 'deleted'; // New field
+    status: 'active' | 'archived' | 'deleted';
 }
-
-const STORAGE_KEY = 'iso_chat_threads_v2'; // Bumped version for schema change
 
 // Initial Mock Data
 const INITIAL_THREADS: Thread[] = [
@@ -47,17 +45,15 @@ const INITIAL_THREADS: Thread[] = [
     }
 ];
 
+// In-Memory Storage (Resets on Refresh)
+let memoryThreads: Thread[] = [...INITIAL_THREADS];
+
 export const getThreads = (): Thread[] => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_THREADS));
-        return INITIAL_THREADS;
-    }
-    return JSON.parse(stored);
+    return memoryThreads;
 };
 
 export const saveThread = (updatedThreads: Thread[]) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedThreads));
+    memoryThreads = updatedThreads;
 };
 
 export const updateThreadStatus = (threadId: string, status: 'active' | 'archived' | 'deleted' | 'destroyed') => {

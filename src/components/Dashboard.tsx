@@ -6,9 +6,10 @@ import { IsoItem } from '../types';
 interface DashboardProps {
     items: IsoItem[];
     onViewDetails: (id: number) => void;
+    onViewMessages: (itemName: string) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ items, onViewDetails }) => {
+const Dashboard: React.FC<DashboardProps> = ({ items, onViewDetails, onViewMessages }) => {
     const myHunts = items.filter(item => item.joined && !item.acquired);
     const myCollection = items.filter(item => item.acquired);
     const actionItems = myHunts.filter(item => item.privateBids > 0);
@@ -46,7 +47,7 @@ const Dashboard: React.FC<DashboardProps> = ({ items, onViewDetails }) => {
                                     </div>
                                 </div>
                                 <button 
-                                    onClick={() => onViewDetails(item.id)}
+                                    onClick={() => onViewMessages(item.name)}
                                     className="w-full sm:w-auto bg-indigo-600 text-white font-bold px-8 py-3 rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2"
                                 >
                                     View Chat <ArrowRight className="w-4 h-4" />

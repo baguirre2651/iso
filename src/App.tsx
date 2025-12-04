@@ -16,13 +16,12 @@ import { IsoItem, User, Comment } from './types';
 import { isoData as initialIsoData } from './data';
 import { getCurrentUser, signOut, updateUserProfile } from './services/authService';
 
-const ISO_DATA_KEY = 'iso_data_v1';
-
 const App: React.FC = () => {
     // Navigation State
     const [activeView, setActiveView] = useState('landing-view');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+    const [messageTargetItem, setMessageTargetItem] = useState<string | null>(null);
 
     // Auth State
     const [user, setUser] = useState<User | null>(null);
@@ -30,18 +29,9 @@ const App: React.FC = () => {
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [authInitialized, setAuthInitialized] = useState(false);
 
-    // Data State
-    const [isoData, setIsoData] = useState<IsoItem[]>(() => {
-        // Load from local storage if available, otherwise use initial mock data
-        const saved = localStorage.getItem(ISO_DATA_KEY);
-        return saved ? JSON.parse(saved) : initialIsoData;
-    });
+    // Data State - In Memory Only (No LocalStorage)
+    const [isoData, setIsoData] = useState<IsoItem[]>(initialIsoData);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-    // Persist Data Changes
-    useEffect(() => {
-        localStorage.setItem(ISO_DATA_KEY, JSON.stringify(isoData));
-    }, [isoData]);
 
     // Initialize Auth
     useEffect(() => {
@@ -65,6 +55,11 @@ const App: React.FC = () => {
             return;
         }
 
+        // Reset message target when navigating normally
+        if (view !== 'messages-view') {
+            setMessageTargetItem(null);
+        }
+
         window.scrollTo(0, 0);
         setActiveView(view);
         setSelectedCategory(category);
@@ -86,6 +81,13 @@ const App: React.FC = () => {
 
         setSelectedItemId(id);
         setActiveView('detail-view');
+        window.scrollTo(0, 0);
+    };
+
+    const handleViewMessages = (itemName: string) => {
+        if (!user) return;
+        setMessageTargetItem(itemName);
+        setActiveView('messages-view');
         window.scrollTo(0, 0);
     };
 
@@ -168,6 +170,11 @@ const App: React.FC = () => {
         return <div className="min-h-screen flex items-center justify-center bg-slate-50"><div className="loader"></div></div>;
     }
 
+    // Dynamic padding: Remove padding for messages view to allow full screen mobile chat
+    const mainContainerClasses = activeView === 'messages-view' 
+        ? "flex-1 w-full mx-auto animate-fade-in max-w-7xl md:px-4 sm:px-6 lg:px-8 md:py-8" 
+        : "flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in";
+
     return (
         <div className="min-h-screen flex flex-col relative">
             
@@ -184,7 +191,7 @@ const App: React.FC = () => {
             {activeView === 'landing-view' ? (
                 <LandingPage onNavigate={handleNavigate} />
             ) : (
-                <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+                <main className={mainContainerClasses}>
                     
                     {activeView === 'main-content' && (
                         <Feed 
@@ -210,11 +217,18 @@ const App: React.FC = () => {
                     )}
 
                     {activeView === 'my-iso-view' && (
-                        <Dashboard items={isoData} onViewDetails={handleViewDetails} />
+                        <Dashboard 
+                            items={isoData} 
+                            onViewDetails={handleViewDetails} 
+                            onViewMessages={handleViewMessages}
+                        />
                     )}
 
                     {activeView === 'messages-view' && user && (
-                        <MessagesView currentUser={user} />
+                        <MessagesView 
+                            currentUser={user} 
+                            initialItemName={messageTargetItem}
+                        />
                     )}
 
                     {activeView === 'profile-view' && user && (

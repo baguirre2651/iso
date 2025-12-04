@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, PlusCircle, Search, ShoppingBag, ScanEye, MessageSquare, ArrowUpRight, ScanLine, Globe, Unlock, Share2, Twitter, Instagram, Mail } from 'lucide-react';
 
 interface LandingPageProps {
@@ -8,13 +8,66 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
     const heroRef = useRef<HTMLDivElement>(null);
+    const [typedText1, setTypedText1] = useState('');
+    const [typedText2, setTypedText2] = useState('');
+    const [showCursor, setShowCursor] = useState(true);
+
+    const fullText1 = "POST THE ";
+    const fullText2 = "HUNT.";
 
     useEffect(() => {
+        // Animation Trigger for Fade-ins
         setTimeout(() => {
             if (heroRef.current) {
                 heroRef.current.classList.add('start-animation');
             }
         }, 100);
+
+        // Typewriter Logic
+        let timeout1: ReturnType<typeof setTimeout>;
+        let timeout2: ReturnType<typeof setTimeout>;
+
+        // Start typing part 1 after delay
+        const startTyping = () => {
+            let currentIndex1 = 0;
+            const typePart1 = () => {
+                if (currentIndex1 < fullText1.length) {
+                    setTypedText1(fullText1.slice(0, currentIndex1 + 1));
+                    currentIndex1++;
+                    timeout1 = setTimeout(typePart1, 50); // Faster speed (was 100)
+                } else {
+                    // Part 1 done, start Part 2
+                    setTimeout(() => {
+                        let currentIndex2 = 0;
+                        const typePart2 = () => {
+                            if (currentIndex2 < fullText2.length) {
+                                setTypedText2(fullText2.slice(0, currentIndex2 + 1));
+                                currentIndex2++;
+                                timeout2 = setTimeout(typePart2, 80); // Faster speed (was 150)
+                            }
+                        };
+                        typePart2();
+                    }, 200); // Shorter pause between lines
+                }
+            };
+            typePart1();
+        };
+
+        const initialDelay = setTimeout(startTyping, 300);
+
+        return () => {
+            clearTimeout(initialDelay);
+            clearTimeout(timeout1);
+            clearTimeout(timeout2);
+        };
+    }, []);
+
+    // Blinking cursor effect
+    useEffect(() => {
+        const cursorInterval = setInterval(() => {
+            setShowCursor(prev => !prev);
+        }, 500);
+        return () => clearInterval(cursorInterval);
     }, []);
 
     const categories = [
@@ -35,8 +88,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                         Est. 2025 — The Reverse Marketplace
                     </div>
                     
-                    <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[0.95] text-white mix-blend-screen font-swiss">
-                        POST <br className="md:hidden" /> THE <span className="text-indigo-500">HUNT.</span>
+                    <h1 className="hero-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[0.95] text-white mix-blend-screen font-swiss min-h-[1.9em] md:min-h-[auto] flex flex-col md:block items-center">
+                        <span>{typedText1}</span>
+                        <span className="md:hidden h-0 block"></span> {/* Mobile Break */}
+                        <span className="text-indigo-500 whitespace-nowrap">
+                            {typedText2}
+                            <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} ml-1 inline-block w-[3px] md:w-[6px] h-[0.8em] bg-indigo-500 align-baseline transition-opacity duration-100`}></span>
+                        </span>
                     </h1>
                     
                     <p className="hero-subtitle text-base md:text-lg text-indigo-100/80 max-w-xl mx-auto mb-10 font-light leading-relaxed">
@@ -112,7 +170,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                         <div 
                             key={cat.name}
                             onClick={() => onNavigate('main-content', cat.name)}
-                            className="group relative bg-white aspect-[3/4] overflow-hidden cursor-pointer"
+                            // Changed aspect ratio for mobile: aspect-[3/2] (wider/standard photo) -> aspect-[3/4] (tall) on desktop
+                            // This fixes the 'zoomed in' look on mobile
+                            className="group relative bg-white aspect-[3/2] md:aspect-[3/4] overflow-hidden cursor-pointer"
                         >
                             <img 
                                 src={cat.img} 
